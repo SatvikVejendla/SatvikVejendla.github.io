@@ -1,0 +1,40 @@
+
+.vertData {
+    height: 100%;
+    width: 100%;
+
+    border-radius: 5px;
+    
+}
+.letter {
+    font-size: 20px;
+    background-color: rgb(154, 31, 31);
+    padding: 0px 10px;
+    text-align: center;
+}
+
+.letter1 {
+    
+    border-radius: 5px 5px 0px 0px;
+    padding-top: 10px;
+}
+
+.letter3 {
+    border-radius: 0px 0px 5px 5px;
+    padding-bottom: 10px;
+}
+
+.yr {
+    background-color: rgb(72, 65, 65);
+    font-size: 40px;
+    padding: 5px 5px;
+    font-family: 'Verdana, Geneva, Tahoma, sans-serif';
+}
+
+.yr1 {
+    border-radius: 5px 0px 0px 5px;
+}
+
+.yr2 {
+    border-radius: 0px 5px 5px 0px;
+}

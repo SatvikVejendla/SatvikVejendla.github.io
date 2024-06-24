@@ -1,0 +1,323 @@
+.experience.hidden {
+    opacity: 0;
+}
+.experience:not(.hidden) {
+    opacity: 1;
+    
+}
+
+.experience.background {
+    
+    filter: blur(10px);
+}
+
+.experience {
+    width: 200%;
+    height: 100%;
+    position: absolute;
+
+    transition: filter 0.5s;
+}
+
+.experienceRelative {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+
+.absoluteDescription:not(.hidden) {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+
+.descriptionBorder {
+    background-color: var(--primary-color-lighter);
+}
+
+.descriptionBorder{
+    border-radius: 10px;
+    width: 60%;
+    padding: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    box-shadow: 0px 0px 20px 1px rgba(0, 0, 0, 0.573);
+}
+
+.descriptionBorder:not(.hidden){
+    
+    animation: hopIn 0.4s forwards;
+}
+.descriptionBorder.hidden {
+    animation: hopOut 0.4s forwards;
+}
+.descriptionbox:not(.hidden) {
+    width: calc(100% - 40px);
+    height: calc(100% - 40px);
+
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+
+}
+
+
+.closeIcon {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    z-index: 3;
+}
+
+.closeIcon:not(hover){
+    color: rgb(181, 164, 164);
+}
+.closeIcon:hover {
+    color: rgb(255, 255, 255);
+}
+
+.placeIcon {
+    width: 200px;
+    height: 200px;
+}
+
+.descriptionPlaceWrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+.descriptionPlaceVertical {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: 50px;
+
+}
+.descriptionPlace {
+    font-size: calc(100% * 3);
+    width: 100%;
+}
+
+.descriptionRoleHorizontal {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+
+}
+.descriptionRole {
+    font-size: calc(100% * 1.5);
+    margin-top: 10px;
+
+}
+.descriptionGPA {
+    font-size: calc(100% * 1.5);
+    margin-top: 10px;
+
+}
+.descriptionDate {
+    font-size: calc(100% * 1.5);
+    width: 100%;
+}
+
+.descriptionAbout {
+    align-self: flex-start;
+    margin-left: 5%;
+    width: 90%;
+}
+
+.awardsCol {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.awardsRow, .awardsRow2, .awardsRow3 {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    margin-top: 10px;
+    border-radius: 10px;
+    background-color: rgb(148, 201, 186);
+}
+.awardsRow {
+    width: 100%;
+}
+.awardsRow2 {
+    width: 100%;
+}
+
+.awardsRow3 {
+    width: 70%;
+}
+
+.awardsRow3 .awardItem {
+    text-align: center;
+    padding: 15px;
+    transform: skew(-30deg);
+}
+.awardsRow3 .awardItem:not(.middle2){
+    width: 50%;
+}
+.awardsRow3 .awardItem.middle2 {
+    width: 0;
+}
+
+.awardsRow2 .awardItem {
+    width: 30%;
+    text-align: center;
+    padding: 15px;
+    transform: skew(-30deg);
+}
+
+.awardsRow .awardItem {
+    width: 30%;
+    text-align: center;
+    padding: 15px;
+    transform: skew(30deg);
+}
+
+.awardItem.middle, .awardItem.middle2 {
+    border-left: 50px solid rgb(255, 255, 255);
+    border-right: 50px solid rgb(255, 255, 255);
+    background-color: rgb(35, 193, 148);
+}
+
+.awardItem.left1 {
+    border-right: 50px solid rgb(255, 255, 255);
+    background-color: rgb(35, 193, 148);
+}
+
+.awardItem.right1 {
+    border-left: 50px solid rgb(255, 255, 255);
+    background-color: rgb(35, 193, 148);
+}
+
+
+.awardsRow .awardItemText {
+    transform: skew(-30deg);
+}
+.awardsRow2 .awardItemText {
+    transform: skew(30deg);
+}
+.awardsRow3 .awardItemText {
+    transform: skew(30deg);
+    font-size: 20px;
+}
+
+.clubsRow {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    display: inline-grid;
+    grid-template-columns: auto auto;
+    grid-gap: 20px 60px;
+}
+
+.clubsRow2 {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    display: inline-grid;
+    grid-template-columns: auto auto auto;
+    grid-gap: 20px 60px;
+}
+
+.clubItem {
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.clubIcon {
+    border-radius: 10px;
+    padding: 10px 30px;
+    background-color: rgb(54, 204, 161);
+    z-index: 1;
+}
+.clubDescription {
+    
+    background-color: rgb(13, 143, 107);
+    border-radius: 10px;
+    padding: 15px 30px;
+
+    transform: translateX(-15px);
+}
+
+.clubName {
+    font-size: calc(100% * 1.5);
+}
+
+
+.courses {
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    text-align: center;
+    margin-top: 30px;
+}
+
+.courseItem {
+    padding: 10px 0px;
+    border-radius: 10px 0px;
+    background-color: rgb(89, 142, 68);
+    margin: 5px;
+}
+
+.skillsAbout {
+    width: 50%;
+    margin-left: 5%;
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    grid-gap: 80px 0px;
+    margin-bottom: 20px;
+}
+.skillItem {
+    width: 50px;
+    height: 50px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.skillItem:after {
+    content: "";
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 80px;
+    height: 80px;
+    background-color: #919f88;
+    border-radius: 10px;
+    z-index: -1;
+    transform: translate(-15px, -15px) rotate(45deg);
+}
+
+.descriptionList {
+    
+    width: 50%;
+}
+.descriptionOuter {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.descriptionText {
+    font-size: calc(100% * 1.2);
+}

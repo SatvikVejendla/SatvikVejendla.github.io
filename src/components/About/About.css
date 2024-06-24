@@ -1,0 +1,184 @@
+.aboutPosition {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    width: 100%;
+}
+
+.body {
+    height: 100%;
+}
+
+.roles {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.about .title {
+    font-size: 2vw;
+}
+
+.about .roles {
+    margin-top: 20px;
+    margin-bottom: 20px;
+
+}
+
+.role {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+
+.roles {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+
+
+
+
+.body.hidden {
+    z-index: -99;
+}
+.body:not(.hidden){
+    display:flex;
+    flex-direction: column;
+    visibility: visible;
+}
+
+
+/*ROLES*/
+
+.role {
+    width: clamp(100px, 15vw, 180px);
+    transition: height 0.2s;
+}
+
+.role.title1 {
+    position: absolute;
+    top: 50%;
+    left: 30%;
+    transform: translate(-50%, -50%);
+}
+.role.title1.hidden {
+    
+    height: 0%;
+}
+.role.title1:not(.hidden) {
+    height: clamp(100px, 15vw, 180px);
+}
+
+
+
+
+.role.title2 {
+    position: absolute;
+    top: 75%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.role.title2.hidden {
+    
+    height: 0%;
+}
+.role.title2:not(.hidden) {
+    height: clamp(100px, 15vw, 180px);
+}
+
+
+
+.role.title3 {
+    position: absolute;
+    top: 50%;
+    left: 70%;
+    transform: translate(-50%, -50%);
+}
+.role.title3.hidden {
+    
+    height: 0%;
+}
+.role.title3:not(.hidden) {
+    height: clamp(100px, 15vw, 180px);
+}
+
+
+
+
+
+.role.title4 {
+    position: absolute;
+    top: 25%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.role.title4.hidden {
+    
+    height: 0%;
+}
+.role.title4:not(.hidden) {
+    height: clamp(100px, 15vw, 180px);
+}
+
+
+.titleicon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.desc1 {
+    position: absolute;
+    top: 50%;
+    left: 30%;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: var(--color2);
+}
+
+.desc2 {
+    position: absolute;
+    top: 75%;
+    left: 50%;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: var(--color2);
+}
+.desc3 {
+    position: absolute;
+    top: 50%;
+    left: 70%;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: var(--color2);
+}
+.desc4 {
+    position: absolute;
+    top: 25%;
+    left: 50%;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: var(--color2);
+}
+
+.description {
+    
+    transition: transform 0.2s;
+    font-size: 2em;
+}
+.description.visible {
+    transform: scaleY(100%) translate(-50%, -50%);
+}
+.description:not(.visible) {
+    transform: scaleY(0%) translate(-50%, -50%);
+}
+

@@ -1,0 +1,159 @@
+
+.education-item {
+    border-radius: 10px;
+    padding: 10px;
+    width: 20%;
+}
+
+.educationSection {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 50%;
+    width: 200%;
+}
+
+.educationSectionRelative {
+    position: relative;
+    height: 100%;
+}
+
+.education-title {
+    font-size: 40px;
+}
+
+/*ITEM 1*/
+.educationItem1 {
+    position: absolute;
+    top: 50%;
+    left: 50vw;
+
+    width: 20vw;
+    padding: 20px;
+    border-radius: 10px;
+
+    transform: translate(-50%, -50%);
+}
+
+.educationItem1:not(.hover){
+    background-color: var(--color3);
+}
+.educationItem1.hover {
+    background-color: var(--color3-lighter);
+}
+
+.eidate {
+    height: 20px;
+    position: absolute;
+}
+
+.eirelative {
+    position: relative;
+    
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.eistart {
+    width: 50px;
+    height: 30px;
+    border-radius: 20% 0px;
+    transform: skew(-45deg) translate(-50%, 0%);
+    z-index: 2;
+}
+
+.eiline {
+    
+    width: 100%;
+    height: 40%;
+    transform: translateX(-30px);
+    z-index: 1;
+}
+
+.eiend {
+    width: 50px;
+    height: 30px;
+    border-radius: 20% 0px;
+    transform: skew(-45deg) translate(calc(-50% - 30px), 0%);
+    z-index: 2;
+}
+
+
+
+.ei1.eidate {
+    width: calc(140vw + 60px);
+    left: 10vw;
+    bottom: 60px;
+}
+.ei1.eistart:not(.hover) {
+    background-color: var(--color3);
+}
+.ei1.eiline:not(.hover) {
+    background-color: var(--color3);
+}
+.ei1.eiend:not(.hover) {
+    background-color: var(--color3);
+}
+
+.ei1.eistart.hover {
+    background-color: var(--color3-lighter);
+}
+.ei1.eiline.hover {
+    background-color: var(--color3-lighter);
+}
+.ei1.eiend.hover {
+    background-color: var(--color3-lighter);
+}
+
+/*ITEM 2*/
+
+.educationItem2 {
+    
+    position: absolute;
+    top: 50%;
+    left: 110vw;
+
+    width: 20vw;
+    padding: 20px;
+    border-radius: 10px;
+
+    transform: translate(-50%, -50%);
+
+}
+
+.educationItem2:not(.hover) {
+    background-color: var(--color2);
+}
+.educationItem2.hover {
+    background-color: var(--color2-lighter);
+}
+.ei2.eidate {
+    width: calc(70vw + 60px);
+    left: 150vw;
+    bottom: 110px;
+}
+.ei2.eistart:not(.hover) {
+    background-color: var(--color2);
+}
+.ei2.eiline:not(.hover) {
+    background-color: var(--color2);
+}
+.ei2.eiend:not(.hover) {
+    background-color: var(--color2);
+}
+
+.ei2.eistart.hover {
+    background-color: var(--color2-lighter);
+}
+
+.ei2.eiline.hover {
+    background-color: var(--color2-lighter);
+}
+
+.ei2.eiend.hover {
+    background-color: var(--color2-lighter);
+}

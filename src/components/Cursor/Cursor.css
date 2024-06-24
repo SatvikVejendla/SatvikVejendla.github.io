@@ -1,0 +1,50 @@
+.cursor {
+    border-radius: 20px;
+    background: rgb(253, 253, 253);
+    transform: translate(-50%, -50%);
+    transition: height 0.2s, width 0.2s;
+    pointer-events: none;
+    z-index: 5;
+}
+
+.trail {
+    border-radius: 10px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: white;
+    transform: translate(-48%, -48%);
+    transition: width 0.2s, height 0.2s, opacity 0.2s;
+    pointer-events: none;
+    z-index: 5;
+}
+
+.cursor.hidden {
+    display: none;
+}
+.trail.hidden {
+    display: none;
+}
+.cursor:not(.hidden) {
+    display: block;
+}
+.trail:not(.hidden) {
+    display: block;
+}
+
+.cursor:not(.hover){
+    height: 20px; width: 20px;
+}
+
+.cursor.hover {
+    height: 30px; width: 30px;
+}
+
+.trail:not(.hover){
+    opacity: 1;
+    width: 30px; height: 30px;
+}
+
+.trail.hover {
+    opacity: 0;
+    width: 10px; height: 10px;
+}

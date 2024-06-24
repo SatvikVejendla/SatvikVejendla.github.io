@@ -1,0 +1,49 @@
+if(phase == 1){
+                for(let i = 0; i < objects.length; i++){
+                    let phi = Math.acos(objects[i].position.y / 2);
+                    let theta = Math.atan2(objects[i].position.z, objects[i].position.x);
+                    
+                    let newTheta = theta + 0.02;
+                    let newPhi = phi + 0.02;
+                    if(newPhi > Math.PI){
+                        newPhi = Math.PI;
+                    }
+                    let newx = Math.sin(newPhi) * Math.cos(newTheta) * 2;
+                    let newy = Math.cos(newPhi) * 2;
+                    let newz = Math.sin(newPhi) * Math.sin(newTheta) * 2;
+                    objects[i].position.x = newx;
+                    objects[i].position.y = newy;
+                    objects[i].position.z = newz;
+
+                    if(i == 0){
+                        console.log(newPhi);
+                        if(newPhi >= Math.PI){
+                            console.log("PHASE 2");
+                            phase = 2;
+                        }
+                    }
+                    
+
+                }
+            }
+
+
+
+
+
+            for(let i = 0; i < objects.length; i++){
+                    let phi = Math.acos(ogPositions[i].y / 2);
+                    let theta = Math.atan2(ogPositions[i].z, ogPositions[i].x);
+
+                    let newTheta = theta + offset;
+                    let newPhi = phi + offset;
+                    let newx = Math.sin(newPhi) * Math.cos(newTheta) * 2;
+                    let newy = Math.cos(newPhi) * 2;
+                    let newz = Math.sin(newPhi) * Math.sin(newTheta) * 2;
+
+                    objects[i].position.x = newx;
+                    objects[i].position.y = newy;
+                    objects[i].position.z = newz;
+                    offset += 0.00004;
+                    console.log(offset);
+                }

@@ -1,0 +1,183 @@
+.headerPosition {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+}
+
+.header {
+    padding: 20px;
+    margin-left: 6vw;
+    margin-top: 10vw;
+}
+
+.header .name {
+    font-size: 7vw;
+    position: relative;
+    padding-bottom: 5px;
+}
+
+.header .title {
+    font-size: 3vw;
+    position: relative;
+    display: inline-block;
+    padding-bottom: 5px;
+}
+
+
+
+
+.toc {
+    margin-right: 4vw;
+    align-self: center;
+}
+
+.toc-item {
+    margin: 20px 0px;
+    font-size: 2vw;
+    color: rgba(255, 255, 255, 0.614);
+    text-align: center;
+
+    user-select: none;
+
+}
+
+.toc-item:hover {
+    color: rgba(255, 255, 255, 0.87);
+}
+
+
+
+/*
+html
+
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+::-webkit-scrollbar {
+    display: none;
+}*/
+@font-face {
+    font-family: 'Playfair';
+    font-style: normal;
+    font-weight: 400;
+    src: url('../../assets/fonts/Playfair/PlayfairDisplay-SemiBold.ttf') format('woff2');
+}
+
+
+@keyframes reveal {
+    0% {
+        width: 0%;
+        left: 0;
+    }
+    50% {
+        width: 100%;
+        left: 0;
+    }
+    100% {
+        width: 0%;
+        left: 100%;
+    }
+}
+
+
+@keyframes fade {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.name > span {
+    animation: fade 0.5s forwards;
+    animation-delay: 0.5s;
+    opacity: 0;
+}
+
+.title > span {
+    animation: fade 0.5s forwards;
+    animation-delay: 1s;
+    opacity: 0;
+}
+
+.name:not(.slideLeft):after, .title:not(.slideLeft):after {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 100%;
+    animation: reveal 1.5s cubic-bezier(1, 0, 0, 1) forwards;
+}
+
+.name.slideLeft {
+    animation: slideLeft 0.5s forwards;
+}
+.title.slideLeft {
+    animation: slideLeft 0.5s forwards;
+}
+
+@keyframes slideLeft {
+    from {
+        transform: translateX(0%);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(-40px);
+        opacity: 0;
+    }
+}
+.name:after {
+    background-color: var(--color2);
+}
+.title:after {
+    background-color: var(--text-color);
+    animation-delay: 0.5s;
+}
+.slideRight {
+    animation: slideRight 0.5s forwards;
+}
+
+.toc-item:not(.slideRight) {
+    animation: slideInRight 0.5s forwards;
+    transform: translateX(20%);
+    opacity: 0;
+}
+
+.toc-item.item1 {
+    animation-delay: 0s;
+}
+.toc-item.item2 {
+    animation-delay: 0.1s;
+}
+.toc-item.item3 {
+    animation-delay: 0.2s;
+}
+.toc-item.item4 {
+    animation-delay: 0.3s;
+}
+@keyframes slideRight {
+    from {
+        transform: translateX(0%);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(20%);
+        opacity: 0;
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(20%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0%);
+        opacity: 1;
+    }
+}

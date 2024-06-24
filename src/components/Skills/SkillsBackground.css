@@ -1,0 +1,129 @@
+.skillsBackground {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 60%;
+    align-items: center;
+    justify-content: center;
+    
+    overflow: hidden;
+
+    background-color: #474044;
+    
+
+}
+
+.skillsBackground:not(.hidden):not(.expanded):not(.shrink){
+    opacity: 0;
+    animation-name: splitIn;
+    animation-duration: 0.4s;
+    animation-fill-mode: forwards;
+    border-radius: 30% / 100%;
+}
+.skillsBackground.hidden{
+    animation-name: splitOut;
+    animation-duration: 0.4s;
+    animation-fill-mode: forwards;
+    border-radius: 30% / 100%;
+}
+
+.skillsBackground.expanded {
+    opacity: 1;
+    animation-name: expand;
+    animation-duration: 0.2s;
+    animation-fill-mode: forwards;
+}
+
+.skillsBackground.shrink {
+    animation-name: shrink;
+    animation-duration: 0.2s;
+    animation-fill-mode: forwards;
+
+}
+
+@keyframes splitIn {
+    0% {
+        opacity: 1;
+        height: 0;
+    }
+    100% {
+        opacity: 1;
+        height: 60%;
+    }
+  }
+
+@keyframes splitOut {
+    0% {
+        height: 60%;
+    }
+    100% {
+        height: 0;
+    }
+}
+
+@keyframes expand {
+    0% {
+        height: 60%;
+        border-radius: 30% / 100%;
+    }
+    100% {
+        height: 100%;
+        border-radius: 0%;
+    }
+}
+
+@keyframes shrink {
+    0% {
+        height: 100%;
+        border-radius: 0%;
+    }
+    100% {
+        height: 60%;
+        border-radius: 30% / 100%;
+    }
+}
+
+
+.skillsBackgroundTitle, .currentSkill {
+    font-size: 350px;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    top: -5%;
+
+    position: absolute;
+    color: var(--text-color);
+}
+
+.skillsBackgroundTitle.animating {
+    animation: splitOpen 0.2s ease-out forwards;
+}
+.skillsBackgroundTitle:not(.animating){
+    opacity: 0;
+}
+
+.currentSkill.animating {
+    animation: splitOpen 0.2s ease-out forwards;
+}
+.currentSkill:not(.animating){
+    opacity: 0;
+}
+
+@keyframes splitOpen {
+    0% {
+        transform: scaleY(0);
+    }
+    100% {
+        transform: scaleY(1.3);
+    }
+}

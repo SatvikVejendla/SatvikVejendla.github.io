@@ -1,0 +1,220 @@
+
+.education-item {
+    background-color: rgb(116, 155, 117);
+    border-radius: 10px;
+    padding: 10px;
+    width: 20%;
+}
+
+.workSection {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    height: 50%;
+    width: 200%;
+}
+
+.workSectionRelative {
+    position: relative;
+    height: 100%;
+}
+
+.education-title {
+    font-size: 40px;
+}
+
+/*ITEM 1*/
+.workItem1 {
+    position: absolute;
+    top: 55%;
+    left: 60vw;
+
+    width: 15vw;
+    height: 20%;
+    padding: 20px;
+    border-radius: 10px;
+
+    transform: translate(-50%, -50%);
+}
+
+.workItem1:not(.hover){ 
+    background-color: var(--color1);
+
+}
+.workItem1.hover {
+    background-color: var(--color1-lighter);
+}
+
+.wi1.eidate {
+    width: calc(40vw + 60px);
+    top: 140px;
+    left: 40vw;
+}
+.wi1.eistart:not(.hover) {
+    background-color: var(--color1);
+}
+.wi1.eiline:not(.hover) {
+    background-color: var(--color1);
+}
+.wi1.eiend:not(.hover) {
+    background-color: var(--color1);
+}
+
+.wi1.eistart.hover {
+    background-color: var(--color1-lighter);
+}
+.wi1.eiline.hover {
+    background-color: var(--color1-lighter);
+}
+.wi1.eiend.hover {
+    background-color: var(--color1-lighter);
+}
+
+
+/*ITEM 2*/
+
+.workItem2 {
+    
+    position: absolute;
+    top: 55%;
+    left: 110vw;
+
+    width: 20vw;
+    padding: 20px;
+    border-radius: 10px;
+
+    transform: translate(-50%, -50%);
+
+
+}
+
+.workItem2:not(.hover){
+    background-color: var(--color3);
+}
+
+.wi2.eidate {
+    width: calc(70vw + 60px);
+    top: 100px;
+    left: 70vw;
+}
+.wi2.eistart:not(.hover) {
+    background-color: var(--color3);
+}
+.wi2.eiline:not(.hover) {
+    background-color: var(--color3);
+}
+.wi2.eiend:not(.hover) {
+    background-color: var(--color3);
+}
+
+.workItem2.hover {
+    background-color: var(--color3-lighter);
+}
+
+.wi2.eistart.hover {
+    background-color: var(--color3-lighter);
+}
+.wi2.eiline.hover {
+    background-color: var(--color3-lighter);
+}
+.wi2.eiend.hover {
+    background-color: var(--color3-lighter);
+}
+.workItem3 {
+    
+    position: absolute;
+    top: 55%;
+    left: 170vw;
+
+    width: 20vw;
+    padding: 20px;
+    border-radius: 10px;
+
+    transform: translate(-50%, -50%);
+
+}
+
+.workItem3:not(.hover){
+    background-color: var(--color1);
+}
+.workItem3.hover {
+    background-color: var(--color1-lighter);
+
+}
+.wi3.eidate {
+    width: calc(70vw + 60px);
+    top: 60px;
+    left: 150vw;
+}
+
+.wi3.eistart:not(.hover) {
+    background-color: var(--color1);
+}
+.wi3.eiline:not(.hover) {
+    background-color: var(--color1);
+}
+.wi3.eiend:not(.hover) {
+    background-color: var(--color1);
+}
+.wi3.eistart.hover {
+    background-color: var(--color1-lighter);
+}
+.wi3.eiline.hover {
+    background-color: var(--color1-lighter);
+}
+.wi3.eiend.hover {
+    background-color: var(--color1-lighter);
+}
+
+
+
+
+
+.workItem4 {
+    
+    position: absolute;
+    top: 55%;
+    left: 85vw;
+
+    width: 20vw;
+    padding: 20px;
+    border-radius: 10px;
+
+    transform: translate(-50%, -50%);
+
+}
+.workItem4:not(.hover){
+    background-color: var(--color2);
+}
+.workItem4.hover {
+    background-color: var(--color2-lighter);
+}
+.wi4.eidate {
+    width: calc(110vw + 60px);
+    top: 60px;
+    left: 30vw;
+}
+
+.wi4.eistart:not(.hover) {
+    background-color: var(--color2);
+}
+
+.wi4.eiline:not(.hover) {
+    background-color: var(--color2);
+}
+
+.wi4.eiend:not(.hover) {
+    background-color: var(--color2);
+}
+
+.wi4.eistart.hover {
+    background-color: var(--color2-lighter);
+}
+
+.wi4.eiline.hover {
+    background-color: var(--color2-lighter);
+}
+
+.wi4.eiend.hover {
+    background-color: var(--color2-lighter);
+}
