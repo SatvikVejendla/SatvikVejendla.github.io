@@ -64,7 +64,7 @@ const EXPERIENCE_DATA = {
       "- – Developed and productionized an LLM regression testing and evaluation framework for internal AI teams.",
       "- Engineered a generalized document automation pipeline for large-scale Q&A workflows (RFPs, Compliance, etc."
     ],
-    skills: ["TypeScript", "Python", "API Design", "Regression Testing", "LangSmith"],
+    skills: ["TypeScript", "Python", "API Design", "LangSmith"],
     offset: 0.05
   },
   teachshare: {
@@ -523,7 +523,7 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
             // Estimate width per skill (can be adjusted per skill if needed)
             const skillWidths = data.skills.map(skill => {
                 // Rough estimate: 0.02 per character
-                return Math.max(0.12, Math.min(0.25, skill.length * 0.02 + 0.04));
+                return Math.max(0.12, Math.min(0.4, skill.length * 0.02 + 0.04));
             });
             
             // Calculate starting position to center all skills
@@ -536,11 +536,13 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
                 skillPositions.push(currentX + skillWidths[i] / 2);
                 currentX += skillWidths[i] + spacing;
             }
+
+            const yOffset = isInExperienceViewRef.current ? 0.12 : 0.0;
             
             return (
                 <group
                     key={key}
-                    position={[ref.current.position.x + 0.015, ref.current.position.y + 0.12, ref.current.position.z]}
+                    position={[ref.current.position.x + 0.015, ref.current.position.y + yOffset, ref.current.position.z]}
                     rotation={[-Math.PI/2, 0, Math.PI/2]}
                 >
                     {/* Main card background */}
@@ -987,13 +989,13 @@ export default function Home() {
             top: "20px",
             left: "20px",
             zIndex: 1000,
-            padding: "12px 24px",
-            fontSize: "16px",
+            padding: "18px 36px",
+            fontSize: "25px",
             fontWeight: "600",
             color: "#ffffff",
             backgroundColor: "rgba(79, 70, 229, 0.8)",
             border: "2px solid #6366f1",
-            borderRadius: "8px",
+            borderRadius: "10px",
             cursor: "pointer",
             backdropFilter: "blur(10px)",
             transition: "all 0.3s ease",
