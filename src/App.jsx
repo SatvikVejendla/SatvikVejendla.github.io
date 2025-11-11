@@ -81,7 +81,7 @@ const EXPERIENCE_DATA = {
   }
 };
 
-function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, experiencePos, experienceOrientation, onBackButtonClick, setNotHome }) {
+function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, experiencePos, experienceOrientation, skillsPos, skillsOrientation, onBackButtonClick, setNotHome }) {
     const { scene, animations } = useGLTF("/factorylowpoly2.glb");
     const { camera } = useThree();
     const mixer = useRef();
@@ -93,6 +93,17 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
     const isQuaternionRotationRef = useRef(false);
     const conveyorXRef = useRef([]);
     const conveyorInitialWorldXRef = useRef(new Map());
+    const conveyorY1Ref = useRef([]);
+    const conveyorY2Ref = useRef([]);
+    const conveyorY3Ref = useRef([]);
+    const conveyorY4Ref = useRef([]);
+    const conveyorY5Ref = useRef([]);
+    const conveyorInitialWorldY1Ref = useRef(new Map());
+    const conveyorInitialWorldY2Ref = useRef(new Map());
+    const conveyorInitialWorldY3Ref = useRef(new Map());
+    const conveyorInitialWorldY4Ref = useRef(new Map());
+    const conveyorInitialWorldY5Ref = useRef(new Map());
+
     const chocolateBallRef = useRef(null);
     const isInExperienceViewRef = useRef(false);
     const scrollTimeoutRef = useRef(null);
@@ -103,9 +114,13 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
     const jpmcRef = useRef(null);
     const teachshareRef = useRef(null);
     const conveyorXBound = useRef(0);
+    const conveyorYBound = useRef(0);
+    const conveyorYReverseBound = useRef(0);
     const initialExperiencePosRef = useRef(null);
     const conveyerOffset = 1.1;
     const conveyerSpeed = 0.01;
+    const conveyerYOffset = 2.6;
+    const conveyerYSpeed = 0.01;
     
     // Expose back button handler
     useEffect(() => {
@@ -208,6 +223,109 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
               
               conveyorXRef.current.push(clone);
               conveyorInitialWorldXRef.current.set(clone, firstObj.position.x + i * conveyerOffset);
+            }
+          }
+          if(obj.name.includes("ConveyorY1") && conveyorY1Ref.current.length === 0) {
+            const firstObj = obj;
+            conveyorY1Ref.current.push({ obj: firstObj, baseName: obj.name });
+            
+            conveyorInitialWorldY1Ref.current.set(firstObj, firstObj.position.x);
+            if (conveyorYBound.current === 0) {
+              conveyorYBound.current = firstObj.position.x;
+            }
+            
+            for (let i = 1; i <= 7; i++) {
+              const clone = firstObj.clone();
+              clone.name = `${firstObj.name}_clone_${i}`;
+              
+              // Offset by i in x direction
+              clone.position.x = firstObj.position.x - i * conveyerYOffset;
+              // Add to parent or scene
+              if (firstObj.parent) {
+                firstObj.parent.add(clone);
+              } else {
+                scene.add(clone);
+              }
+              
+              conveyorY1Ref.current.push({ obj: clone, baseName: obj.name });
+              conveyorInitialWorldY1Ref.current.set(clone, firstObj.position.x - i * conveyerYOffset);
+            }
+          }
+          if(obj.name.includes("ConveyorY2") && conveyorY2Ref.current.length === 0) {
+            const firstObj = obj;
+            conveyorY2Ref.current.push({ obj: firstObj, baseName: obj.name });
+            conveyorInitialWorldY2Ref.current.set(firstObj, firstObj.position.x);
+
+            if (conveyorYReverseBound.current === 0) {
+              conveyorYReverseBound.current = firstObj.position.x;
+            }
+            
+            for (let i = 1; i <= 7; i++) {
+              const clone = firstObj.clone();
+              clone.name = `${firstObj.name}_clone_${i}`;
+              clone.position.x = firstObj.position.x + i * conveyerYOffset;
+              if (firstObj.parent) {
+                firstObj.parent.add(clone);
+              } else {
+                scene.add(clone);
+              }
+              conveyorY2Ref.current.push({ obj: clone, baseName: obj.name });
+              conveyorInitialWorldY2Ref.current.set(clone, firstObj.position.x + i * conveyerYOffset);
+            }
+          }
+          if(obj.name.includes("ConveyorY3") && conveyorY3Ref.current.length === 0) {
+            const firstObj = obj;
+            conveyorY3Ref.current.push({ obj: firstObj, baseName: obj.name });
+            conveyorInitialWorldY3Ref.current.set(firstObj, firstObj.position.x);
+            
+            for (let i = 1; i <= 7; i++) {
+              const clone = firstObj.clone();
+              clone.name = `${firstObj.name}_clone_${i}`;
+              clone.position.x = firstObj.position.x - i * conveyerYOffset;
+              if (firstObj.parent) {
+                firstObj.parent.add(clone);
+              } else {
+                scene.add(clone);
+              }
+              conveyorY3Ref.current.push({ obj: clone, baseName: obj.name });
+              conveyorInitialWorldY3Ref.current.set(clone, firstObj.position.x - i * conveyerYOffset);
+            }
+          }
+          if(obj.name.includes("ConveyorY4") && conveyorY4Ref.current.length === 0) {
+            const firstObj = obj;
+            conveyorY4Ref.current.push({ obj: firstObj, baseName: obj.name });
+            conveyorInitialWorldY4Ref.current.set(firstObj, firstObj.position.x);
+
+            for (let i = 1; i <= 7; i++) {
+              const clone = firstObj.clone();
+              clone.name = `${firstObj.name}_clone_${i}`;
+              clone.position.x = firstObj.position.x + i * conveyerYOffset;
+              if (firstObj.parent) {
+                firstObj.parent.add(clone);
+              } else {
+                scene.add(clone);
+              }
+            
+              conveyorY4Ref.current.push({ obj: clone, baseName: obj.name });
+              conveyorInitialWorldY4Ref.current.set(clone, firstObj.position.x + i * conveyerYOffset);
+            }
+          }
+          if(obj.name.includes("ConveyorY5") && conveyorY5Ref.current.length === 0) {
+            const firstObj = obj;
+            conveyorY5Ref.current.push({ obj: firstObj, baseName: obj.name });
+            conveyorInitialWorldY5Ref.current.set(firstObj, firstObj.position.x);
+            
+            for (let i = 1; i <= 7; i++) {
+              const clone = firstObj.clone();
+              clone.name = `${firstObj.name}_clone_${i}`;
+              clone.position.x = firstObj.position.x - i * conveyerYOffset;
+              if (firstObj.parent) {
+                firstObj.parent.add(clone);
+              } else {
+                scene.add(clone);
+              }
+              conveyorY5Ref.current.push({ obj: clone, baseName: obj.name });
+              conveyorInitialWorldY5Ref.current.set(clone, firstObj.position.x - i * conveyerYOffset);
             }
           }
         });
@@ -399,8 +517,68 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
                 }
             }
         });
+
+        conveyorY1Ref.current.forEach((item) => {
+            const obj = item.obj;
+            if (isInExperienceViewRef.current) {
+                const initialX = conveyorInitialWorldYRef.current.get(obj);
+                obj.position.x = initialX;
+            } else {
+                obj.position.x += conveyerYSpeed;
+                if(obj.position.x >= conveyorYBound.current) {
+                    obj.position.x -= (7 * conveyerYOffset);
+                }
+            }
+        });
+        conveyorY2Ref.current.forEach((item) => {
+            const obj = item.obj;
+            if(isInExperienceViewRef.current) {
+                const initialX = conveyorInitialWorldY2Ref.current.get(obj);
+                obj.position.x = initialX;
+            } else {
+                obj.position.x -= conveyerYSpeed;
+                if(obj.position.x <= conveyorYReverseBound.current) {
+                    obj.position.x += (7 * conveyerYOffset);
+                }
+            }
+        });
+        conveyorY3Ref.current.forEach((item) => {
+            const obj = item.obj;
+            if(isInExperienceViewRef.current) {
+                const initialX = conveyorInitialWorldY3Ref.current.get(obj);
+                obj.position.x = initialX;
+            } else {
+                obj.position.x += conveyerYSpeed;
+                if(obj.position.x >= conveyorYBound.current) {
+                    obj.position.x -= (7 * conveyerYOffset);
+                }
+            }
+        });
+        conveyorY4Ref.current.forEach((item) => {
+            const obj = item.obj;
+            if(isInExperienceViewRef.current) {
+                const initialX = conveyorInitialWorldY4Ref.current.get(obj);
+                obj.position.x = initialX;
+            } else {
+                obj.position.x -= conveyerYSpeed;
+                if(obj.position.x <= conveyorYReverseBound.current) {
+                    obj.position.x += (7 * conveyerYOffset);
+                }
+            }
+        });
+        conveyorY5Ref.current.forEach((item) => {
+            const obj = item.obj;
+            if(isInExperienceViewRef.current) {
+                const initialX = conveyorInitialWorldY5Ref.current.get(obj);
+                obj.position.x = initialX;
+            } else {
+                obj.position.x += conveyerYSpeed;
+                if(obj.position.x >= conveyorYBound.current) {
+                    obj.position.x -= (7 * conveyerYOffset);
+                }
+            }   
+        });
     });
-  
     return (
     <>
         <primitive
@@ -446,6 +624,19 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
                             isInExperienceViewRef.current = true;
                             // Store initial experience position
                             initialExperiencePosRef.current = [...experiencePos];
+                            if (setNotHome) {
+                                setNotHome(true);
+                            }
+                        } else if (obj.name === "Skills" && skillsPos) {
+                            targetCameraPosRef.current = skillsPos;
+                            if (skillsOrientation && skillsOrientation.length === 4) {
+                                targetCameraRotationRef.current = skillsOrientation;
+                                isQuaternionRotationRef.current = true;
+                            } else if (skillsOrientation && skillsOrientation.length === 3) {
+                                targetCameraRotationRef.current = skillsOrientation;
+                                isQuaternionRotationRef.current = false;
+                            }
+                            isInExperienceViewRef.current = false;
                             if (setNotHome) {
                                 setNotHome(true);
                             }
@@ -978,6 +1169,9 @@ export default function Home() {
   const experiencePos = [1.3, 1.85, 8.23]
   let experienceOrientation = [-0.3125, 0.632, 0.31, 0.637];
   experienceOrientation = [-Math.PI/2, 0.4, Math.PI/2]
+
+  const skillsPos = [14.93, 6.26, -5.02];
+  const skillsOrientation = [-Math.PI/2, 0, 0]
   return (
     <div style={{ width: "100vw", height: "100vh", position: "relative" }}>
       {/* Back Button */}
@@ -1051,7 +1245,7 @@ export default function Home() {
             toneMapping: THREE.ACESFilmicToneMapping,
             toneMappingExposure: 0.1, // lower exposure for darker scene
           }}
-        >      <fog attach="fog" args={["#000000", 25, 30]} />
+        >      <fog attach="fog" args={["#000000", 35, 40]} />
 
           <BlackBackground />
           <ambientLight intensity={0} />
@@ -1107,6 +1301,8 @@ export default function Home() {
             startOrientation={startOrientation} 
             experiencePos={experiencePos} 
             experienceOrientation={experienceOrientation}
+            skillsPos={skillsPos}
+            skillsOrientation={skillsOrientation}
             onBackButtonClick={backButtonHandlerRef}
             setNotHome={setNotHome}
           />
