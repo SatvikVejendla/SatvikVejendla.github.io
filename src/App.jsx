@@ -1,10 +1,85 @@
 "use client";
 
+import React from "react";
 import { Canvas, useThree } from "@react-three/fiber";
-import { Text, useGLTF, OrbitControls, Environment, HTML } from "@react-three/drei";
+import { Text, useGLTF, OrbitControls, Environment, Html } from "@react-three/drei";
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
+
+let DEBUG_MODE = false;
+
+const EXPERIENCE_DATA = {
+  rutgers1: {
+    company: "Rutgers University",
+    role: "Engineering Lab Research Assistant",
+    date: "Sep 2023 - May 2024",
+    description: [
+      "- Developed Puppeteer web scripts to maintain an accurate inventory of laboratory documents",
+      "- Conducted independent experiments for research projects like optimization of muti-arm pose planning"
+    ],
+    skills: ["Python", "Web Scraping", "Pandas"],
+    offset: 1.26
+  },
+  rutgers2: {
+    company: "Rutgers University",
+    role: "Undergraduate Enrollment Services Technician",
+    date: "Sep 2024 - Jan 2025",
+    description: [
+      "- Developed automation scripts to streamlined the processing of incoming student applications",
+      "- Ensured seamless uploads to the Rutgers Salesforce database"
+    ],
+    skills: ["Python", "Salesforce", "Automation"],
+    offset: 1.16
+  },
+  depton: {
+    company: "Depton LLC",
+    role: "Software Engineer Intern",
+    date: "Jun 2024 - Jan 2025",
+    description: [
+      "- Engineered a distributed web scraping framework for real-time stock ticker aggregation.",
+      "- Led the end-to-end development of the company’s main internal web platform using Next.js",
+    ],
+    skills: ["TypeScript", "Next.js", "Client-Server Architecture"],
+    offset: 1.06
+  },
+  hone: {
+    company: "Hone Health",
+    role: "Software Engineer Intern",
+    date: "Jan 2025 - May 2025",
+    description: [
+      "- Engineered an Azure DevOps extension to analyze historical tickets via semantic embedding search",
+      "- Built and optimized an ETL pipeline for webhook event ingestion into Azure Blob Storage and KQL eventhouse, ",
+      "- Architected a SQL migration automation system to version-control production data for complex bulk migrations."
+    ],
+    skills: ["C#", ".NET", "SQL", "Azure"],
+    offset: 0.96
+  },
+  jpmc: {
+    company: "JPMorgan Chase & Co.",
+    role: "Software Engineer Intern",
+    date: "Jun 2025 - Aug 2025",
+    description: [
+      "- Worked within the Asset & Wealth Management AI team to design, evaluate, and deploy AI-driven financial solutions",
+      "- – Developed and productionized an LLM regression testing and evaluation framework for internal AI teams.",
+      "- Engineered a generalized document automation pipeline for large-scale Q&A workflows (RFPs, Compliance, etc."
+    ],
+    skills: ["TypeScript", "Python", "API Design", "Regression Testing", "LangSmith"],
+    offset: 0.86
+  },
+  teachshare: {
+    company: "TeachShare",
+    role: "Software Engineer Intern",
+    date: "Jun 2025 - Present",
+    description: [
+      "- Engineered an AI-powered autograder system leveraging LLMs to automatically evaluate student submissions",
+      "- Integrated semantic analysis pipelines for rubric alignment and contextual feedback generation using GPT and Gemini.",
+      "- EdTech startup for supporting teachers with AI-powered tools to streamline lesson planning and assessment."
+    ],
+    skills: ["TypeScript", "LLMs", "Solid JS"],
+    offset: 0.76
+  }
+};
 
 function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, experiencePos, experienceOrientation }) {
     const { scene, animations } = useGLTF("/factorylowpoly2.glb");
@@ -21,7 +96,14 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
     const chocolateBallRef = useRef(null);
     const isInExperienceViewRef = useRef(false);
     const scrollTimeoutRef = useRef(null);
-
+    const rutgers1Ref = useRef(null);
+    const rutgers2Ref = useRef(null);
+    const deptonRef = useRef(null);
+    const honeRef = useRef(null);
+    const jpmcRef = useRef(null);
+    const teachshareRef = useRef(null);
+    const conveyorXBound = useRef(0);
+    const initialExperiencePosRef = useRef(null);
 
     const conveyerOffset = 1.1;
     const conveyerSpeed = 0.01;
@@ -41,7 +123,6 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
             }
           }
           if (obj.isMesh && obj.material?.name === "Glass") {
-            console.log("Glass found");
             obj.material = new THREE.MeshPhysicalMaterial({
               color: "white",
               roughness: 0,
@@ -86,6 +167,7 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
             
             // Store initial position
             conveyorInitialWorldXRef.current.set(firstObj, firstObj.position.x);
+            conveyorXBound.current = firstObj.position.x;
             
             // Create 10 duplicates with x offset of 1 each
             for (let i = 1; i <= 10; i++) {
@@ -101,6 +183,14 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
               } else {
                 scene.add(clone);
               }
+              
+              // Assign refs for each experience in order
+              if(i == 2) rutgers1Ref.current = clone;
+              if(i == 3) rutgers2Ref.current = clone;
+              if(i == 4) deptonRef.current = clone;
+              if(i == 5) honeRef.current = clone;
+              if(i == 6) jpmcRef.current = clone;
+              if(i == 7) teachshareRef.current = clone;
               
               conveyorXRef.current.push(clone);
               conveyorInitialWorldXRef.current.set(clone, firstObj.position.x + i);
@@ -125,6 +215,22 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
             
             scrollTimeoutRef.current = setTimeout(() => {
                 if (isInExperienceViewRef.current) {
+                    // Get current position (either actual or target)
+                    let currentX = camera.position.x;
+                    if(targetCameraPosRef.current) {
+                        currentX = targetCameraPosRef.current[0];
+                    }
+                    
+                    // Check if we're at the initial position
+                    const initialX = initialExperiencePosRef.current ? initialExperiencePosRef.current[0] : null;
+                    const isAtInitial = initialX !== null && Math.abs(currentX - initialX) < 0.1;
+                    
+                    // Prevent scrolling forward (direction = 1) if at initial position
+                    if (isAtInitial && direction < 1) {
+                        scrollTimeoutRef.current = null;
+                        return;
+                    }
+                    
                     const forward = new THREE.Vector3(-1 * direction, 0, 0);
                     let targetPos = new THREE.Vector3(
                         camera.position.x + forward.x,
@@ -271,8 +377,7 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
             } else {
                 // Normal conveyor movement
                 obj.position.x -= conveyerSpeed;
-                const initialX = conveyorInitialWorldXRef.current.get(obj);
-                if(obj.position.x <= 0) {
+                if(obj.position.x <= conveyorXBound.current) {
                     obj.position.x += (10 * conveyerOffset);
                 }
             }
@@ -313,6 +418,8 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
                                 isQuaternionRotationRef.current = true; // experienceOrientation is a quaternion
                             }
                             isInExperienceViewRef.current = true;
+                            // Store initial experience position
+                            initialExperiencePosRef.current = [...experiencePos];
                         }
                         break;
                     }
@@ -361,6 +468,163 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
                 }, 50);
             }}
         />;
+        {/* Render experience cards */}
+        {[
+            { ref: rutgers1Ref, key: 'rutgers1' },
+            { ref: rutgers2Ref, key: 'rutgers2' },
+            { ref: deptonRef, key: 'depton' },
+            { ref: honeRef, key: 'hone' },
+            { ref: jpmcRef, key: 'jpmc' },
+            { ref: teachshareRef, key: 'teachshare' }
+        ].map(({ ref, key }) => {
+            if (!ref.current) return null;
+            
+            const data = EXPERIENCE_DATA[key];
+            
+            // Check if role is longer than 30 characters (will be 2 lines)
+            const isLongRole = data.role.length > 30;
+            const dateYOffset = isLongRole ? -0.06 : 0;
+            const descriptionYOffset = isLongRole ? -0.06 : 0;
+            
+            // Calculate skill positions dynamically based on number of skills
+            const totalWidth = 0.9; // Max width for all skills
+            const spacing = 0.05; // Space between skills
+            const numSkills = data.skills.length;
+            
+            // Estimate width per skill (can be adjusted per skill if needed)
+            const skillWidths = data.skills.map(skill => {
+                // Rough estimate: 0.02 per character
+                return Math.max(0.12, Math.min(0.25, skill.length * 0.02 + 0.04));
+            });
+            
+            // Calculate starting position to center all skills
+            const totalSkillWidth = skillWidths.reduce((sum, w) => sum + w, 0) + spacing * (numSkills - 1);
+            const startX = -totalSkillWidth / 2;
+            
+            const skillPositions = [];
+            let currentX = startX;
+            for (let i = 0; i < numSkills; i++) {
+                skillPositions.push(currentX + skillWidths[i] / 2);
+                currentX += skillWidths[i] + spacing;
+            }
+            
+            return (
+                <group
+                    key={key}
+                    position={[ref.current.position.x + data.offset, ref.current.position.y + 0.12, ref.current.position.z]}
+                    rotation={[-Math.PI/2, 0, Math.PI/2]}
+                >
+                    {/* Main card background */}
+                    <mesh position={[0, 0, 0]}>
+                        <planeGeometry args={[1.1, 0.65]} />
+                        <meshBasicMaterial color="#0f0f1a" transparent opacity={0.98} />
+                    </mesh>
+
+                    {/* Gradient border glow */}
+                    <mesh position={[0, 0, -0.0001]}>
+                        <planeGeometry args={[1.12, 0.68]} />
+                        <meshBasicMaterial color="#4f46e5" transparent opacity={0.5} />
+                    </mesh>
+
+                    {/* Company name */}
+                    <Text
+                        position={[-0.5, 0.3, 0.002]}
+                        fontSize={0.07}
+                        color="#ffffff"
+                        anchorX="left"
+                        anchorY="top"
+                        fontWeight={900}
+                        letterSpacing={0.08}
+                        toneMapped={false}
+                        depthTest={false}
+                        depthWrite={false}
+                        renderOrder={999}
+                    >
+                        {data.company}
+                    </Text>
+
+                    {/* Role */}
+                    <Text
+                        position={[-0.5, 0.2, 0.002]}
+                        fontSize={0.062}
+                        color="#a5b4fc"
+                        anchorX="left"
+                        anchorY="top"
+                        fontWeight={700}
+                        maxWidth={0.95}
+                        lineHeight={1.15}
+                        textAlign="left"
+                        toneMapped={false}
+                        depthTest={false}
+                        depthWrite={false}
+                        renderOrder={999}
+                    >
+                        {data.role}
+                    </Text>
+
+                    {/* Date */}
+                    <Text
+                        position={[-0.5, 0.12 + dateYOffset, 0.002]}
+                        fontSize={0.05}
+                        color="#818cf8"
+                        anchorX="left"
+                        anchorY="top"
+                        fontWeight={700}
+                        toneMapped={false}
+                        depthTest={false}
+                        depthWrite={false}
+                        renderOrder={999}
+                    >
+                        {data.date}
+                    </Text>
+
+                    {/* Description bullets */}
+                    <Text
+                        position={[-0.5, 0.02 + descriptionYOffset, 0.002]}
+                        fontSize={0.025}
+                        color="#ffffff"
+                        anchorX="left"
+                        anchorY="top"
+                        maxWidth={0.95}
+                        lineHeight={1.4}
+                        textAlign="left"
+                        toneMapped={false}
+                        depthTest={false}
+                        depthWrite={false}
+                        renderOrder={999}
+                    >
+                        {data.description.join('\n')}
+                    </Text>
+
+                    {/* Skill tags */}
+                    {data.skills.map((skill, index) => (
+                        <React.Fragment key={skill}>
+                            {/* Tag background */}
+                            <mesh position={[skillPositions[index], -0.25, 0.001]}>
+                                <planeGeometry args={[skillWidths[index], 0.04]} />
+                                <meshBasicMaterial color="#4f46e5" transparent opacity={0.6} />
+                            </mesh>
+
+                            {/* Tag text */}
+                            <Text
+                                position={[skillPositions[index], -0.25, 0.002]}
+                                fontSize={0.026}
+                                color="#b9c4fa"
+                                anchorX="center"
+                                anchorY="middle"
+                                fontWeight={600}
+                                toneMapped={false}
+                                depthTest={false}
+                                depthWrite={false}
+                                renderOrder={999}
+                            >
+                                {skill}
+                            </Text>
+                        </React.Fragment>
+                    ))}
+                </group>
+            );
+        })}
     </>)
   }
 
@@ -670,7 +934,7 @@ export default function Home() {
   const startPos = [-13.02, 6.97, 16.93];
   const startOrientation = [-0.272, -0.2104, -0.0611, 0.9369];
 
-  const experiencePos = [2.486427786109423, 1.8500714945606385, 8.229138218010176]
+  const experiencePos = [1.886, 1.85, 8.23]
   let experienceOrientation = [-0.3125, 0.632, 0.31, 0.637];
   return (
     <div style={{ width: "100vw", height: "100vh", position: "relative" }}>
@@ -757,9 +1021,9 @@ export default function Home() {
           {/* Image-based lighting can over-brighten the scene; dial it down or remove */}
           <Environment preset="sunset" intensity={0} />
           <CameraController rotation={startOrientation} />
-          {/* <OrbitControls /> */}
+          {DEBUG_MODE && <OrbitControls />}
 
-          {/* <CameraLogger /> */}
+          {DEBUG_MODE && <CameraLogger />}
           <Factory aboutMePos={aboutMePos} aboutMeRotation={aboutMeRotation} startPos={startPos} startOrientation={startOrientation} experiencePos={experiencePos} experienceOrientation={experienceOrientation} />
         </Canvas>
       </div>
