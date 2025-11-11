@@ -1,12 +1,12 @@
 "use client";
 
 import { Canvas, useThree } from "@react-three/fiber";
-import { Text, useGLTF, OrbitControls, Environment } from "@react-three/drei";
+import { Text, useGLTF, OrbitControls, Environment, HTML } from "@react-three/drei";
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
 
-function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation }) {
+function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, experiencePos, experienceOrientation }) {
     const { scene, animations } = useGLTF("/factorylowpoly2.glb");
     const { camera } = useThree();
     const mixer = useRef();
@@ -16,6 +16,15 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation }) {
     const targetCameraPosRef = useRef(null);
     const targetCameraRotationRef = useRef(null);
     const isQuaternionRotationRef = useRef(false);
+    const conveyorXRef = useRef([]);
+    const conveyorInitialWorldXRef = useRef(new Map());
+    const chocolateBallRef = useRef(null);
+    const isInExperienceViewRef = useRef(false);
+    const scrollTimeoutRef = useRef(null);
+
+
+    const conveyerOffset = 1.1;
+    const conveyerSpeed = 0.01;
 
 
     useEffect(() => {
@@ -63,88 +72,211 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation }) {
             obj.material.emissiveIntensity = 0.8;
             obj.material.needsUpdate = true;
           }
+
+          if(obj.name.includes("Chocolate_Ball")) {
+            obj.userData.t = 0;
+            obj.userData.speed = 0.01;
+            chocolateBallRef.current = obj;
+          }
+
+          if(obj.name.includes("ConveyerX") && conveyorXRef.current.length === 0) {
+            // Found the first conveyor belt - duplicate it 10 times
+            const firstObj = obj;
+            conveyorXRef.current.push(firstObj);
+            
+            // Store initial position
+            conveyorInitialWorldXRef.current.set(firstObj, firstObj.position.x);
+            
+            // Create 10 duplicates with x offset of 1 each
+            for (let i = 1; i <= 10; i++) {
+              const clone = firstObj.clone();
+              clone.name = `${firstObj.name}_clone_${i}`;
+              
+              // Offset by i in x direction
+              clone.position.x = firstObj.position.x + i * conveyerOffset;
+              
+              // Add to parent or scene
+              if (firstObj.parent) {
+                firstObj.parent.add(clone);
+              } else {
+                scene.add(clone);
+              }
+              
+              conveyorXRef.current.push(clone);
+              conveyorInitialWorldXRef.current.set(clone, firstObj.position.x + i);
+            }
+          }
         });
       }, [scene]);
+
+    // Handle scroll in experience view
+    useEffect(() => {
+        const handleScroll = (e) => {
+            // Only handle scroll when in experience view
+            if (!isInExperienceViewRef.current) return;
+            
+            // Track scroll direction (positive = scroll down, negative = scroll up)
+            let direction = e.deltaY > 0 ? 1 : -1;
+            
+            // Clear existing timeout
+            if (scrollTimeoutRef.current) {
+                clearTimeout(scrollTimeoutRef.current);
+            }
+            
+            scrollTimeoutRef.current = setTimeout(() => {
+                if (isInExperienceViewRef.current) {
+                    const forward = new THREE.Vector3(-1 * direction, 0, 0);
+                    let targetPos = new THREE.Vector3(
+                        camera.position.x + forward.x,
+                        camera.position.y + forward.y,
+                        camera.position.z + forward.z
+                    );
+                    if(targetCameraPosRef.current) {
+                        targetPos = new THREE.Vector3(
+                            targetCameraPosRef.current[0] + forward.x,
+                            targetCameraPosRef.current[1] + forward.y,
+                            targetCameraPosRef.current[2] + forward.z
+                        )
+                    }
+                    targetCameraPosRef.current = [targetPos.x, targetPos.y, targetPos.z];
+                }
+                scrollTimeoutRef.current = null;
+            }, 50);
+        };
+
+        window.addEventListener('wheel', handleScroll, { passive: true });
+        
+        return () => {
+            window.removeEventListener('wheel', handleScroll);
+            if (scrollTimeoutRef.current) {
+                clearTimeout(scrollTimeoutRef.current);
+            }
+        };
+    }, [camera]);
   
       useFrame((_, delta) => {
         mixer.current?.update(delta);
  
-      // Animate camera position
-      if (targetCameraPosRef.current) {
-        const target = new THREE.Vector3(...targetCameraPosRef.current);
-        camera.position.lerp(target, 0.05);
-        
-        // Check if we're close enough to stop animating
-        if (camera.position.distanceTo(target) < 0.01) {
-          //camera.position.copy(target);
-          targetCameraPosRef.current = null;
+        // Animate camera position
+        if (targetCameraPosRef.current) {
+            const target = new THREE.Vector3(...targetCameraPosRef.current);
+            camera.position.lerp(target, 0.05);
+            
+            // Check if we're close enough to stop animating
+            if (camera.position.distanceTo(target) < 0.01) {
+            //camera.position.copy(target);
+            targetCameraPosRef.current = null;
+            }
         }
-      }
 
-      // Animate camera rotation using quaternion
-      if (targetCameraRotationRef.current) {
-        const rotation = targetCameraRotationRef.current;
-        let targetQuaternion;
-        
-        if (isQuaternionRotationRef.current) {
-          // Direct quaternion (x, y, z, w)
-          targetQuaternion = new THREE.Quaternion(rotation[0], rotation[1], rotation[2], rotation[3]);
-        } else {
-          // Euler angles (x, y, z) with optional pitch adjustment
-          targetQuaternion = new THREE.Quaternion().setFromEuler(
-            new THREE.Euler(rotation[0], rotation[1], rotation[2])
-          );
-          
-          // If rotation has 4 elements, the 4th is a quaternion adjustment
-          if (rotation.length === 4) {
-            // Multiply with additional quaternion for pitch down
-            const pitchQuaternion = new THREE.Quaternion().setFromAxisAngle(
-              new THREE.Vector3(1, 0, 0), // X axis for pitch
-              rotation[3] // Pitch angle in radians
+        // Animate camera rotation using quaternion
+        if (targetCameraRotationRef.current) {
+            const rotation = targetCameraRotationRef.current;
+            let targetQuaternion;
+            
+            if (isQuaternionRotationRef.current) {
+            // Direct quaternion (x, y, z, w)
+            targetQuaternion = new THREE.Quaternion(rotation[0], rotation[1], rotation[2], rotation[3]);
+            } else {
+            // Euler angles (x, y, z) with optional pitch adjustment
+            targetQuaternion = new THREE.Quaternion().setFromEuler(
+                new THREE.Euler(rotation[0], rotation[1], rotation[2])
             );
-            targetQuaternion.multiply(pitchQuaternion);
-          }
+            
+            // If rotation has 4 elements, the 4th is a quaternion adjustment
+            if (rotation.length === 4) {
+                // Multiply with additional quaternion for pitch down
+                const pitchQuaternion = new THREE.Quaternion().setFromAxisAngle(
+                new THREE.Vector3(1, 0, 0), // X axis for pitch
+                rotation[3] // Pitch angle in radians
+                );
+                targetQuaternion.multiply(pitchQuaternion);
+            }
+            }
+            
+            // Use slerp for smooth quaternion interpolation
+            camera.quaternion.slerp(targetQuaternion, 0.05);
+            
+            // Check if we're close enough to stop animating
+            if (camera.quaternion.angleTo(targetQuaternion) < 0.01) {
+            //camera.quaternion.copy(targetQuaternion);
+            targetCameraRotationRef.current = null;
+            isQuaternionRotationRef.current = false;
+            }
         }
-        
-        // Use slerp for smooth quaternion interpolation
-        camera.quaternion.slerp(targetQuaternion, 0.05);
-        
-        // Check if we're close enough to stop animating
-        if (camera.quaternion.angleTo(targetQuaternion) < 0.01) {
-          //camera.quaternion.copy(targetQuaternion);
-          targetCameraRotationRef.current = null;
-          isQuaternionRotationRef.current = false;
-        }
-      }
- 
-      // Animate hovered objects
-      if (hoveredRef.current) {
-        scene.traverse((obj) => {
-          if (obj.userData.clickable) {
-            obj.position.x = originalPositionsRef.current.get(obj)[0];
-            obj.position.y = originalPositionsRef.current.get(obj)[1];
-            obj.position.z = originalPositionsRef.current.get(obj)[2];
-          }
-        });
-        if(!hoveredRef.current.userData.backButton) {
-          hoveredRef.current.position.x = originalPositionsRef.current.get(hoveredRef.current)[0];
-          hoveredRef.current.position.y = originalPositionsRef.current.get(hoveredRef.current)[1] - 0.1;
-          hoveredRef.current.position.z = originalPositionsRef.current.get(hoveredRef.current)[2];
+    
+        // Animate hovered objects
+        if (hoveredRef.current) {
+            scene.traverse((obj) => {
+            if (obj.userData.clickable) {
+                obj.position.x = originalPositionsRef.current.get(obj)[0];
+                obj.position.y = originalPositionsRef.current.get(obj)[1];
+                obj.position.z = originalPositionsRef.current.get(obj)[2];
+            }
+            });
+            if(!hoveredRef.current.userData.backButton) {
+            hoveredRef.current.position.x = originalPositionsRef.current.get(hoveredRef.current)[0];
+            hoveredRef.current.position.y = originalPositionsRef.current.get(hoveredRef.current)[1] - 0.1;
+            hoveredRef.current.position.z = originalPositionsRef.current.get(hoveredRef.current)[2];
+            } else {
+            hoveredRef.current.position.x = originalPositionsRef.current.get(hoveredRef.current)[0];
+            hoveredRef.current.position.y = originalPositionsRef.current.get(hoveredRef.current)[1];
+            hoveredRef.current.position.z = originalPositionsRef.current.get(hoveredRef.current)[2] + 0.005;
+            }
+            
         } else {
-          hoveredRef.current.position.x = originalPositionsRef.current.get(hoveredRef.current)[0];
-          hoveredRef.current.position.y = originalPositionsRef.current.get(hoveredRef.current)[1];
-          hoveredRef.current.position.z = originalPositionsRef.current.get(hoveredRef.current)[2] + 0.005;
+            scene.traverse((obj) => {
+            if (obj.userData.clickable) {
+                obj.position.x = originalPositionsRef.current.get(obj)[0];
+                obj.position.y = originalPositionsRef.current.get(obj)[1];
+                obj.position.z = originalPositionsRef.current.get(obj)[2];
+            }
+            });
         }
-        
-      } else {
-        scene.traverse((obj) => {
-          if (obj.userData.clickable) {
-            obj.position.x = originalPositionsRef.current.get(obj)[0];
-            obj.position.y = originalPositionsRef.current.get(obj)[1];
-            obj.position.z = originalPositionsRef.current.get(obj)[2];
-          }
+        const pos1 = new THREE.Vector3(-9, 6.3, -5.3);
+        const pos2 = new THREE.Vector3(-7.4, 5.8, -4.8);
+        const pos3 = new THREE.Vector3(-6.95, 5.5, -3.7);
+        const pos4 = new THREE.Vector3(-9, 4.7, -2.3);
+
+        const circleCenter = new THREE.Vector3(-8.6, 6.3, -3.9);
+        const circleEdge = new THREE.Vector3(-8.6, 6.3, -5.45);
+        const radius = circleCenter.distanceTo(circleEdge);
+
+        if(chocolateBallRef.current) {
+            const t = chocolateBallRef.current.userData.t;
+            let endPos;
+            // Use t as angle to calculate position, keep y constant
+            if(chocolateBallRef.current.userData.t <= 4 * Math.PI){
+                chocolateBallRef.current.position.x = circleCenter.x + radius * Math.cos(t - Math.PI/2);
+                chocolateBallRef.current.position.y = circleCenter.y - t * 0.43;
+                chocolateBallRef.current.position.z = circleCenter.z + radius * Math.sin(t - Math.PI/2);
+                chocolateBallRef.current.userData.t += chocolateBallRef.current.userData.speed;
+                chocolateBallRef.current.userData.speed += 0.001;
+            }
+            else {
+                chocolateBallRef.current.position.x += chocolateBallRef.current.userData.speed;
+            }
+
+            if(chocolateBallRef.current.position.x > 0){
+                chocolateBallRef.current.userData.t = 0;
+                chocolateBallRef.current.userData.speed = 0.01;
+            }
+        }
+
+        conveyorXRef.current.forEach((obj) => {
+            if (isInExperienceViewRef.current) {
+                // In experience view: reset to initial position and stop
+                const initialX = conveyorInitialWorldXRef.current.get(obj);
+                obj.position.x = initialX;
+            } else {
+                // Normal conveyor movement
+                obj.position.x -= conveyerSpeed;
+                const initialX = conveyorInitialWorldXRef.current.get(obj);
+                if(obj.position.x <= 0) {
+                    obj.position.x += (10 * conveyerOffset);
+                }
+            }
         });
-      }
     });
   
     return (
@@ -166,12 +298,21 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation }) {
                                 targetCameraRotationRef.current = startOrientation;
                                 isQuaternionRotationRef.current = true; // startOrientation is a quaternion
                             }
+                            isInExperienceViewRef.current = false;
                         } else if (obj.name === "AboutMe" && aboutMePos) {
                             targetCameraPosRef.current = aboutMePos;
                             if (aboutMeRotation) {
                                 targetCameraRotationRef.current = aboutMeRotation;
                                 isQuaternionRotationRef.current = false; // aboutMeRotation is Euler angles
                             }
+                            isInExperienceViewRef.current = false;
+                        } else if (obj.name === "Experience" && experiencePos) {
+                            targetCameraPosRef.current = experiencePos;
+                            if (experienceOrientation) {
+                                targetCameraRotationRef.current = experienceOrientation;
+                                isQuaternionRotationRef.current = true; // experienceOrientation is a quaternion
+                            }
+                            isInExperienceViewRef.current = true;
                         }
                         break;
                     }
@@ -197,7 +338,6 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation }) {
                 }
                 
                 if (foundClickable) {
-                    console.log("Pointer entered");
                     hoveredRef.current = foundClickable;
                 } else {
                     // Entering a non-clickable object, clear hover state
@@ -207,7 +347,6 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation }) {
             onPointerLeave={(e) => {
                 e.stopPropagation();
                 // Clear any existing timeout
-                console.log("Pointer left");
                 if (leaveTimeoutRef.current) {
                     clearTimeout(leaveTimeoutRef.current);
                 }
@@ -530,6 +669,9 @@ export default function Home() {
   const aboutMeRotation = [0, Math.PI, 0, -0.1];
   const startPos = [-13.02, 6.97, 16.93];
   const startOrientation = [-0.272, -0.2104, -0.0611, 0.9369];
+
+  const experiencePos = [2.486427786109423, 1.8500714945606385, 8.229138218010176]
+  let experienceOrientation = [-0.3125, 0.632, 0.31, 0.637];
   return (
     <div style={{ width: "100vw", height: "100vh", position: "relative" }}>
       {/* Ticket Animation */}
@@ -618,7 +760,7 @@ export default function Home() {
           {/* <OrbitControls /> */}
 
           {/* <CameraLogger /> */}
-          <Factory aboutMePos={aboutMePos} aboutMeRotation={aboutMeRotation} startPos={startPos} startOrientation={startOrientation} />
+          <Factory aboutMePos={aboutMePos} aboutMeRotation={aboutMeRotation} startPos={startPos} startOrientation={startOrientation} experiencePos={experiencePos} experienceOrientation={experienceOrientation} />
         </Canvas>
       </div>
     </div>
