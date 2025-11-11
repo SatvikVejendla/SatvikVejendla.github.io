@@ -19,7 +19,7 @@ const EXPERIENCE_DATA = {
       "- Conducted independent experiments for research projects like optimization of muti-arm pose planning"
     ],
     skills: ["Python", "Web Scraping", "Pandas"],
-    offset: 1.26
+    offset: 0.05
   },
   rutgers2: {
     company: "Rutgers University",
@@ -30,7 +30,7 @@ const EXPERIENCE_DATA = {
       "- Ensured seamless uploads to the Rutgers Salesforce database"
     ],
     skills: ["Python", "Salesforce", "Automation"],
-    offset: 1.16
+    offset: 0.05
   },
   depton: {
     company: "Depton LLC",
@@ -41,7 +41,7 @@ const EXPERIENCE_DATA = {
       "- Led the end-to-end development of the company’s main internal web platform using Next.js",
     ],
     skills: ["TypeScript", "Next.js", "Client-Server Architecture"],
-    offset: 1.06
+    offset: 0.05
   },
   hone: {
     company: "Hone Health",
@@ -53,7 +53,7 @@ const EXPERIENCE_DATA = {
       "- Architected a SQL migration automation system to version-control production data for complex bulk migrations."
     ],
     skills: ["C#", ".NET", "SQL", "Azure"],
-    offset: 0.96
+    offset: 0.05
   },
   jpmc: {
     company: "JPMorgan Chase & Co.",
@@ -65,7 +65,7 @@ const EXPERIENCE_DATA = {
       "- Engineered a generalized document automation pipeline for large-scale Q&A workflows (RFPs, Compliance, etc."
     ],
     skills: ["TypeScript", "Python", "API Design", "Regression Testing", "LangSmith"],
-    offset: 0.86
+    offset: 0.05
   },
   teachshare: {
     company: "TeachShare",
@@ -77,11 +77,11 @@ const EXPERIENCE_DATA = {
       "- EdTech startup for supporting teachers with AI-powered tools to streamline lesson planning and assessment."
     ],
     skills: ["TypeScript", "LLMs", "Solid JS"],
-    offset: 0.76
+    offset: 0
   }
 };
 
-function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, experiencePos, experienceOrientation }) {
+function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, experiencePos, experienceOrientation, onBackButtonClick, setNotHome }) {
     const { scene, animations } = useGLTF("/factorylowpoly2.glb");
     const { camera } = useThree();
     const mixer = useRef();
@@ -104,9 +104,23 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
     const teachshareRef = useRef(null);
     const conveyorXBound = useRef(0);
     const initialExperiencePosRef = useRef(null);
-
     const conveyerOffset = 1.1;
     const conveyerSpeed = 0.01;
+    
+    // Expose back button handler
+    useEffect(() => {
+        if (onBackButtonClick) {
+            onBackButtonClick.current = () => {
+                targetCameraPosRef.current = startPos;
+                targetCameraRotationRef.current = startOrientation;
+                isQuaternionRotationRef.current = true;
+                isInExperienceViewRef.current = false;
+                if (setNotHome) {
+                    setNotHome(false);
+                }
+            };
+        }
+    }, [startPos, startOrientation, onBackButtonClick, setNotHome]);
 
 
     useEffect(() => {
@@ -193,7 +207,7 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
               if(i == 7) teachshareRef.current = clone;
               
               conveyorXRef.current.push(clone);
-              conveyorInitialWorldXRef.current.set(clone, firstObj.position.x + i);
+              conveyorInitialWorldXRef.current.set(clone, firstObj.position.x + i * conveyerOffset);
             }
           }
         });
@@ -231,20 +245,23 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
                         return;
                     }
                     
-                    const forward = new THREE.Vector3(-1 * direction, 0, 0);
-                    let targetPos = new THREE.Vector3(
-                        camera.position.x + forward.x,
-                        camera.position.y + forward.y,
-                        camera.position.z + forward.z
-                    );
+                    // Move -1 unit in X direction
+                    const xOffset = -1.1 * direction;
+                    let targetPos;
                     if(targetCameraPosRef.current) {
-                        targetPos = new THREE.Vector3(
-                            targetCameraPosRef.current[0] + forward.x,
-                            targetCameraPosRef.current[1] + forward.y,
-                            targetCameraPosRef.current[2] + forward.z
-                        )
+                        targetPos = [
+                            targetCameraPosRef.current[0] + xOffset,
+                            targetCameraPosRef.current[1],
+                            targetCameraPosRef.current[2]
+                        ];
+                    } else {
+                        targetPos = [
+                            camera.position.x + xOffset,
+                            camera.position.y,
+                            camera.position.z
+                        ];
                     }
-                    targetCameraPosRef.current = [targetPos.x, targetPos.y, targetPos.z];
+                    targetCameraPosRef.current = targetPos;
                 }
                 scrollTimeoutRef.current = null;
             }, 50);
@@ -404,6 +421,9 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
                                 isQuaternionRotationRef.current = true; // startOrientation is a quaternion
                             }
                             isInExperienceViewRef.current = false;
+                            if (setNotHome) {
+                                setNotHome(false);
+                            }
                         } else if (obj.name === "AboutMe" && aboutMePos) {
                             targetCameraPosRef.current = aboutMePos;
                             if (aboutMeRotation) {
@@ -411,15 +431,24 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
                                 isQuaternionRotationRef.current = false; // aboutMeRotation is Euler angles
                             }
                             isInExperienceViewRef.current = false;
+                            if (setNotHome) {
+                                setNotHome(true);
+                            }
                         } else if (obj.name === "Experience" && experiencePos) {
                             targetCameraPosRef.current = experiencePos;
-                            if (experienceOrientation) {
+                            if (experienceOrientation && experienceOrientation.length === 4) {
                                 targetCameraRotationRef.current = experienceOrientation;
-                                isQuaternionRotationRef.current = true; // experienceOrientation is a quaternion
+                                isQuaternionRotationRef.current = true;
+                            } else if (experienceOrientation && experienceOrientation.length === 3) {
+                                targetCameraRotationRef.current = experienceOrientation;
+                                isQuaternionRotationRef.current = false; 
                             }
                             isInExperienceViewRef.current = true;
                             // Store initial experience position
                             initialExperiencePosRef.current = [...experiencePos];
+                            if (setNotHome) {
+                                setNotHome(true);
+                            }
                         }
                         break;
                     }
@@ -511,7 +540,7 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
             return (
                 <group
                     key={key}
-                    position={[ref.current.position.x + data.offset, ref.current.position.y + 0.12, ref.current.position.z]}
+                    position={[ref.current.position.x + 0.015, ref.current.position.y + 0.12, ref.current.position.z]}
                     rotation={[-Math.PI/2, 0, Math.PI/2]}
                 >
                     {/* Main card background */}
@@ -677,6 +706,8 @@ function CameraController({ rotation }) {
           y: camera.rotation.y,
           z: camera.rotation.z,
         });
+    } else if (rotation.length === 3) {
+        camera.rotation.set(rotation[0], rotation[1], rotation[2]);
     }
   }, [camera, rotation]);
   
@@ -907,6 +938,8 @@ function BlackBackground() {
 export default function Home() {
   const [showScene, setShowScene] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [notHome, setNotHome] = useState(false);
+  const backButtonHandlerRef = useRef(null);
 
   const handleComplete = () => {
     setIsTransitioning(true);
@@ -929,15 +962,56 @@ export default function Home() {
     return () => window.removeEventListener("keydown", handleKeyPress);
   }, []);
 
+  const handleBackButtonClick = () => {
+    if (backButtonHandlerRef.current) {
+      backButtonHandlerRef.current();
+    }
+  };
+
   const aboutMePos = [3.9, 4.8, 4];
   const aboutMeRotation = [0, Math.PI, 0, -0.1];
   const startPos = [-13.02, 6.97, 16.93];
   const startOrientation = [-0.272, -0.2104, -0.0611, 0.9369];
 
-  const experiencePos = [1.886, 1.85, 8.23]
+  const experiencePos = [1.3, 1.85, 8.23]
   let experienceOrientation = [-0.3125, 0.632, 0.31, 0.637];
+  experienceOrientation = [-Math.PI/2, 0.4, Math.PI/2]
   return (
     <div style={{ width: "100vw", height: "100vh", position: "relative" }}>
+      {/* Back Button */}
+      {showScene && notHome && (
+        <button
+          onClick={handleBackButtonClick}
+          style={{
+            position: "absolute",
+            top: "20px",
+            left: "20px",
+            zIndex: 1000,
+            padding: "12px 24px",
+            fontSize: "16px",
+            fontWeight: "600",
+            color: "#ffffff",
+            backgroundColor: "rgba(79, 70, 229, 0.8)",
+            border: "2px solid #6366f1",
+            borderRadius: "8px",
+            cursor: "pointer",
+            backdropFilter: "blur(10px)",
+            transition: "all 0.3s ease",
+            fontFamily: "inherit",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = "rgba(99, 102, 241, 0.9)";
+            e.currentTarget.style.transform = "scale(1.05)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = "rgba(79, 70, 229, 0.8)";
+            e.currentTarget.style.transform = "scale(1)";
+          }}
+        >
+          ← Back to Start
+        </button>
+      )}
+      
       {/* Ticket Animation */}
       <div
         style={{
@@ -1024,7 +1098,16 @@ export default function Home() {
           {DEBUG_MODE && <OrbitControls />}
 
           {DEBUG_MODE && <CameraLogger />}
-          <Factory aboutMePos={aboutMePos} aboutMeRotation={aboutMeRotation} startPos={startPos} startOrientation={startOrientation} experiencePos={experiencePos} experienceOrientation={experienceOrientation} />
+          <Factory 
+            aboutMePos={aboutMePos} 
+            aboutMeRotation={aboutMeRotation} 
+            startPos={startPos} 
+            startOrientation={startOrientation} 
+            experiencePos={experiencePos} 
+            experienceOrientation={experienceOrientation}
+            onBackButtonClick={backButtonHandlerRef}
+            setNotHome={setNotHome}
+          />
         </Canvas>
       </div>
     </div>
