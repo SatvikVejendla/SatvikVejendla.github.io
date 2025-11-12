@@ -173,6 +173,7 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
     const chocolateBallRef = useRef(null);
     const isInExperienceViewRef = useRef(false);
     const isInProjectsViewRef = useRef(false);
+    const isInSkillsViewRef = useRef(false);
     const scrollTimeoutRef = useRef(null);
     const rutgers1Ref = useRef(null);
     const rutgers2Ref = useRef(null);
@@ -206,6 +207,7 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
                 isQuaternionRotationRef.current = true;
                 isInExperienceViewRef.current = false;
                 isInProjectsViewRef.current = false;
+                isInSkillsViewRef.current = false;
                 if (setNotHome) {
                     setNotHome(false);
                 }
@@ -739,6 +741,7 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
                             }
                             isInExperienceViewRef.current = false;
                             isInProjectsViewRef.current = false;
+                            isInSkillsViewRef.current = false;
                             if (setNotHome) {
                                 setNotHome(false);
                             }
@@ -750,6 +753,7 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
                             }
                             isInExperienceViewRef.current = false;
                             isInProjectsViewRef.current = false;
+                            isInSkillsViewRef.current = false;
                             if (setNotHome) {
                                 setNotHome(true);
                             }
@@ -764,6 +768,7 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
                             }
                             isInExperienceViewRef.current = true;
                             isInProjectsViewRef.current = false;
+                            isInSkillsViewRef.current = false;
                             // Store initial experience position
                             initialExperiencePosRef.current = [...experiencePos];
                             if (setNotHome) {
@@ -780,6 +785,7 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
                             }
                             isInExperienceViewRef.current = false;
                             isInProjectsViewRef.current = false;
+                            isInSkillsViewRef.current = true;
                             if (setNotHome) {
                                 setNotHome(true);
                             }
@@ -794,6 +800,7 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
                             }
                             isInExperienceViewRef.current = false;
                             isInProjectsViewRef.current = true;
+                            isInSkillsViewRef.current = false;
                             // Store initial projects position
                             initialProjectsPosRef.current = [...projectsPos];
                             // Calculate max position (Project 6 is 5 scrolls away at 19.5 units each)
@@ -923,6 +930,8 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
                         depthTest={false}
                         depthWrite={false}
                         renderOrder={999}
+                        fillOpacity={1}
+                        material-toneMapped={false}
                     >
                         {data.company}
                     </Text>
@@ -942,6 +951,8 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
                         depthTest={false}
                         depthWrite={false}
                         renderOrder={999}
+                        fillOpacity={1}
+                        material-toneMapped={false}
                     >
                         {data.role}
                     </Text>
@@ -958,6 +969,8 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
                         depthTest={false}
                         depthWrite={false}
                         renderOrder={999}
+                        fillOpacity={1}
+                        material-toneMapped={false}
                     >
                         {data.date}
                     </Text>
@@ -976,6 +989,8 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
                         depthTest={false}
                         depthWrite={false}
                         renderOrder={999}
+                        fillOpacity={1}
+                        material-toneMapped={false}
                     >
                         {data.description.join('\n')}
                     </Text>
@@ -1001,6 +1016,8 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
                                 depthTest={false}
                                 depthWrite={false}
                                 renderOrder={999}
+                                fillOpacity={1}
+                                material-toneMapped={false}
                             >
                                 {skill}
                             </Text>
@@ -1011,7 +1028,7 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
         })}
         
         {/* Render skills on ConveyorY tiles */}
-        {[
+        {isInSkillsViewRef.current && [
             { conveyorRef: conveyorY1Ref, skillsIndex: 0 },
             { conveyorRef: conveyorY2Ref, skillsIndex: 1 },
             { conveyorRef: conveyorY3Ref, skillsIndex: 2 },
@@ -1177,8 +1194,7 @@ function SkillCard({ tileObj, skillName }) {
         depthWrite={false}
         renderOrder={999}
         fillOpacity={1}
-        outlineWidth={0.01}
-        outlineColor="#4f46e5"
+        material-toneMapped={false}
       >
         {skillName}
       </Text>
