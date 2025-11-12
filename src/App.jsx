@@ -81,7 +81,73 @@ const EXPERIENCE_DATA = {
   }
 };
 
-function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, experiencePos, experienceOrientation, skillsPos, skillsOrientation, onBackButtonClick, setNotHome }) {
+
+const SKILLS_DATA = [
+    ["Javascript", "Python", "Java", "C/C++", "C#", "SQL", "R"],
+    ["React", "Next.js", "Node.js", "Flask", "FastAPI", "PySpark", "Solid JS"],
+    ["LangChain", "JQuery", "Tensorflow", "PyTorch", "LLMs", "CUDA", "Pandas"],
+    ["MongoDB", "Redis", "AWS", "Azure", "FastAPI", "Express", "Selenium"],
+    ["Git", "Docker", "Kubernetes", "API Design", "Client-Server Model", "CI/CD", "Testing"]
+]
+
+
+const PROJECTS_DATA = [
+    {
+        name: "SatvikVejendla.com",
+        description: [
+            "- Creative and responsive personal portfolio website built with Three.js.",
+            "- Personally created all the assets in Blender.",
+            "- Integrated React Three Fiber for seamless 3D animations and interactions.",
+        ],
+        technologies: ["Next.js", "Three.js", "Blender"],
+    },
+    {
+        name: "Kanzure",
+        description: [
+            "- Jira-inspired productivity tool featuring time blocking, task management, and Kanban workflows",
+            "- Implemented custom OAuth2 authentication, user analytics, and calendar integrations with Google API.",
+            "- Designed custom session tracking and role-based access control (RLS) to enforce data isolation."
+        ],
+        technologies: ["React", "Tailwind CSS", "Google OAuth2", "PostgreSQL"]
+    },
+    {
+        name: "VEX 750B",
+        description: [
+            "- Designed a modular robot control framework with PID motion tuning, Odometry, and Pure Pursuit path tracking.",
+            "- Developed a mobile scouting app with heuristics to predict match performance from live telemetry data.",
+            "- Led team to 1st place at the 2023 NJ State Championship and qualification for the VEX Worlds Championship."
+        ],
+        technologies: ["C++", "PROS", "React Native", "Pure Pursuit"]
+    },
+    {
+        name: "Reparo",
+        description: [
+            "- Engineered a comprehensive test repair framework to automatically identify and fix failing regression tests using LLMs.",
+            "- Built a custom test runner and data pipeline to efficiently execute and analyze test results.",
+            "- Led the development of a user-friendly web interface for test management and reporting."
+        ],
+        technologies: ["Python", "LLMs", "API Design", "LangSmith"]
+    },
+    {
+        name: "Mentalth",
+        description: [
+            "- Trained a Tensorflow classification model to detect mental health distress signals from text messages.",
+            "- Custom web scraped dataset and preprocessed data for training and evaluation.",
+            "- MercerHacks Winner"
+        ],
+        technologies: ["Python", "Tensorflow", "Puppeteer", "LSTM"]
+    },
+    {
+        name: "TelePlay",
+        description: [
+            "- Built a cross-site watch-party syncer using a browser extension that injects lightweight content scripts to detect and control HTML5 media elements across multiple streaming sites",
+            "- Created a lightweight backend service to manage sessions and handle connections for stable multi-user synchronization.",
+        ],
+        technologies: ["TypeScript", "Chrome Extension", "Node.js", "Express", "WebSocket"]
+    },
+]
+
+function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, experiencePos, experienceOrientation, skillsPos, skillsOrientation, projectsPos, projectsOrientation, onBackButtonClick, setNotHome }) {
     const { scene, animations } = useGLTF("/factorylowpoly2.glb");
     const { camera } = useThree();
     const mixer = useRef();
@@ -106,6 +172,7 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
 
     const chocolateBallRef = useRef(null);
     const isInExperienceViewRef = useRef(false);
+    const isInProjectsViewRef = useRef(false);
     const scrollTimeoutRef = useRef(null);
     const rutgers1Ref = useRef(null);
     const rutgers2Ref = useRef(null);
@@ -113,10 +180,18 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
     const honeRef = useRef(null);
     const jpmcRef = useRef(null);
     const teachshareRef = useRef(null);
+    const project1Ref = useRef(null);
+    const project2Ref = useRef(null);
+    const project3Ref = useRef(null);
+    const project4Ref = useRef(null);
+    const project5Ref = useRef(null);
+    const project6Ref = useRef(null);
     const conveyorXBound = useRef(0);
     const conveyorYBound = useRef(0);
     const conveyorYReverseBound = useRef(0);
     const initialExperiencePosRef = useRef(null);
+    const initialProjectsPosRef = useRef(null);
+    const maxProjectsPosRef = useRef(null);
     const conveyerOffset = 1.1;
     const conveyerSpeed = 0.01;
     const conveyerYOffset = 2.6;
@@ -130,6 +205,7 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
                 targetCameraRotationRef.current = startOrientation;
                 isQuaternionRotationRef.current = true;
                 isInExperienceViewRef.current = false;
+                isInProjectsViewRef.current = false;
                 if (setNotHome) {
                     setNotHome(false);
                 }
@@ -187,6 +263,25 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
             obj.userData.t = 0;
             obj.userData.speed = 0.01;
             chocolateBallRef.current = obj;
+          }
+
+          if(obj.name === "Project1") {
+            project1Ref.current = obj;
+          }
+          if(obj.name === "Project2") {
+            project2Ref.current = obj;
+          }
+          if(obj.name === "Project3") {
+            project3Ref.current = obj;
+          }
+          if(obj.name === "Project4") {
+            project4Ref.current = obj;
+          }
+          if(obj.name === "Project5") {
+            project5Ref.current = obj;
+          }
+          if(obj.name === "Project6") {
+            project6Ref.current = obj;
           }
 
           if(obj.name.includes("ConveyerX") && conveyorXRef.current.length === 0) {
@@ -331,11 +426,11 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
         });
       }, [scene]);
 
-    // Handle scroll in experience view
+    // Handle scroll in experience and projects view
     useEffect(() => {
         const handleScroll = (e) => {
-            // Only handle scroll when in experience view
-            if (!isInExperienceViewRef.current) return;
+            // Only handle scroll when in experience or projects view
+            if (!isInExperienceViewRef.current && !isInProjectsViewRef.current) return;
             
             // Track scroll direction (positive = scroll down, negative = scroll up)
             let direction = e.deltaY > 0 ? 1 : -1;
@@ -377,6 +472,50 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
                             camera.position.x + xOffset,
                             camera.position.y,
                             camera.position.z
+                        ];
+                    }
+                    targetCameraPosRef.current = targetPos;
+                } else if (isInProjectsViewRef.current) {
+                    // Get current position (either actual or target)
+                    let currentZ = camera.position.z;
+                    if(targetCameraPosRef.current) {
+                        currentZ = targetCameraPosRef.current[2];
+                    }
+                    
+                    // Check if we're at the initial position
+                    const initialZ = initialProjectsPosRef.current ? initialProjectsPosRef.current[2] : null;
+                    const isAtInitial = initialZ !== null && Math.abs(currentZ - initialZ) < 0.1;
+                    
+                    // Check if we're at the maximum position (last project)
+                    const maxZ = maxProjectsPosRef.current;
+                    const isAtMax = maxZ !== null && currentZ >= maxZ - 0.1;
+                    
+                    // Prevent scrolling left (direction = -1) if at initial position
+                    if (isAtInitial && direction < 0) {
+                        scrollTimeoutRef.current = null;
+                        return;
+                    }
+                    
+                    // Prevent scrolling right (direction = 1) if at max position
+                    if (isAtMax && direction > 0) {
+                        scrollTimeoutRef.current = null;
+                        return;
+                    }
+                    
+                    // Scroll down = move right (positive X), scroll up = move left (negative X)
+                    const zOffset = 19.5 * direction;
+                    let targetPos;
+                    if(targetCameraPosRef.current) {
+                        targetPos = [
+                            targetCameraPosRef.current[0],
+                            targetCameraPosRef.current[1],
+                            targetCameraPosRef.current[2] + zOffset,
+                        ];
+                    } else {
+                        targetPos = [
+                            camera.position.x,
+                            camera.position.y,
+                            camera.position.z + zOffset,
                         ];
                     }
                     targetCameraPosRef.current = targetPos;
@@ -521,7 +660,7 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
         conveyorY1Ref.current.forEach((item) => {
             const obj = item.obj;
             if (isInExperienceViewRef.current) {
-                const initialX = conveyorInitialWorldYRef.current.get(obj);
+                const initialX = conveyorInitialWorldY1Ref.current.get(obj);
                 obj.position.x = initialX;
             } else {
                 obj.position.x += conveyerYSpeed;
@@ -599,6 +738,7 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
                                 isQuaternionRotationRef.current = true; // startOrientation is a quaternion
                             }
                             isInExperienceViewRef.current = false;
+                            isInProjectsViewRef.current = false;
                             if (setNotHome) {
                                 setNotHome(false);
                             }
@@ -609,6 +749,7 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
                                 isQuaternionRotationRef.current = false; // aboutMeRotation is Euler angles
                             }
                             isInExperienceViewRef.current = false;
+                            isInProjectsViewRef.current = false;
                             if (setNotHome) {
                                 setNotHome(true);
                             }
@@ -622,6 +763,7 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
                                 isQuaternionRotationRef.current = false; 
                             }
                             isInExperienceViewRef.current = true;
+                            isInProjectsViewRef.current = false;
                             // Store initial experience position
                             initialExperiencePosRef.current = [...experiencePos];
                             if (setNotHome) {
@@ -637,6 +779,26 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
                                 isQuaternionRotationRef.current = false;
                             }
                             isInExperienceViewRef.current = false;
+                            isInProjectsViewRef.current = false;
+                            if (setNotHome) {
+                                setNotHome(true);
+                            }
+                        } else if (obj.name === "Projects" && projectsPos) {
+                            targetCameraPosRef.current = projectsPos;
+                            if (projectsOrientation && projectsOrientation.length === 4) {
+                                targetCameraRotationRef.current = projectsOrientation;
+                                isQuaternionRotationRef.current = true;
+                            } else if (projectsOrientation && projectsOrientation.length === 3) {
+                                targetCameraRotationRef.current = projectsOrientation;
+                                isQuaternionRotationRef.current = false;
+                            }
+                            isInExperienceViewRef.current = false;
+                            isInProjectsViewRef.current = true;
+                            // Store initial projects position
+                            initialProjectsPosRef.current = [...projectsPos];
+                            // Calculate max position (Project 6 is 5 scrolls away at 19.5 units each)
+                            const numProjects = PROJECTS_DATA.length;
+                            maxProjectsPosRef.current = projectsPos[2] + ((numProjects - 1) * 19.5);
                             if (setNotHome) {
                                 setNotHome(true);
                             }
@@ -847,25 +1009,191 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
                 </group>
             );
         })}
+        
+        {/* Render skills on ConveyorY tiles */}
+        {[
+            { conveyorRef: conveyorY1Ref, skillsIndex: 0 },
+            { conveyorRef: conveyorY2Ref, skillsIndex: 1 },
+            { conveyorRef: conveyorY3Ref, skillsIndex: 2 },
+            { conveyorRef: conveyorY4Ref, skillsIndex: 3 },
+            { conveyorRef: conveyorY5Ref, skillsIndex: 4 }
+        ].map(({ conveyorRef, skillsIndex }, rowIndex) => {
+            return conveyorRef.current.map((item, tileIndex) => {
+                const obj = item.obj;
+                const skills = SKILLS_DATA[skillsIndex];
+                const skillIndex = tileIndex % skills.length;
+                const skillName = skills[skillIndex];
+                
+                return (
+                    <SkillCard
+                        key={`skill-${rowIndex}-${tileIndex}`}
+                        tileObj={obj}
+                        skillName={skillName}
+                    />
+                );
+            });
+        })}
+        
+        {/* Render all projects */}
+        {[
+            { ref: project1Ref, dataIndex: 0 },
+            { ref: project2Ref, dataIndex: 1 },
+            { ref: project3Ref, dataIndex: 2 },
+            { ref: project4Ref, dataIndex: 3 },
+            { ref: project5Ref, dataIndex: 4 },
+            { ref: project6Ref, dataIndex: 5 }
+        ].map(({ ref, dataIndex }) => {
+            if (!ref.current || !PROJECTS_DATA[dataIndex]) return null;
+            
+            const projectData = PROJECTS_DATA[dataIndex];
+            
+            return (
+                <React.Fragment key={`project-${dataIndex}`}>
+                    {/* Project Title */}
+                    <Html
+                        position={[
+                            ref.current.position.x - 0.2,
+                            ref.current.position.y + 0.2,
+                            ref.current.position.z + 7.5
+                        ]}
+                        rotation={[Math.PI/2, Math.PI, Math.PI/2]}
+                        transform
+                        style={{
+                            pointerEvents: 'none',
+                            userSelect: 'none',
+                            whiteSpace: 'nowrap'
+                        }}
+                    >
+                        <div style={{
+                            fontSize: '50px',
+                            fontWeight: 900,
+                            color: '#ffffff',
+                            fontFamily: 'system-ui, -apple-system, sans-serif'
+                        }}>
+                            {projectData.name}
+                        </div>
+                    </Html>
+
+                    {/* Project Description */}
+                    <Html
+                        position={[
+                            ref.current.position.x - 4,
+                            ref.current.position.y + 0.2,
+                            ref.current.position.z + 7
+                        ]}
+                        rotation={[Math.PI/2, Math.PI, Math.PI/2]}
+                        transform
+                        scale={0.5}
+                        style={{
+                            pointerEvents: 'none',
+                            userSelect: 'none',
+                            whiteSpace: 'normal',
+                            width: '1200px'
+                        }}
+                    >
+                        <div style={{
+                            fontSize: '40px',
+                            fontWeight: 600,
+                            color: '#ffffff',
+                            fontFamily: 'system-ui, -apple-system, sans-serif'
+                        }}>
+                            {projectData.description.map((line, i) => (
+                                <div key={i}>{line}</div>
+                            ))}
+                        </div>
+                    </Html>
+
+                    {/* Technologies */}
+                    <Html
+                        position={[
+                            ref.current.position.x - 7,
+                            ref.current.position.y + 0.2,
+                            ref.current.position.z + 7
+                        ]}
+                        rotation={[Math.PI/2, Math.PI, Math.PI/2]}
+                        transform
+                        style={{
+                            pointerEvents: 'none',
+                            userSelect: 'none',
+                            whiteSpace: 'nowrap'
+                        }}
+                    >
+                        <div style={{
+                            fontSize: '20px',
+                            fontWeight: 600,
+                            color: '#a78bfa',
+                            fontFamily: 'system-ui, -apple-system, sans-serif'
+                        }}>
+                            {projectData.technologies.join(' • ')}
+                        </div>
+                    </Html>
+                </React.Fragment>
+            );
+        })}
     </>)
   }
+
+function SkillCard({ tileObj, skillName }) {
+  const groupRef = useRef();
+
+  useFrame(() => {
+    if (groupRef.current && tileObj) {
+      // Update position to follow the tile
+      groupRef.current.position.set(
+        tileObj.position.x,
+        tileObj.position.y + 0.1,
+        tileObj.position.z
+      );
+    }
+  });
+
+  return (
+    <group
+      ref={groupRef}
+      rotation={[-Math.PI/2, 0, 0]}
+    >
+      {/* Skill card background */}
+      <mesh position={[0, 0, 0]}>
+        <planeGeometry args={[1.7, 0.4]} />
+        <meshBasicMaterial color="#1a1a2e" transparent opacity={0.95} />
+      </mesh>
+
+      {/* Border glow */}
+      <mesh position={[0, 0, -0.0001]}>
+        <planeGeometry args={[1.75, 0.45]} />
+        <meshBasicMaterial color="#4f46e5" transparent opacity={0.6} />
+      </mesh>
+
+      {/* Skill text */}
+      <Text
+        position={[0, 0, 0.002]}
+        fontSize={0.15}
+        color="#ffffff"
+        anchorX="center"
+        anchorY="middle"
+        fontWeight={700}
+        toneMapped={false}
+        depthTest={false}
+        depthWrite={false}
+        renderOrder={999}
+        fillOpacity={1}
+        outlineWidth={0.01}
+        outlineColor="#4f46e5"
+      >
+        {skillName}
+      </Text>
+    </group>
+  );
+}
 
 function CameraLogger() {
   const { camera } = useThree();
   
   useEffect(() => {
     const logCameraInfo = () => {
-      console.log("Camera position:", {
-        x: camera.position.x,
-        y: camera.position.y,
-        z: camera.position.z,
-      });
-      console.log("Camera quaternion:", {
-        x: camera.quaternion.x,
-        y: camera.quaternion.y,
-        z: camera.quaternion.z,
-        w: camera.quaternion.w,
-      });
+      console.log("Camera position:", [camera.position.x, camera.position.y, camera.position.z]);
+      console.log("Camera quaternion:", [camera.quaternion.x, camera.quaternion.y, camera.quaternion.z, camera.quaternion.w]);
+      console.log("Camera Euler:", [camera.rotation.x, camera.rotation.y, camera.rotation.z]);
     };
     
     // Log initial position and rotation
@@ -1171,7 +1499,11 @@ export default function Home() {
   experienceOrientation = [-Math.PI/2, 0.4, Math.PI/2]
 
   const skillsPos = [14.93, 6.26, -5.02];
-  const skillsOrientation = [-Math.PI/2, 0, 0]
+  const skillsOrientation = [-Math.PI/2, 0, 0];
+
+  const projectsPos = [13, 8.100067593683567, 18.19]
+  const projectsOrientation = [-0.336587765327058, -0.6261384540936206, -0.34334245349623266, 0.613820227888081]
+  
   return (
     <div style={{ width: "100vw", height: "100vh", position: "relative" }}>
       {/* Back Button */}
@@ -1248,7 +1580,7 @@ export default function Home() {
         >      <fog attach="fog" args={["#000000", 35, 40]} />
 
           <BlackBackground />
-          <ambientLight intensity={0} />
+          <ambientLight intensity={20} />
           {/* Replace broad directional light with a tight spotlight. setcolor blue */}
           <spotLight
             position={[-12, 8, 5]}
@@ -1288,6 +1620,15 @@ export default function Home() {
             decay={0.2}
             color="#ffffff"
           />
+          <spotLight
+            position={[15, 47, -5]}
+            intensity={400}
+            color="#ffffff"
+            angle={Math.PI}
+            penumbra={0.6}
+            distance={200}
+            decay={0.4}
+          />
           {/* Image-based lighting can over-brighten the scene; dial it down or remove */}
           <Environment preset="sunset" intensity={0} />
           <CameraController rotation={startOrientation} />
@@ -1303,6 +1644,8 @@ export default function Home() {
             experienceOrientation={experienceOrientation}
             skillsPos={skillsPos}
             skillsOrientation={skillsOrientation}
+            projectsPos={projectsPos}
+            projectsOrientation={projectsOrientation}
             onBackButtonClick={backButtonHandlerRef}
             setNotHome={setNotHome}
           />
