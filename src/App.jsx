@@ -147,8 +147,8 @@ const PROJECTS_DATA = [
     },
 ]
 
-function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, experiencePos, experienceOrientation, skillsPos, skillsOrientation, projectsPos, projectsOrientation, onBackButtonClick, setNotHome }) {
-    const { scene, animations } = useGLTF("/factorylowpoly2.glb");
+function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, experiencePos, experienceOrientation, skillsPos, skillsOrientation, projectsPos, projectsOrientation, contactPos, contactOrientation, onBackButtonClick, setNotHome }) {
+    const { scene, animations } = useGLTF("/factorylowpoly.glb");
     const { camera } = useThree();
     const mixer = useRef();
     const hoveredRef = useRef(null);
@@ -169,6 +169,11 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
     const conveyorInitialWorldY3Ref = useRef(new Map());
     const conveyorInitialWorldY4Ref = useRef(new Map());
     const conveyorInitialWorldY5Ref = useRef(new Map());
+    const conveyorXX1Ref = useRef([]);
+    const conveyorXX2Ref = useRef([]);
+    const conveyorInitialWorldXX1Ref = useRef(new Map());
+    const conveyorInitialWorldXX2Ref = useRef(new Map());
+    const conveyorXXBound = useRef(0);
 
     const chocolateBallRef = useRef(null);
     const isInExperienceViewRef = useRef(false);
@@ -187,16 +192,21 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
     const project4Ref = useRef(null);
     const project5Ref = useRef(null);
     const project6Ref = useRef(null);
+    const contact1Ref = useRef(null);
+    const contact2Ref = useRef(null);
+    const contact3Ref = useRef(null);
     const conveyorXBound = useRef(0);
     const conveyorYBound = useRef(0);
     const conveyorYReverseBound = useRef(0);
     const initialExperiencePosRef = useRef(null);
+    const maxExperiencePosRef = useRef(null);
     const initialProjectsPosRef = useRef(null);
     const maxProjectsPosRef = useRef(null);
     const conveyerOffset = 1.1;
     const conveyerSpeed = 0.01;
     const conveyerYOffset = 2.6;
     const conveyerYSpeed = 0.01;
+    const conveyerXXOffset = 2.0;
     
     // Expose back button handler
     useEffect(() => {
@@ -231,14 +241,17 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
           }
           if (obj.isMesh && obj.material?.name === "Glass") {
             obj.material = new THREE.MeshPhysicalMaterial({
-              color: "white",
-              roughness: 0,
+              color: "#ffffff",
+              roughness: 0.05,
               metalness: 0,
-              transmission: 1,
-              opacity: 0.9,
+              transmission: 0.95, // Slightly less than full for subtle tint
+              opacity: 1,
               transparent: true,
-              ior: 1.1,
-              thickness: 0.5,
+              ior: 1.5, // Standard glass index of refraction
+              thickness: 0.1, // Thin glass for minimal distortion
+              clearcoat: 1.0, // Add glossy reflection layer
+              clearcoatRoughness: 0.05, // Slight roughness for more natural look
+              reflectivity: 0.3, // Reduced reflectivity
               side: THREE.DoubleSide,
             });
           }
@@ -248,13 +261,7 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
             originalPositionsRef.current.set(obj, [obj.position.x, obj.position.y, obj.position.z]);
           }
 
-          const backButtons = ["AboutMeBack"];
-          if (backButtons.includes(obj.name)) {
-            obj.userData.clickable = true;
-            obj.userData.backButton = true;
-            originalPositionsRef.current.set(obj, [obj.position.x, obj.position.y, obj.position.z]);
-          }
-
+    
           if (obj.isMesh && (obj.name === "TVEmission")) {
             obj.material.emissive = obj.material.emissive || new THREE.Color(0xffaa33);
             obj.material.emissiveIntensity = 0.8;
@@ -286,6 +293,16 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
             project6Ref.current = obj;
           }
 
+          // Contact objects
+          const contactNames = ["Contact1", "Contact2", "Contact3"];
+          if (contactNames.includes(obj.name)) {
+            obj.userData.contactButton = true;
+            originalPositionsRef.current.set(obj, [obj.position.x, obj.position.y, obj.position.z]);
+            if(obj.name === "Contact1") contact1Ref.current = obj;
+            if(obj.name === "Contact2") contact2Ref.current = obj;
+            if(obj.name === "Contact3") contact3Ref.current = obj;
+          }
+
           if(obj.name.includes("ConveyerX") && conveyorXRef.current.length === 0) {
             // Found the first conveyor belt - duplicate it 10 times
             const firstObj = obj;
@@ -296,7 +313,7 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
             conveyorXBound.current = firstObj.position.x;
             
             // Create 10 duplicates with x offset of 1 each
-            for (let i = 1; i <= 10; i++) {
+            for (let i = 1; i <= 12; i++) {
               const clone = firstObj.clone();
               clone.name = `${firstObj.name}_clone_${i}`;
               
@@ -425,6 +442,59 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
               conveyorInitialWorldY5Ref.current.set(clone, firstObj.position.x - i * conveyerYOffset);
             }
           }
+
+          // ConveyerXX1 - moves in -Z direction
+          if(obj.name.includes("ConveyerXX1") && conveyorXX1Ref.current.length === 0) {
+            const firstObj = obj;
+            conveyorXX1Ref.current.push(firstObj);
+            
+            conveyorInitialWorldXX1Ref.current.set(firstObj, firstObj.position.z);
+            conveyorXXBound.current = firstObj.position.z;
+            
+            // Create 7 duplicates (8 total belts)
+            for (let i = 1; i <= 7; i++) {
+              const clone = firstObj.clone();
+              clone.name = `${firstObj.name}_clone_${i}`;
+              
+              // Offset in Z direction
+              clone.position.z = firstObj.position.z - i * conveyerXXOffset;
+              
+              if (firstObj.parent) {
+                firstObj.parent.add(clone);
+              } else {
+                scene.add(clone);
+              }
+              
+              conveyorXX1Ref.current.push(clone);
+              conveyorInitialWorldXX1Ref.current.set(clone, firstObj.position.z - i * conveyerYOffset);
+            }
+          }
+
+          // ConveyerXX2 - moves in -Z direction
+          if(obj.name.includes("ConveyerXX2") && conveyorXX2Ref.current.length === 0) {
+            const firstObj = obj;
+            conveyorXX2Ref.current.push(firstObj);
+            
+            conveyorInitialWorldXX2Ref.current.set(firstObj, firstObj.position.z);
+            
+            // Create 7 duplicates (8 total belts)
+            for (let i = 1; i <= 7; i++) {
+              const clone = firstObj.clone();
+              clone.name = `${firstObj.name}_clone_${i}`;
+              
+              // Offset in Z direction
+              clone.position.z = firstObj.position.z - i * conveyerXXOffset;
+              
+              if (firstObj.parent) {
+                firstObj.parent.add(clone);
+              } else {
+                scene.add(clone);
+              }
+              
+              conveyorXX2Ref.current.push(clone);
+              conveyorInitialWorldXX2Ref.current.set(clone, firstObj.position.z - i * conveyerYOffset);
+            }
+          }
         });
       }, [scene]);
 
@@ -454,13 +524,23 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
                     const initialX = initialExperiencePosRef.current ? initialExperiencePosRef.current[0] : null;
                     const isAtInitial = initialX !== null && Math.abs(currentX - initialX) < 0.1;
                     
-                    // Prevent scrolling forward (direction = 1) if at initial position
-                    if (isAtInitial && direction < 1) {
+                    // Check if we're at the maximum position (last experience)
+                    const maxX = maxExperiencePosRef.current;
+                    const isAtMax = maxX !== null && currentX <= maxX + 0.1;
+                    
+                    // Prevent scrolling back (direction < 0) if at initial position
+                    if (isAtInitial && direction < 0) {
                         scrollTimeoutRef.current = null;
                         return;
                     }
                     
-                    // Move -1 unit in X direction
+                    // Prevent scrolling forward (direction > 0) if at max position
+                    if (isAtMax && direction > 0) {
+                        scrollTimeoutRef.current = null;
+                        return;
+                    }
+                    
+                    // Move -1.1 unit in X direction
                     const xOffset = -1.1 * direction;
                     let targetPos;
                     if(targetCameraPosRef.current) {
@@ -590,25 +670,30 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
         // Animate hovered objects
         if (hoveredRef.current) {
             scene.traverse((obj) => {
-            if (obj.userData.clickable) {
+            if (obj.userData.clickable || obj.userData.contactButton) {
                 obj.position.x = originalPositionsRef.current.get(obj)[0];
                 obj.position.y = originalPositionsRef.current.get(obj)[1];
                 obj.position.z = originalPositionsRef.current.get(obj)[2];
             }
             });
-            if(!hoveredRef.current.userData.backButton) {
-            hoveredRef.current.position.x = originalPositionsRef.current.get(hoveredRef.current)[0];
-            hoveredRef.current.position.y = originalPositionsRef.current.get(hoveredRef.current)[1] - 0.1;
-            hoveredRef.current.position.z = originalPositionsRef.current.get(hoveredRef.current)[2];
+            if(hoveredRef.current.userData.contactButton) {
+                // Contact buttons move -0.1 in Z direction
+                hoveredRef.current.position.x = originalPositionsRef.current.get(hoveredRef.current)[0];
+                hoveredRef.current.position.y = originalPositionsRef.current.get(hoveredRef.current)[1];
+                hoveredRef.current.position.z = originalPositionsRef.current.get(hoveredRef.current)[2] - 0.1;
+            } else if(!hoveredRef.current.userData.backButton) {
+                hoveredRef.current.position.x = originalPositionsRef.current.get(hoveredRef.current)[0];
+                hoveredRef.current.position.y = originalPositionsRef.current.get(hoveredRef.current)[1] - 0.1;
+                hoveredRef.current.position.z = originalPositionsRef.current.get(hoveredRef.current)[2];
             } else {
-            hoveredRef.current.position.x = originalPositionsRef.current.get(hoveredRef.current)[0];
-            hoveredRef.current.position.y = originalPositionsRef.current.get(hoveredRef.current)[1];
-            hoveredRef.current.position.z = originalPositionsRef.current.get(hoveredRef.current)[2] + 0.005;
+                hoveredRef.current.position.x = originalPositionsRef.current.get(hoveredRef.current)[0];
+                hoveredRef.current.position.y = originalPositionsRef.current.get(hoveredRef.current)[1];
+                hoveredRef.current.position.z = originalPositionsRef.current.get(hoveredRef.current)[2] + 0.005;
             }
             
         } else {
             scene.traverse((obj) => {
-            if (obj.userData.clickable) {
+            if (obj.userData.clickable || obj.userData.contactButton) {
                 obj.position.x = originalPositionsRef.current.get(obj)[0];
                 obj.position.y = originalPositionsRef.current.get(obj)[1];
                 obj.position.z = originalPositionsRef.current.get(obj)[2];
@@ -654,7 +739,7 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
                 // Normal conveyor movement
                 obj.position.x -= conveyerSpeed;
                 if(obj.position.x <= conveyorXBound.current) {
-                    obj.position.x += (10 * conveyerOffset);
+                    obj.position.x += (12 * conveyerOffset);
                 }
             }
         });
@@ -719,6 +804,31 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
                 }
             }   
         });
+
+        // ConveyerXX1 and ConveyerXX2 - move in -Z direction
+        conveyorXX1Ref.current.forEach((obj) => {
+            if (isInExperienceViewRef.current) {
+                const initialZ = conveyorInitialWorldXX1Ref.current.get(obj);
+                obj.position.z = initialZ;
+            } else {
+                obj.position.z += conveyerYSpeed;
+                if(obj.position.z >= conveyorXXBound.current) {
+                    obj.position.z -= (7 * conveyerXXOffset);
+                }
+            }
+        });
+
+        conveyorXX2Ref.current.forEach((obj) => {
+            if (isInExperienceViewRef.current) {
+                const initialZ = conveyorInitialWorldXX2Ref.current.get(obj);
+                obj.position.z = initialZ;
+            } else {
+                obj.position.z += conveyerYSpeed;
+                if(obj.position.z >= conveyorXXBound.current) {
+                    obj.position.z -= (7 * conveyerXXOffset);
+                }
+            }
+        });
     });
     return (
     <>
@@ -729,7 +839,6 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
                 let obj = e.object;
                 while (obj) {
                     if (obj.userData.clickable) {
-                        console.log("Button clicked:", obj.name);
                         if (obj.userData.backButton) {
                             // Back button clicked - return to start position
                             if (startPos) {
@@ -771,6 +880,9 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
                             isInSkillsViewRef.current = false;
                             // Store initial experience position
                             initialExperiencePosRef.current = [...experiencePos];
+                            // Calculate max position (6 experiences, so 5 scrolls away at -1.1 units each)
+                            const numExperiences = Object.keys(EXPERIENCE_DATA).length;
+                            maxExperiencePosRef.current = experiencePos[0] - ((numExperiences - 1) * 1.1);
                             if (setNotHome) {
                                 setNotHome(true);
                             }
@@ -809,8 +921,35 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
                             if (setNotHome) {
                                 setNotHome(true);
                             }
+                        } else if (obj.name === "Contact" && contactPos) {
+                            targetCameraPosRef.current = contactPos;
+                            if (contactOrientation && contactOrientation.length === 4) {
+                                targetCameraRotationRef.current = contactOrientation;
+                                isQuaternionRotationRef.current = true;
+                            } else if (contactOrientation && contactOrientation.length === 3) {
+                                targetCameraRotationRef.current = contactOrientation;
+                                isQuaternionRotationRef.current = false;
+                            }
+                            isInExperienceViewRef.current = false;
+                            isInProjectsViewRef.current = false;
+                            isInSkillsViewRef.current = false;
+                            if (setNotHome) {
+                                setNotHome(true);
+                            }
                         }
                         break;
+                    }
+                    if (obj.userData.contactButton) {
+                        // Handle contact button clicks
+                        let url = "xxx";
+                        if (obj.name === "Contact1") {
+                            url = "https://www.linkedin.com/in/satvikvejendla/";
+                        } else if (obj.name === "Contact2") {
+                            url = "https://github.com/SatvikVejendla";
+                        } else if (obj.name === "Contact3") {
+                            url = "mailto:satvej1@gmail.com";
+                        }
+                        window.open(url, '_blank');
                     }
                     obj = obj.parent;
                 }
@@ -826,7 +965,7 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
                 let obj = e.object;
                 let foundClickable = null;
                 while (obj) {
-                    if (obj.userData.clickable) {
+                    if (obj.userData.clickable || obj.userData.contactButton) {
                         foundClickable = obj;
                         break;
                     }
@@ -835,9 +974,11 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
                 
                 if (foundClickable) {
                     hoveredRef.current = foundClickable;
+                    document.body.style.cursor = 'pointer';
                 } else {
                     // Entering a non-clickable object, clear hover state
                     hoveredRef.current = null;
+                    document.body.style.cursor = 'default';
                 }
             }}
             onPointerLeave={(e) => {
@@ -852,6 +993,7 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
                     // Only clear if we're still not hovering over the same clickable parent
                     if (hoveredRef.current) {
                         hoveredRef.current = null;
+                        document.body.style.cursor = 'default';
                     }
                     leaveTimeoutRef.current = null;
                 }, 50);
@@ -897,7 +1039,7 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
                 currentX += skillWidths[i] + spacing;
             }
 
-            const yOffset = isInExperienceViewRef.current ? 0.12 : 0.0;
+            const yOffset = isInExperienceViewRef.current ? 0.12 : -2;
             
             return (
                 <group
@@ -1052,7 +1194,7 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
         })}
         
         {/* Render all projects */}
-        {[
+        {isInProjectsViewRef.current && [
             { ref: project1Ref, dataIndex: 0 },
             { ref: project2Ref, dataIndex: 1 },
             { ref: project3Ref, dataIndex: 2 },
@@ -1510,7 +1652,7 @@ export default function Home() {
   const startPos = [-13.02, 6.97, 16.93];
   const startOrientation = [-0.272, -0.2104, -0.0611, 0.9369];
 
-  const experiencePos = [1.3, 1.85, 8.23]
+  const experiencePos = [0, 1.7, 8.23]
   let experienceOrientation = [-0.3125, 0.632, 0.31, 0.637];
   experienceOrientation = [-Math.PI/2, 0.4, Math.PI/2]
 
@@ -1520,6 +1662,9 @@ export default function Home() {
   const projectsPos = [13, 8.100067593683567, 18.19]
   const projectsOrientation = [-0.336587765327058, -0.6261384540936206, -0.34334245349623266, 0.613820227888081]
   
+  const contactPos = [-0.4146436123457941, 1.4727768124979945, 23.11021149327466];
+  let contactOrientation = [0, 0, 0, 1]
+  contactOrientation = [0, 0, 0]
   return (
     <div style={{ width: "100vw", height: "100vh", position: "relative" }}>
       {/* Back Button */}
@@ -1646,7 +1791,7 @@ export default function Home() {
             decay={0.4}
           />
           {/* Image-based lighting can over-brighten the scene; dial it down or remove */}
-          <Environment preset="sunset" intensity={0} />
+          <Environment preset="city" intensity={4} />
           <CameraController rotation={startOrientation} />
           {DEBUG_MODE && <OrbitControls />}
 
@@ -1662,6 +1807,8 @@ export default function Home() {
             skillsOrientation={skillsOrientation}
             projectsPos={projectsPos}
             projectsOrientation={projectsOrientation}
+            contactPos={contactPos}
+            contactOrientation={contactOrientation}
             onBackButtonClick={backButtonHandlerRef}
             setNotHome={setNotHome}
           />
