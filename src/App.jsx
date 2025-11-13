@@ -1169,6 +1169,175 @@ function Factory({ aboutMePos, aboutMeRotation, startPos, startOrientation, expe
             );
         })}
         
+        {/* Scroll indicator next to last experience card */}
+        {isInExperienceViewRef.current && teachshareRef.current && (
+            <Html
+                position={[
+                    teachshareRef.current.position.x,
+                    teachshareRef.current.position.y + 0.10,
+                    teachshareRef.current.position.z - 0.7
+                ]}
+                rotation={[-Math.PI/2, 0, Math.PI/2]}
+                transform
+                distanceFactor={0.8}
+                scale={0.5}
+                style={{
+                    pointerEvents: 'none',
+                    userSelect: 'none',
+                }}
+            >
+                <div style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: '24px 24px',
+                    background: 'linear-gradient(135deg, rgba(15, 15, 26, 1) 0%, rgba(31, 31, 51, 1) 100%)',
+                    border: '4px solid rgba(79, 70, 229, 0.5)',
+                    borderRadius: '24px',
+                    minWidth: '160px',
+                }}>
+                    {/* Animated down arrow */}
+                    <div style={{
+                        width: '60px',
+                        height: '100px',
+                        border: '4px solid rgba(129, 140, 248, 0.6)',
+                        borderRadius: '50px',
+                        position: 'relative',
+                        marginBottom: '16px',
+                        background: 'rgba(15, 15, 26, 0.5)',
+                    }}>
+                        {/* Animated circle inside */}
+                        <div style={{
+                            width: '20px',
+                            height: '20px',
+                            backgroundColor: '#818cf8',
+                            borderRadius: '50%',
+                            position: 'absolute',
+                            left: '50%',
+                            transform: 'translateX(-50%)',
+                            top: '12px',
+                            animation: 'scroll 2s ease-in-out infinite',
+                            boxShadow: '0 0 5px rgba(129, 140, 248, 0.8)',
+                        }}></div>
+                    </div>
+                    
+                    {/* Scroll text */}
+                    <div style={{
+                        fontSize: '22px',
+                        fontWeight: '600',
+                        color: '#a5b4fc',
+                        letterSpacing: '4px',
+                        textTransform: 'uppercase',
+                        fontFamily: 'system-ui, -apple-system, sans-serif',
+                    }}>
+                        Scroll
+                    </div>
+                </div>
+                
+                <style>{`
+                    @keyframes scroll {
+                        0% {
+                            top: 24px;
+                            opacity: 1;
+                        }
+                        50% {
+                            top: 60px;
+                            opacity: 1;
+                        }
+                        100% {
+                            top: 24px;
+                            opacity: 1;
+                        }
+                    }
+                `}</style>
+            </Html>
+        )}
+        
+        {/* Scroll indicator for projects view */}
+        {isInProjectsViewRef.current && project1Ref.current && (
+            <Html
+                position={[
+                    project1Ref.current.position.x - 8.5,
+                    project1Ref.current.position.y + 0.2,
+                    project1Ref.current.position.z + 7
+                ]}
+                rotation={[Math.PI/2, Math.PI, Math.PI/2]}
+                transform
+                distanceFactor={0.8}
+                scale={6}
+                style={{
+                    pointerEvents: 'none',
+                    userSelect: 'none',
+                }}
+            >
+                <div style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: '24px 24px',
+                    background: 'linear-gradient(135deg, rgba(15, 15, 26, 1) 0%, rgba(31, 31, 51, 1) 100%)',
+                    border: '4px solid rgba(79, 70, 229, 0.5)',
+                    borderRadius: '24px',
+                    minWidth: '160px',
+                }}>
+                    {/* Pill-shaped scroll indicator */}
+                    <div style={{
+                        width: '200px',
+                        height: '60px',
+                        border: '4px solid rgba(31, 31, 51, 1)',
+                        borderRadius: '50px',
+                        position: 'relative',
+                        marginBottom: '16px',
+                        background: 'rgba(31, 31, 51, 1)',
+                    }}>
+                        {/* Animated circle inside */}
+                        <div style={{
+                            width: '30px',
+                            height: '30px',
+                            backgroundColor: '#a5b4fc',
+                            borderRadius: '50%',
+                            position: 'absolute',
+                            transform: 'translateX(-50%) translateY(-50%)',
+                            top: '50%',
+                            animation: 'scrollProjects 3s ease-in-out infinite',
+                            boxShadow: '0 0 5px rgba(31, 31, 51, 1)',
+                        }}></div>
+                    </div>
+                    
+                    {/* Scroll text */}
+                    <div style={{
+                        fontSize: '22px',
+                        fontWeight: '600',
+                        color: '#a5b4fc',
+                        letterSpacing: '4px',
+                        textTransform: 'uppercase',
+                        fontFamily: 'system-ui, -apple-system, sans-serif',
+                    }}>
+                        Scroll
+                    </div>
+                </div>
+                
+                <style>{`
+                    @keyframes scrollProjects {
+                        0% {
+                            left: 30px;
+                            opacity: 1;
+                        }
+                        50% {
+                            left: 170px;
+                            opacity: 1;
+                        }
+                        100% {
+                            left: 30px;
+                            opacity: 1;
+                        }
+                    }
+                `}</style>
+            </Html>
+        )}
+        
         {/* Render skills on ConveyorY tiles */}
         {isInSkillsViewRef.current && [
             { conveyorRef: conveyorY1Ref, skillsIndex: 0 },
@@ -1659,7 +1828,7 @@ export default function Home() {
   const skillsPos = [14.93, 6.26, -5.02];
   const skillsOrientation = [-Math.PI/2, 0, 0];
 
-  const projectsPos = [13, 8.100067593683567, 18.19]
+  const projectsPos = [12, 8.100067593683567, 18.19]
   const projectsOrientation = [-0.336587765327058, -0.6261384540936206, -0.34334245349623266, 0.613820227888081]
   
   const contactPos = [-0.4146436123457941, 1.4727768124979945, 23.11021149327466];
