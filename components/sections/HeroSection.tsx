@@ -17,11 +17,10 @@ const BOOT_LINES = [
 ];
 
 const SPEC_METRICS = [
-  { label: "Languages", value: "12+", bar: 92, color: "var(--cyan)" },
-  { label: "Frameworks", value: "15+", bar: 88, color: "var(--purple)" },
-  { label: "Internships", value: "3", bar: 75, color: "var(--green)" },
-  { label: "LLM / AI Ops", value: "Expert", bar: 95, color: "var(--pink)" },
-  { label: "CUDA / Compute", value: "Deep", bar: 80, color: "var(--orange)" },
+  { label: "Languages & Frameworks", value: "30+", bar: 92, color: "var(--cyan)" },
+  { label: "Internship Experience", value: "14 months", bar: 75, color: "var(--green)" },
+  { label: "Projects", value: "20+", bar: 95, color: "var(--pink)" },
+  { label: "Years of Coding", value: "7 years", bar: 80, color: "var(--orange)" },
 ];
 
 function useTerminalBoot() {
@@ -209,20 +208,11 @@ function MetricBar({ label, value, bar, color, delay }: {
 
   return (
     <div className="flex flex-col gap-1.5">
-      <div className="flex justify-between items-center" style={{ fontSize: "0.8rem" }}>
+      <div className="flex justify-between items-center" style={{ fontSize: "1rem" }}>
         <span style={{ color: "var(--muted-bright)", letterSpacing: "0.08em" }}>{label}</span>
         <span style={{ color, fontWeight: 700 }}>{value}</span>
       </div>
       <div className="gpu-progress-bar">
-        <div
-          className="gpu-progress-fill"
-          style={{
-            width: filled ? `${bar}%` : "0%",
-            background: `linear-gradient(90deg, ${color}44, ${color})`,
-            boxShadow: `0 0 6px ${color}`,
-            transition: "width 1.2s cubic-bezier(0.4,0,0.2,1)",
-          }}
-        />
       </div>
     </div>
   );
@@ -382,7 +372,8 @@ export default function HeroSection() {
             </div>
 
             {/* Main content */}
-            <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-0">
+            <div className="flex-1 flex flex-col">
+            <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-0 w-[90%] mx-auto">
               {/* Left: Identity */}
               <div className="flex flex-col justify-center px-8 md:px-16 py-12">
                 <motion.div
@@ -442,7 +433,7 @@ export default function HeroSection() {
                 >
                   <div
                     style={{
-                      fontSize: "1rem",
+                      fontSize: "1.5rem",
                       color: "var(--muted-bright)",
                       letterSpacing: "0.12em",
                       fontFamily: "var(--font-geist-mono)",
@@ -452,7 +443,7 @@ export default function HeroSection() {
                   </div>
                   <div
                     style={{
-                      fontSize: "0.9rem",
+                      fontSize: "1.2rem",
                       color: "var(--muted)",
                       letterSpacing: "0.08em",
                       fontFamily: "var(--font-geist-mono)",
@@ -467,11 +458,11 @@ export default function HeroSection() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 1.0 }}
-                  className="mt-8 flex flex-wrap gap-2"
+                  className="mt-8 flex flex-wrap gap-6"
                 >
                   {[
                     { text: "SWE @ TeachShare", color: "var(--cyan)" },
-                    { text: "SWE @ J.P. Morgan", color: "var(--purple)" },
+                    { text: "Prev @ J.P. Morgan", color: "var(--purple)" },
                     { text: "CUDA Engineer", color: "var(--orange)" },
                   ].map(({ text, color }) => (
                     <span
@@ -480,19 +471,17 @@ export default function HeroSection() {
                       style={{
                         borderColor: color,
                         color,
-                        fontSize: "0.75rem",
-                        letterSpacing: "0.12em",
+                        fontSize: "1.3rem",
+                        letterSpacing: "0.2em",
+                        wordSpacing: "-0.4em",
                         padding: "4px 12px",
                       }}
                     >
                       <span
                         style={{
                           display: "inline-block",
-                          width: "4px",
-                          height: "4px",
                           borderRadius: "50%",
                           background: color,
-                          marginRight: "4px",
                           boxShadow: `0 0 4px ${color}`,
                         }}
                       />
@@ -501,39 +490,14 @@ export default function HeroSection() {
                   ))}
                 </motion.div>
 
-                {/* Scroll cue */}
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 1.4 }}
-                  className="mt-12 flex flex-col gap-2"
-                >
-                  <div
-                    style={{
-                      fontSize: "0.6rem",
-                      letterSpacing: "0.3em",
-                      color: "var(--muted)",
-                      fontFamily: "var(--font-geist-mono)",
-                    }}
-                  >
-                    SCROLL TO INITIALIZE
-                  </div>
-                  <motion.div
-                    animate={{ y: [0, 6, 0] }}
-                    transition={{ duration: 1.5, repeat: Infinity }}
-                    style={{ color: "var(--cyan)", fontSize: "1.2rem" }}
-                  >
-                    ↓
-                  </motion.div>
-                </motion.div>
               </div>
 
               {/* Right: GPU Spec Card + Die Art */}
-              <div className="flex flex-col items-center justify-center px-8 py-12 gap-8">
+              <div className="flex flex-col items-center justify-center px-8 py-12 gap-24">
                 {/* GPU Die art */}
                 <motion.div
                   initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
+                  animate={{ opacity: 1, scale: 2 }}
                   transition={{ delay: 0.6, duration: 0.8, type: "spring" }}
                   className="relative w-56 h-56 md:w-80 md:h-80"
                   style={{
@@ -558,46 +522,25 @@ export default function HeroSection() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.9 }}
-                  className="gpu-panel gpu-panel-cyan corner-marks w-full max-w-lg p-6"
+                  className="gpu-panel gpu-panel-cyan corner-marks w-full max-w-lg"
                 >
                   <div
-                    className="flex items-center justify-between mb-4 pb-3"
-                    style={{ borderBottom: "1px solid var(--border)" }}
+                    className="flex items-center justify-between mb-3 pb-3 bg-cyan-500/30 px-5 pt-4"
+                    style={{ borderBottom: "3px solid var(--border)" }}
                   >
                     <span
                       style={{
-                        fontSize: "0.8rem",
-                        letterSpacing: "0.2em",
+                        fontSize: "1.2rem",
+                        letterSpacing: "0.1em",
                         color: "var(--cyan)",
                         fontFamily: "var(--font-geist-mono)",
                       }}
                     >
                       PERFORMANCE METRICS
                     </span>
-                    <span className="led" />
-                  </div>
-                  <div className="flex flex-col gap-3">
-                    {SPEC_METRICS.map((m, i) => (
-                      <MetricBar key={m.label} {...m} delay={i * 150} />
-                    ))}
-                  </div>
-                  <div
-                    className="mt-4 pt-3 flex items-center justify-between"
-                    style={{ borderTop: "1px solid var(--border)" }}
-                  >
                     <span
                       style={{
-                        fontSize: "0.7rem",
-                        color: "var(--muted)",
-                        letterSpacing: "0.08em",
-                        fontFamily: "var(--font-geist-mono)",
-                      }}
-                    >
-                      PROCESS: Northwestern + Rutgers
-                    </span>
-                    <span
-                      style={{
-                        fontSize: "0.7rem",
+                        fontSize: "1.2rem",
                         color: "var(--green)",
                         letterSpacing: "0.1em",
                       }}
@@ -605,30 +548,44 @@ export default function HeroSection() {
                       ● READY
                     </span>
                   </div>
+                  <div className="flex flex-col gap-3 px-6 pb-4 pt-1">
+                    {SPEC_METRICS.map((m, i) => (
+                      <MetricBar key={m.label} {...m} delay={i * 150} />
+                    ))}
+                  </div>
                 </motion.div>
               </div>
             </div>
+            <div className="flex flex-col items-center justify-center">
+              
+                {/* Scroll cue */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 1.4 }}
+                  className="mb-4 -translate-y-20 flex flex-col gap-2 justify-center items-center"
+                >
+                  <div
+                    style={{
+                      fontSize: "1.2rem",
+                      letterSpacing: "0.3em",
+                      color: "var(--muted)",
+                      fontFamily: "var(--font-geist-mono)",
+                    }}
+                  >
+                    SCROLL TO INITIALIZE
+                  </div>
+                  <motion.div
+                    animate={{ y: [0, 6, 0] }}
+                    transition={{ duration: 1.5, repeat: Infinity }}
+                    style={{ color: "var(--muted)", fontSize: "1.6rem" }}
+                  >
+                    ↓
+                  </motion.div>
+                </motion.div>
+            </div>
+            </div>
 
-            {/* Bottom status bar */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.2 }}
-              className="px-8 py-3 flex items-center justify-between border-t"
-              style={{ borderColor: "var(--border)", fontSize: "0.6rem" }}
-            >
-              <div className="flex items-center gap-4" style={{ color: "var(--muted)", letterSpacing: "0.1em" }}>
-                <span style={{ color: "var(--cyan)" }}>SV.GPU</span>
-                <span>|</span>
-                <span>satvej1@gmail.com</span>
-                <span>|</span>
-                <span>satvikvejendla.com</span>
-              </div>
-              <div className="flex items-center gap-3" style={{ color: "var(--muted)" }}>
-                <span className="led led-cyan" style={{ width: "4px", height: "4px" }} />
-                <span style={{ letterSpacing: "0.2em" }}>ALL SYSTEMS OPERATIONAL</span>
-              </div>
-            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
