@@ -4,16 +4,15 @@ import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const BOOT_LINES = [
-  { text: "SATVIK VEJENDLA v2026.1", delay: 0, color: "var(--muted)" },
-  { text: "Copyright (C) 2026 Satvik Vejendla. All rights reserved.", delay: 400, color: "var(--muted)" },
-  { text: "", delay: 700 },
-  { text: "Detecting compute cores.......... [16,384 CUDA / 512 Tensor]", delay: 900, color: "var(--green)" },
-  { text: "Verifying DRAM.................. [global memory online     ]", delay: 1400, color: "var(--green)" },
-  { text: "Calibrating AI Engine........... [9.8 PFLOPS FP8 Sparse    ]", delay: 1900, color: "var(--cyan)" },
-  { text: "Loading ML Frameworks........... [TensorFlow / PyTorch / LLM]", delay: 2300, color: "var(--cyan)" },
-  { text: "Initializing schedulers......... [warp dispatch enabled    ]", delay: 2700, color: "var(--purple)" },
-  { text: "", delay: 3000 },
-  { text: "System ready. Launching portfolio interface...", delay: 3200, color: "var(--orange)" },
+  { text: "SATVIK VEJENDLA v2026.1", delay: 300, color: "var(--muted)" },
+  { text: "", delay: 300 },
+  { text: "Detecting compute cores.......... [16,384 CUDA / 512 Tensor]", delay: 600, color: "var(--green)" },
+  { text: "Verifying DRAM.................. [global memory online     ]", delay: 700, color: "var(--green)" },
+  { text: "Calibrating AI Engine........... [9.8 PFLOPS FP8 Sparse    ]", delay: 800, color: "var(--cyan)" },
+  { text: "Loading ML Frameworks........... [TensorFlow / PyTorch / LLM]", delay: 900, color: "var(--cyan)" },
+  { text: "Initializing schedulers......... [warp dispatch enabled    ]", delay: 1000, color: "var(--purple)" },
+  { text: "", delay: 1300 },
+  { text: "System ready. Launching portfolio interface...", delay: 1500, color: "var(--orange)" },
 ];
 
 function useTerminalBoot() {
@@ -26,7 +25,8 @@ function useTerminalBoot() {
         setVisibleLines((prev) => [...prev, idx]);
       }, delay);
     });
-    setTimeout(() => setBootDone(true), 3800);
+    setTimeout(() => setBootDone(true), 2000);
+
   }, []);
 
   return { visibleLines, bootDone };
@@ -264,7 +264,7 @@ export default function HeroSection() {
             style={{ background: "var(--bg)" }}
           >
             <div
-              className="w-full max-w-2xl"
+              className="w-full max-w-4xl"
               style={{
                 fontFamily: "var(--font-geist-mono)",
                 fontSize: "0.75rem",
@@ -278,7 +278,7 @@ export default function HeroSection() {
                       initial={{ opacity: 0, x: -8 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ duration: 0.2 }}
-                      style={{ color: color ?? "transparent", minHeight: "1.3em" }}
+                      style={{ color: color ?? "transparent", minHeight: "1.3em", fontSize: "1.5rem" }}
                     >
                       {text}
                     </motion.div>
