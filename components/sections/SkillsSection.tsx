@@ -142,15 +142,16 @@ function SkillCore({ skill, color, delay }: { skill: string; color: string; dela
   );
 }
 
-function ClusterBlock({ cluster, isActive, onClick }: {
+function ClusterBlock({ cluster, isActive, onHover }: {
   cluster: typeof SKILL_CLUSTERS[0];
   isActive: boolean;
-  onClick: () => void;
+  onHover: (id: string | null) => void;
 }) {
   return (
     <motion.div
-      className="gpu-panel relative overflow-hidden cursor-pointer"
-      onClick={onClick}
+      className="gpu-panel relative overflow-hidden"
+      onMouseEnter={() => onHover(cluster.id)}
+      onMouseLeave={() => onHover(null)}
       animate={{
         borderColor: isActive
           ? `color-mix(in srgb, ${cluster.color} 60%, var(--border))`
@@ -160,6 +161,7 @@ function ClusterBlock({ cluster, isActive, onClick }: {
           : "none",
       }}
       style={{
+        cursor: "default",
         background: isActive
           ? `linear-gradient(135deg, color-mix(in srgb, ${cluster.color} 8%, var(--surface)), var(--surface))`
           : "var(--surface)",
@@ -253,10 +255,6 @@ export default function SkillsSection() {
 
   const active = SKILL_CLUSTERS.find((c) => c.id === activeCluster);
 
-  const toggleCluster = (id: string) => {
-    setActiveCluster((prev) => (prev === id ? null : id));
-  };
-
   return (
     <section
       id="skills"
@@ -311,9 +309,9 @@ export default function SkillsSection() {
                 letterSpacing: "0.1em",
               }}
             >
-              <div>HOVER CORES FOR DETAILS</div>
+              <div>HOVER CORES FOR SKILL NAME</div>
               <div style={{ color: "var(--green)", marginTop: "4px" }}>
-                CLICK CLUSTER TO HIGHLIGHT
+                HOVER CLUSTER TO INSPECT
               </div>
             </div>
           </div>
@@ -384,7 +382,7 @@ export default function SkillsSection() {
                     <ClusterBlock
                       cluster={cluster}
                       isActive={activeCluster === cluster.id}
-                      onClick={() => toggleCluster(cluster.id)}
+                      onHover={setActiveCluster}
                     />
                   </div>
                 ))}
@@ -522,7 +520,7 @@ export default function SkillsSection() {
                     className="mt-6"
                     style={{ fontSize: "0.6rem", color: "var(--muted)", fontFamily: "var(--font-geist-mono)", lineHeight: 1.8, letterSpacing: "0.05em" }}
                   >
-                    <div>← CLICK A CLUSTER IN THE</div>
+                    <div>← HOVER A CLUSTER IN THE</div>
                     <div style={{ color: "var(--cyan)" }}>   DIE SHOT TO INSPECT</div>
                   </div>
                 </motion.div>
@@ -541,11 +539,13 @@ export default function SkillsSection() {
                 CLUSTER MAP
               </div>
               <div className="flex flex-col gap-2">
-                {SKILL_CLUSTERS.map((c) => (
+                  {SKILL_CLUSTERS.map((c) => (
                   <div
                     key={c.id}
-                    className="flex items-center gap-2 cursor-pointer"
-                    onClick={() => toggleCluster(c.id)}
+                    className="flex items-center gap-2"
+                    onMouseEnter={() => setActiveCluster(c.id)}
+                    onMouseLeave={() => setActiveCluster(null)}
+                    style={{ cursor: "default" }}
                   >
                     <div
                       style={{

@@ -208,10 +208,10 @@ function MetricBar({ label, value, bar, color, delay }: {
   }, [delay]);
 
   return (
-    <div className="flex flex-col gap-1">
-      <div className="flex justify-between items-center" style={{ fontSize: "0.65rem" }}>
-        <span style={{ color: "var(--muted-bright)", letterSpacing: "0.1em" }}>{label}</span>
-        <span style={{ color, fontWeight: 600 }}>{value}</span>
+    <div className="flex flex-col gap-1.5">
+      <div className="flex justify-between items-center" style={{ fontSize: "0.8rem" }}>
+        <span style={{ color: "var(--muted-bright)", letterSpacing: "0.08em" }}>{label}</span>
+        <span style={{ color, fontWeight: 700 }}>{value}</span>
       </div>
       <div className="gpu-progress-bar">
         <div
@@ -405,10 +405,10 @@ export default function HeroSection() {
                     className="glitch"
                     data-text="SATVIK"
                     style={{
-                      fontSize: "clamp(3.5rem, 8vw, 7rem)",
+                      fontSize: "clamp(4.5rem, 10vw, 9.5rem)",
                       fontWeight: 900,
-                      letterSpacing: "-0.02em",
-                      lineHeight: 0.9,
+                      letterSpacing: "-0.03em",
+                      lineHeight: 0.88,
                       color: "var(--text)",
                       fontFamily: "var(--font-geist-sans)",
                     }}
@@ -419,14 +419,14 @@ export default function HeroSection() {
                     className="glitch"
                     data-text="VEJENDLA"
                     style={{
-                      fontSize: "clamp(3.5rem, 8vw, 7rem)",
+                      fontSize: "clamp(4.5rem, 10vw, 9.5rem)",
                       fontWeight: 900,
-                      letterSpacing: "-0.02em",
-                      lineHeight: 0.9,
+                      letterSpacing: "-0.03em",
+                      lineHeight: 0.88,
                       color: "var(--cyan)",
                       fontFamily: "var(--font-geist-sans)",
                       textShadow:
-                        "0 0 40px rgba(34,211,238,0.4), 0 0 80px rgba(34,211,238,0.15)",
+                        "0 0 60px rgba(34,211,238,0.5), 0 0 120px rgba(34,211,238,0.2)",
                     }}
                   >
                     VEJENDLA
@@ -442,9 +442,9 @@ export default function HeroSection() {
                 >
                   <div
                     style={{
-                      fontSize: "0.8rem",
+                      fontSize: "1rem",
                       color: "var(--muted-bright)",
-                      letterSpacing: "0.15em",
+                      letterSpacing: "0.12em",
                       fontFamily: "var(--font-geist-mono)",
                     }}
                   >
@@ -452,9 +452,9 @@ export default function HeroSection() {
                   </div>
                   <div
                     style={{
-                      fontSize: "0.75rem",
+                      fontSize: "0.9rem",
                       color: "var(--muted)",
-                      letterSpacing: "0.1em",
+                      letterSpacing: "0.08em",
                       fontFamily: "var(--font-geist-mono)",
                     }}
                   >
@@ -480,8 +480,9 @@ export default function HeroSection() {
                       style={{
                         borderColor: color,
                         color,
-                        fontSize: "0.6rem",
-                        letterSpacing: "0.15em",
+                        fontSize: "0.75rem",
+                        letterSpacing: "0.12em",
+                        padding: "4px 12px",
                       }}
                     >
                       <span
@@ -534,7 +535,7 @@ export default function HeroSection() {
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.6, duration: 0.8, type: "spring" }}
-                  className="relative w-48 h-48 md:w-64 md:h-64"
+                  className="relative w-56 h-56 md:w-80 md:h-80"
                   style={{
                     filter: "drop-shadow(0 0 20px rgba(34,211,238,0.3))",
                   }}
@@ -557,7 +558,7 @@ export default function HeroSection() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.9 }}
-                  className="gpu-panel gpu-panel-cyan corner-marks w-full max-w-sm p-5"
+                  className="gpu-panel gpu-panel-cyan corner-marks w-full max-w-lg p-6"
                 >
                   <div
                     className="flex items-center justify-between mb-4 pb-3"
@@ -565,8 +566,8 @@ export default function HeroSection() {
                   >
                     <span
                       style={{
-                        fontSize: "0.65rem",
-                        letterSpacing: "0.25em",
+                        fontSize: "0.8rem",
+                        letterSpacing: "0.2em",
                         color: "var(--cyan)",
                         fontFamily: "var(--font-geist-mono)",
                       }}
@@ -586,9 +587,9 @@ export default function HeroSection() {
                   >
                     <span
                       style={{
-                        fontSize: "0.55rem",
+                        fontSize: "0.7rem",
                         color: "var(--muted)",
-                        letterSpacing: "0.1em",
+                        letterSpacing: "0.08em",
                         fontFamily: "var(--font-geist-mono)",
                       }}
                     >
@@ -596,7 +597,7 @@ export default function HeroSection() {
                     </span>
                     <span
                       style={{
-                        fontSize: "0.55rem",
+                        fontSize: "0.7rem",
                         color: "var(--green)",
                         letterSpacing: "0.1em",
                       }}

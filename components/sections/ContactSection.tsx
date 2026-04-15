@@ -60,7 +60,7 @@ function TerminalOutput() {
     <div
       style={{
         fontFamily: "var(--font-geist-mono)",
-        fontSize: "0.7rem",
+        fontSize: "0.9rem",
         lineHeight: "1.8",
       }}
     >
@@ -162,11 +162,11 @@ export default function ContactSection() {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, type: "spring" }}
-            className="w-full max-w-4xl"
+            className="w-full max-w-6xl"
           >
             {/* Monitor outer frame */}
             <div
-              className="relative p-6 md:p-10"
+              className="relative p-8 md:p-14"
               style={{
                 border: "2px solid var(--border-bright)",
                 background: "var(--surface)",
@@ -196,8 +196,8 @@ export default function ContactSection() {
                   <span className="led" />
                   <span
                     style={{
-                      fontSize: "0.6rem",
-                      letterSpacing: "0.3em",
+                      fontSize: "0.8rem",
+                      letterSpacing: "0.25em",
                       color: "var(--cyan)",
                       fontFamily: "var(--font-geist-mono)",
                     }}
@@ -207,7 +207,7 @@ export default function ContactSection() {
                 </div>
                 <div
                   style={{
-                    fontSize: "0.55rem",
+                    fontSize: "0.75rem",
                     color: "var(--muted)",
                     fontFamily: "var(--font-geist-mono)",
                     letterSpacing: "0.15em",
@@ -229,7 +229,7 @@ export default function ContactSection() {
                   >
                     <h2
                       style={{
-                        fontSize: "clamp(2rem, 4vw, 3.5rem)",
+                        fontSize: "clamp(2.8rem, 5vw, 5rem)",
                         fontWeight: 900,
                         letterSpacing: "-0.02em",
                         color: "var(--text)",
@@ -251,12 +251,12 @@ export default function ContactSection() {
                     </h2>
                     <p
                       style={{
-                        fontSize: "0.75rem",
+                        fontSize: "1rem",
                         color: "var(--muted-bright)",
                         fontFamily: "var(--font-geist-mono)",
-                        lineHeight: 1.7,
-                        marginTop: "16px",
-                        marginBottom: "24px",
+                        lineHeight: 1.8,
+                        marginTop: "20px",
+                        marginBottom: "28px",
                       }}
                     >
                       Open to internship and full-time opportunities in AI engineering,
@@ -283,7 +283,7 @@ export default function ContactSection() {
                         href={link.href}
                         target={link.href.startsWith("http") ? "_blank" : undefined}
                         rel="noopener noreferrer"
-                        className="flex items-center gap-4 p-4 group"
+                        className="flex items-center gap-5 p-5 group"
                         style={{
                           border: "1px solid",
                           borderColor: hoveredLink === link.label
@@ -304,7 +304,7 @@ export default function ContactSection() {
                             color: hoveredLink === link.label ? link.color : "var(--muted)",
                             textShadow: hoveredLink === link.label ? `0 0 8px ${link.color}` : "none",
                           }}
-                          style={{ fontSize: "1rem", flexShrink: 0 }}
+                          style={{ fontSize: "1.3rem", flexShrink: 0 }}
                         >
                           {link.icon}
                         </motion.span>
@@ -313,19 +313,19 @@ export default function ContactSection() {
                         <div className="flex-1 min-w-0">
                           <div
                             style={{
-                              fontSize: "0.55rem",
-                              letterSpacing: "0.25em",
+                              fontSize: "0.7rem",
+                              letterSpacing: "0.2em",
                               color: link.color,
                               fontFamily: "var(--font-geist-mono)",
                               opacity: 0.7,
-                              marginBottom: "1px",
+                              marginBottom: "3px",
                             }}
                           >
                             {link.label} // {link.description}
                           </div>
                           <div
                             style={{
-                              fontSize: "0.75rem",
+                              fontSize: "1rem",
                               color: hoveredLink === link.label ? link.color : "var(--text)",
                               fontFamily: "var(--font-geist-mono)",
                               transition: "color 0.2s",
@@ -349,7 +349,7 @@ export default function ContactSection() {
                               handleCopy(link.value, link.label);
                             }}
                             style={{
-                              fontSize: "0.55rem",
+                              fontSize: "0.7rem",
                               color: copied === link.label ? "var(--green)" : link.color,
                               fontFamily: "var(--font-geist-mono)",
                               letterSpacing: "0.1em",
@@ -370,7 +370,7 @@ export default function ContactSection() {
                             x: hoveredLink === link.label ? 4 : 0,
                             color: hoveredLink === link.label ? link.color : "var(--muted)",
                           }}
-                          style={{ fontSize: "0.8rem", flexShrink: 0 }}
+                          style={{ fontSize: "1.1rem", flexShrink: 0 }}
                         >
                           →
                         </motion.span>
@@ -385,13 +385,13 @@ export default function ContactSection() {
                 className="mt-8 pt-6 flex items-center justify-between flex-wrap gap-4"
                 style={{ borderTop: "1px solid var(--border)" }}
               >
-                <div className="flex items-center gap-4" style={{ fontSize: "0.6rem", color: "var(--muted)", fontFamily: "var(--font-geist-mono)", letterSpacing: "0.1em" }}>
+                <div className="flex items-center gap-4" style={{ fontSize: "0.8rem", color: "var(--muted)", fontFamily: "var(--font-geist-mono)", letterSpacing: "0.1em" }}>
                   <div className="flex items-center gap-2">
-                    <span className="led" style={{ width: "5px", height: "5px" }} />
+                    <span className="led" style={{ width: "7px", height: "7px" }} />
                     <span>AVAILABLE FOR OPPORTUNITIES</span>
                   </div>
                 </div>
-                <div style={{ fontSize: "0.6rem", color: "var(--muted-bright)", fontFamily: "var(--font-geist-mono)", letterSpacing: "0.1em" }}>
+                <div style={{ fontSize: "0.8rem", color: "var(--muted-bright)", fontFamily: "var(--font-geist-mono)", letterSpacing: "0.1em" }}>
                   SATVIK VEJENDLA · 2026
                 </div>
               </div>
