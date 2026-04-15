@@ -1,0 +1,352 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #03030a;
+  --surface: #07071a;
+  --surface-2: #0d0d24;
+  --border: #1a1a3e;
+  --border-bright: #2a2a6e;
+  --cyan: #22d3ee;
+  --cyan-dim: #0e7490;
+  --purple: #a855f7;
+  --purple-dim: #6b21a8;
+  --orange: #f97316;
+  --orange-dim: #9a3412;
+  --green: #4ade80;
+  --green-dim: #166534;
+  --pink: #f472b6;
+  --red: #ef4444;
+  --text: #e2e8f0;
+  --muted: #475569;
+  --muted-bright: #64748b;
+  --glow-cyan: 0 0 10px rgba(34, 211, 238, 0.4), 0 0 30px rgba(34, 211, 238, 0.15), 0 0 60px rgba(34, 211, 238, 0.05);
+  --glow-purple: 0 0 10px rgba(168, 85, 247, 0.4), 0 0 30px rgba(168, 85, 247, 0.15);
+  --glow-orange: 0 0 10px rgba(249, 115, 22, 0.4), 0 0 30px rgba(249, 115, 22, 0.15);
+  --glow-green: 0 0 10px rgba(74, 222, 128, 0.4), 0 0 30px rgba(74, 222, 128, 0.15);
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: var(--font-geist-mono), 'Courier New', monospace;
+  overflow-x: hidden;
+  cursor: default;
+}
+
+/* ─── Custom scrollbar ─────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--cyan-dim);
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--cyan);
+}
+
+/* ─── GPU Circuit Grid Background ────────────────────────── */
+.circuit-bg {
+  background-color: var(--bg);
+  background-image:
+    linear-gradient(rgba(34, 211, 238, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34, 211, 238, 0.025) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+.circuit-bg-dense {
+  background-color: var(--surface);
+  background-image:
+    linear-gradient(rgba(34, 211, 238, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34, 211, 238, 0.04) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* ─── Scan Lines Overlay ──────────────────────────────────── */
+.scanlines {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.08) 2px,
+    rgba(0, 0, 0, 0.08) 4px
+  );
+}
+
+/* ─── Glitch Effect ───────────────────────────────────────── */
+.glitch {
+  position: relative;
+}
+.glitch::before,
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+}
+.glitch::before {
+  color: var(--cyan);
+  animation: glitch-before 3.5s infinite;
+  clip-path: inset(0 0 60% 0);
+}
+.glitch::after {
+  color: var(--purple);
+  animation: glitch-after 3.5s infinite;
+  clip-path: inset(60% 0 0 0);
+}
+
+@keyframes glitch-before {
+  0%, 90%, 100% { transform: translate(0); opacity: 0; }
+  91% { transform: translate(-3px, 1px); opacity: 0.8; }
+  92% { transform: translate(3px, -1px); opacity: 0.8; }
+  93% { transform: translate(-3px, 0); opacity: 0.6; }
+  94% { transform: translate(0); opacity: 0; }
+}
+@keyframes glitch-after {
+  0%, 88%, 100% { transform: translate(0); opacity: 0; }
+  89% { transform: translate(3px, -1px); opacity: 0.8; }
+  90% { transform: translate(-2px, 2px); opacity: 0.8; }
+  91% { transform: translate(2px, 0); opacity: 0.5; }
+  92% { transform: translate(0); opacity: 0; }
+}
+
+/* ─── Neon Glow Text ─────────────────────────────────────── */
+.text-glow-cyan {
+  color: var(--cyan);
+  text-shadow: 0 0 8px rgba(34, 211, 238, 0.8), 0 0 20px rgba(34, 211, 238, 0.4);
+}
+.text-glow-purple {
+  color: var(--purple);
+  text-shadow: 0 0 8px rgba(168, 85, 247, 0.8), 0 0 20px rgba(168, 85, 247, 0.4);
+}
+.text-glow-green {
+  color: var(--green);
+  text-shadow: 0 0 8px rgba(74, 222, 128, 0.8), 0 0 20px rgba(74, 222, 128, 0.4);
+}
+.text-glow-orange {
+  color: var(--orange);
+  text-shadow: 0 0 8px rgba(249, 115, 22, 0.8), 0 0 20px rgba(249, 115, 22, 0.4);
+}
+
+/* ─── GPU Panel / Card ───────────────────────────────────── */
+.gpu-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  position: relative;
+}
+.gpu-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(34, 211, 238, 0.03) 0%, transparent 60%);
+  pointer-events: none;
+}
+.gpu-panel-cyan {
+  border-color: rgba(34, 211, 238, 0.3);
+  box-shadow: inset 0 0 20px rgba(34, 211, 238, 0.03), 0 0 20px rgba(34, 211, 238, 0.05);
+}
+.gpu-panel-purple {
+  border-color: rgba(168, 85, 247, 0.3);
+  box-shadow: inset 0 0 20px rgba(168, 85, 247, 0.03), 0 0 20px rgba(168, 85, 247, 0.05);
+}
+.gpu-panel-orange {
+  border-color: rgba(249, 115, 22, 0.3);
+  box-shadow: inset 0 0 20px rgba(249, 115, 22, 0.03), 0 0 20px rgba(249, 115, 22, 0.05);
+}
+.gpu-panel-green {
+  border-color: rgba(74, 222, 128, 0.3);
+  box-shadow: inset 0 0 20px rgba(74, 222, 128, 0.03), 0 0 20px rgba(74, 222, 128, 0.05);
+}
+
+/* ─── Corner Markers ─────────────────────────────────────── */
+.corner-marks {
+  position: relative;
+}
+.corner-marks::before,
+.corner-marks::after {
+  content: '';
+  position: absolute;
+  width: 12px;
+  height: 12px;
+}
+.corner-marks::before {
+  top: -1px;
+  left: -1px;
+  border-top: 2px solid var(--cyan);
+  border-left: 2px solid var(--cyan);
+}
+.corner-marks::after {
+  bottom: -1px;
+  right: -1px;
+  border-bottom: 2px solid var(--cyan);
+  border-right: 2px solid var(--cyan);
+}
+
+/* ─── LED Pulse ──────────────────────────────────────────── */
+.led {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 6px var(--green), 0 0 12px rgba(74, 222, 128, 0.5);
+  animation: led-pulse 2s ease-in-out infinite;
+}
+.led-cyan {
+  background: var(--cyan);
+  box-shadow: 0 0 6px var(--cyan), 0 0 12px rgba(34, 211, 238, 0.5);
+}
+.led-orange {
+  background: var(--orange);
+  box-shadow: 0 0 6px var(--orange), 0 0 12px rgba(249, 115, 22, 0.5);
+  animation-duration: 1.5s;
+}
+
+@keyframes led-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* ─── Progress Bar ───────────────────────────────────────── */
+.gpu-progress-bar {
+  height: 3px;
+  background: var(--border);
+  border-radius: 0;
+  overflow: hidden;
+  position: relative;
+}
+.gpu-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--cyan-dim), var(--cyan));
+  box-shadow: 0 0 6px var(--cyan);
+  transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+.gpu-progress-fill::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 20px;
+  background: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.6));
+  animation: progress-shimmer 1.5s ease-in-out infinite;
+}
+@keyframes progress-shimmer {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
+}
+
+/* ─── Data Packet Flow ────────────────────────────────────── */
+@keyframes data-flow-x {
+  0% { transform: translateX(-100%); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateX(100%); opacity: 0; }
+}
+@keyframes data-flow-y {
+  0% { transform: translateY(-100%); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(200%); opacity: 0; }
+}
+
+/* ─── Blinking Cursor ────────────────────────────────────── */
+.cursor-blink::after {
+  content: '█';
+  animation: blink 1s step-end infinite;
+  color: var(--cyan);
+}
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* ─── Floating particles ─────────────────────────────────── */
+@keyframes float-particle {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.3; }
+  25% { transform: translate(var(--float-x, 10px), var(--float-y, -15px)) scale(1.2); opacity: 0.7; }
+  75% { transform: translate(calc(var(--float-x, 10px) * -0.5), calc(var(--float-y, -15px) * 0.7)) scale(0.8); opacity: 0.5; }
+}
+
+/* ─── Horizontal scroll container ───────────────────────── */
+.h-scroll-track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+}
+
+/* ─── CRT Monitor Effect ─────────────────────────────────── */
+.crt-vignette {
+  box-shadow:
+    inset 0 0 80px rgba(0, 0, 0, 0.7),
+    inset 0 0 40px rgba(0, 0, 0, 0.4);
+}
+
+/* ─── Section label ──────────────────────────────────────── */
+.section-label {
+  font-size: 0.65rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section-label::before {
+  content: '';
+  display: inline-block;
+  width: 20px;
+  height: 1px;
+  background: var(--muted);
+}
+
+/* ─── GPU Tag ────────────────────────────────────────────── */
+.gpu-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: 1px solid;
+  background: transparent;
+}
+
+/* ─── Noise overlay ──────────────────────────────────────── */
+.noise-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9998;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+  background-size: 128px 128px;
+}
+
+/* ─── Smooth entry animations ────────────────────────────── */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
