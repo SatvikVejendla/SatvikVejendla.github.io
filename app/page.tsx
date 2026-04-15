@@ -5,14 +5,12 @@ import ProjectsSection from "@/components/sections/ProjectsSection";
 import SkillsSection from "@/components/sections/SkillsSection";
 import ContactSection from "@/components/sections/ContactSection";
 import GpuNavigation from "@/components/ui/GpuNavigation";
-import ScanLines from "@/components/ui/ScanLines";
 
 export default function Page() {
   return (
     <>
       <div className="scanlines" />
       <div className="noise-overlay" />
-      <ScanLines />
       <GpuNavigation />
       <main className="circuit-bg">
         <HeroSection />

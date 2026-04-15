@@ -40,9 +40,7 @@ function useTerminalBoot() {
   return { visibleLines, bootDone };
 }
 
-function Particle({ x, y, size, duration, delay, color }: {
-  x: number; y: number; size: number; duration: number; delay: number; color: string;
-}) {
+function Particle({ x, y, size, duration, delay, color }: ParticleData) {
   return (
     <motion.div
       className="absolute rounded-full pointer-events-none"
@@ -70,19 +68,27 @@ function Particle({ x, y, size, duration, delay, color }: {
   );
 }
 
-const PARTICLES = Array.from({ length: 40 }, (_, i) => ({
-  x: Math.random() * 100,
-  y: Math.random() * 100,
-  size: Math.random() * 2 + 1,
-  duration: Math.random() * 4 + 3,
-  delay: Math.random() * 4,
-  color: [
-    "rgba(34,211,238,0.7)",
-    "rgba(168,85,247,0.7)",
-    "rgba(74,222,128,0.5)",
-    "rgba(249,115,22,0.5)",
-  ][Math.floor(Math.random() * 4)],
-}));
+const PARTICLE_COLORS = [
+  "rgba(34,211,238,0.7)",
+  "rgba(168,85,247,0.7)",
+  "rgba(74,222,128,0.5)",
+  "rgba(249,115,22,0.5)",
+];
+
+type ParticleData = {
+  x: number; y: number; size: number; duration: number; delay: number; color: string;
+};
+
+function makeParticles(): ParticleData[] {
+  return Array.from({ length: 40 }, () => ({
+    x: Math.random() * 100,
+    y: Math.random() * 100,
+    size: Math.random() * 2 + 1,
+    duration: Math.random() * 4 + 3,
+    delay: Math.random() * 4,
+    color: PARTICLE_COLORS[Math.floor(Math.random() * PARTICLE_COLORS.length)],
+  }));
+}
 
 function GpuDieArt() {
   return (
@@ -225,6 +231,11 @@ function MetricBar({ label, value, bar, color, delay }: {
 export default function HeroSection() {
   const { visibleLines, bootDone } = useTerminalBoot();
   const [showContent, setShowContent] = useState(false);
+  const [particles, setParticles] = useState<ParticleData[]>([]);
+
+  useEffect(() => {
+    setParticles(makeParticles());
+  }, []);
 
   useEffect(() => {
     if (bootDone) setTimeout(() => setShowContent(true), 300);
@@ -238,7 +249,7 @@ export default function HeroSection() {
     >
       {/* Particle field */}
       <div className="absolute inset-0 pointer-events-none">
-        {PARTICLES.map((p, i) => (
+        {particles.map((p, i) => (
           <Particle key={i} {...p} />
         ))}
       </div>
