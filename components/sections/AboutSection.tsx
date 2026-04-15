@@ -37,6 +37,48 @@ const COURSES = [
   "Discrete Math",
 ];
 
+const PERFORMANCE_METRICS = [
+  { label: "Languages & Frameworks", value: "30+", bar: 92, color: "var(--purple)" },
+  { label: "Internship Experience", value: "14 months", bar: 75, color: "var(--green)" },
+  { label: "Projects", value: "20+", bar: 95, color: "var(--cyan)" },
+  { label: "Years of Coding", value: "7 years", bar: 80, color: "var(--orange)" },
+];
+
+function MetricBar({
+  label,
+  value,
+  bar,
+  color,
+}: {
+  label: string;
+  value: string;
+  bar: number;
+  color: string;
+}) {
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="flex justify-between items-center" style={{ fontSize: "0.75rem" }}>
+        <span style={{ color: "var(--muted-bright)", letterSpacing: "0.08em", fontFamily: "var(--font-geist-mono)" }}>
+          {label}
+        </span>
+        <span style={{ color, fontWeight: 800, fontFamily: "var(--font-geist-mono)", textShadow: `0 0 10px ${color}` }}>
+          {value}
+        </span>
+      </div>
+      <div className="gpu-progress-bar">
+        <div
+          className="gpu-progress-fill"
+          style={{
+            width: `${bar}%`,
+            background: `linear-gradient(90deg, ${color}44, ${color})`,
+            boxShadow: `0 0 6px ${color}`,
+          }}
+        />
+      </div>
+    </div>
+  );
+}
+
 export default function AboutSection() {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -103,22 +145,52 @@ export default function AboutSection() {
           <div className="section-label mb-4">
             SHADER ARRAY // UNIT PROFILE
           </div>
-          <h2
-            style={{
-              fontSize: "clamp(2.5rem, 5vw, 4.5rem)",
-              fontWeight: 900,
-              letterSpacing: "-0.02em",
-              color: "var(--text)",
-              fontFamily: "var(--font-geist-sans)",
-              lineHeight: 1,
-            }}
-          >
-            ARCHITECTURE
-            <br />
-            <span style={{ color: "var(--purple)", textShadow: "0 0 40px rgba(168,85,247,0.4)" }}>
-              OVERVIEW
-            </span>
-          </h2>
+          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
+            <h2
+              style={{
+                fontSize: "clamp(2.5rem, 5vw, 4.5rem)",
+                fontWeight: 900,
+                letterSpacing: "-0.02em",
+                color: "var(--text)",
+                fontFamily: "var(--font-geist-sans)",
+                lineHeight: 1,
+              }}
+            >
+              ARCHITECTURE
+              <br />
+              <span style={{ color: "var(--purple)", textShadow: "0 0 40px rgba(168,85,247,0.4)" }}>
+                OVERVIEW
+              </span>
+            </h2>
+
+            {/* Performance metrics (moved from Hero) */}
+            <div
+              className="gpu-panel gpu-panel-purple corner-marks p-6 w-full max-w-xl"
+              style={{ alignSelf: "stretch" }}
+            >
+              <div
+                className="flex items-center justify-between mb-4 pb-3"
+                style={{ borderBottom: "1px solid var(--border)" }}
+              >
+                <span
+                  style={{
+                    fontSize: "0.7rem",
+                    letterSpacing: "0.25em",
+                    color: "var(--purple)",
+                    fontFamily: "var(--font-geist-mono)",
+                  }}
+                >
+                  PERFORMANCE METRICS // ARCH OVERVIEW
+                </span>
+                <span className="led led-cyan" />
+              </div>
+              <div className="flex flex-col gap-4">
+                {PERFORMANCE_METRICS.map((m) => (
+                  <MetricBar key={m.label} {...m} />
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-12">

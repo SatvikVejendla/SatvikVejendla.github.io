@@ -352,3 +352,12 @@
   from { opacity: 0; }
   to { opacity: 1; }
 }
+
+/* ─── Hero grid fade pulse ───────────────────────────────── */
+@keyframes grid-fade-pulse {
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 0.65; }
+}
+.grid-fade {
+  animation: grid-fade-pulse 7.5s ease-in-out infinite;
+}

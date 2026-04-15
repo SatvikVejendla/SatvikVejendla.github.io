@@ -4,23 +4,16 @@ import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const BOOT_LINES = [
-  { text: "SATVIK VEJENDLA GPU ARCHITECTURE v2026.1", delay: 0, color: "var(--muted)" },
+  { text: "SATVIK VEJENDLA v2026.1", delay: 0, color: "var(--muted)" },
   { text: "Copyright (C) 2026 Satvik Vejendla. All rights reserved.", delay: 400, color: "var(--muted)" },
   { text: "", delay: 700 },
   { text: "Detecting compute cores.......... [16,384 CUDA / 512 Tensor]", delay: 900, color: "var(--green)" },
-  { text: "Verifying VRAM.................. [96 GB HBM4 @ 5.2 TB/s   ]", delay: 1400, color: "var(--green)" },
+  { text: "Verifying DRAM.................. [global memory online     ]", delay: 1400, color: "var(--green)" },
   { text: "Calibrating AI Engine........... [9.8 PFLOPS FP8 Sparse    ]", delay: 1900, color: "var(--cyan)" },
   { text: "Loading ML Frameworks........... [TensorFlow / PyTorch / LLM]", delay: 2300, color: "var(--cyan)" },
-  { text: "Establishing PCIe link.......... [x16 Gen 6 @ 128 GB/s     ]", delay: 2700, color: "var(--purple)" },
+  { text: "Initializing schedulers......... [warp dispatch enabled    ]", delay: 2700, color: "var(--purple)" },
   { text: "", delay: 3000 },
   { text: "System ready. Launching portfolio interface...", delay: 3200, color: "var(--orange)" },
-];
-
-const SPEC_METRICS = [
-  { label: "Languages & Frameworks", value: "30+", bar: 92, color: "var(--cyan)" },
-  { label: "Internship Experience", value: "14 months", bar: 75, color: "var(--green)" },
-  { label: "Projects", value: "20+", bar: 95, color: "var(--pink)" },
-  { label: "Years of Coding", value: "7 years", bar: 80, color: "var(--orange)" },
 ];
 
 function useTerminalBoot() {
@@ -79,7 +72,7 @@ type ParticleData = {
 };
 
 function makeParticles(): ParticleData[] {
-  return Array.from({ length: 40 }, () => ({
+  return Array.from({ length: 400 }, () => ({
     x: Math.random() * 100,
     y: Math.random() * 100,
     size: Math.random() * 2 + 1,
@@ -97,95 +90,110 @@ function GpuDieArt() {
       xmlns="http://www.w3.org/2000/svg"
       className="w-full h-full"
     >
-      {/* Outer chip package */}
-      <rect x="10" y="10" width="300" height="300" rx="8" fill="none" stroke="rgba(34,211,238,0.3)" strokeWidth="1.5" />
-      <rect x="20" y="20" width="280" height="280" rx="4" fill="rgba(7,7,26,0.8)" stroke="rgba(34,211,238,0.15)" strokeWidth="1" />
+      <defs>
+        <clipPath id="dieClip">
+          <rect x="20" y="20" width="280" height="280" rx="5" />
+        </clipPath>
+      </defs>
 
-      {/* Compute clusters - GPC rows */}
-      {[0, 1, 2, 3].map((row) =>
-        [0, 1, 2, 3, 4].map((col) => (
+      {/* Package */}
+      <rect x="10" y="10" width="300" height="300" rx="8" fill="none" stroke="rgba(34,211,238,0.28)" strokeWidth="1.5" />
+      <rect x="20" y="20" width="280" height="280" rx="5" fill="rgba(7,7,26,0.85)" stroke="rgba(34,211,238,0.12)" strokeWidth="1" />
+
+      <g clipPath="url(#dieClip)">
+        {/* Header labels (dedicated strip to avoid overlap) */}
+        <rect x="20" y="20" width="280" height="22" fill="rgba(34,211,238,0.03)" />
+        <text x="32" y="35" fill="rgba(34,211,238,0.55)" fontSize="7" fontFamily="monospace">
+          NVIDIA GPU Architecture
+        </text>
+
+        {/* SM tiles area (5x3) */}
+        {Array.from({ length: 15 }).map((_, idx) => {
+          const col = idx % 5;
+          const row = Math.floor(idx / 5);
+          const x = 27 + col * 54;
+          const y = 48 + row * 48;
+          return (
+            <g key={`sm-${idx}`}>
+              <rect x={x} y={y} width="50" height="42" rx="5" fill="rgba(34,211,238,0.055)" stroke="rgba(34,211,238,0.20)" strokeWidth="0.8" />
+
+              {/* Header strip in SM */}
+              <rect x={x} y={y} width="50" height="10" rx="5" fill="rgba(34,211,238,0.04)" />
+              <text x={x + 6} y={y + 8} fill="rgba(34,211,238,0.55)" fontSize="6" fontFamily="monospace">
+                SM
+              </text>
+              <text x={x + 46} y={y + 8} textAnchor="end" fill="rgba(34,211,238,0.30)" fontSize="5" fontFamily="monospace">
+                {idx}
+              </text>
+
+              {/* Tensor core block */}
+              <rect x={x + 3} y={y + 14} width="20" height="10" rx="2.5" fill="rgba(244,114,182,0.05)" stroke="rgba(244,114,182,0.18)" strokeWidth="0.6" />
+              {/* FP/INT pipes */}
+              <rect x={x + 26} y={y + 14} width="21" height="10" rx="2.5" fill="rgba(34,211,238,0.04)" stroke="rgba(34,211,238,0.10)" strokeWidth="0.6" />
+
+              {/* LD/ST */}
+              <rect x={x + 3} y={y + 26} width="12" height="6" rx="2" fill="rgba(249,115,22,0.06)" stroke="rgba(249,115,22,0.16)" strokeWidth="0.55" />
+              {/* Shared memory */}
+              <rect x={x + 17} y={y + 26} width="16" height="6" rx="2" fill="rgba(168,85,247,0.05)" stroke="rgba(168,85,247,0.16)" strokeWidth="0.55" />
+              {/* Registers */}
+              <rect x={x + 35} y={y + 26} width="12" height="6" rx="2" fill="rgba(74,222,128,0.04)" stroke="rgba(74,222,128,0.16)" strokeWidth="0.55" />
+
+              {/* Tiny legend dots (no extra text => no overlap) */}
+              {Array.from({ length: 6 }).map((_, d) => (
+                <rect
+                  key={`dot-${idx}-${d}`}
+                  x={x + 3 + d * 7}
+                  y={y + 34}
+                  width="5"
+                  height="5"
+                  rx="1"
+                  fill="rgba(34,211,238,0.035)"
+                  stroke="rgba(34,211,238,0.08)"
+                  strokeWidth="0.45"
+                />
+              ))}
+            </g>
+          );
+        })}
+
+        {/* Row 4: L2 cache (horizontal) */}
+        <rect x="28" y="194" width="264" height="40" rx="6" fill="rgba(168,85,247,0.07)" stroke="rgba(168,85,247,0.26)" strokeWidth="0.9" />
+        <text x="160" y="211" textAnchor="middle" fill="rgba(168,85,247,0.62)" fontSize="8.5" fontFamily="monospace">
+          L2 CACHE
+        </text>
+        {Array.from({ length: 10 }).map((_, i) => (
           <rect
-            key={`core-${row}-${col}`}
-            x={30 + col * 38}
-            y={30 + row * 38}
-            width={30}
-            height={30}
-            rx="2"
-            fill="rgba(34,211,238,0.06)"
-            stroke="rgba(34,211,238,0.2)"
-            strokeWidth="0.5"
+            key={`l2-${i}`}
+            x={32 + i * 25.8}
+            y="216"
+            width="22.5"
+            height="14"
+            rx="3"
+            fill="rgba(34,211,238,0.04)"
+            stroke="rgba(34,211,238,0.10)"
+            strokeWidth="0.6"
           />
-        ))
-      )}
+        ))}
 
-      {/* Memory controllers - right column */}
-      {[0, 1, 2, 3, 4, 5].map((i) => (
-        <rect
-          key={`mem-${i}`}
-          x={232}
-          y={30 + i * 30}
-          width={58}
-          height={22}
-          rx="1"
-          fill="rgba(168,85,247,0.08)"
-          stroke="rgba(168,85,247,0.25)"
-          strokeWidth="0.5"
-        />
-      ))}
-
-      {/* Bottom compute row */}
-      {[0, 1, 2, 3].map((col) => (
-        <rect
-          key={`bot-${col}`}
-          x={30 + col * 50}
-          y={204}
-          width={42}
-          height={42}
-          rx="2"
-          fill="rgba(74,222,128,0.05)"
-          stroke="rgba(74,222,128,0.2)"
-          strokeWidth="0.5"
-        />
-      ))}
-
-      {/* Command processor (center-bottom) */}
-      <rect x="30" y="258" width="192" height="40" rx="3"
-        fill="rgba(249,115,22,0.07)"
-        stroke="rgba(249,115,22,0.25)"
-        strokeWidth="0.8"
-      />
-      <text x="126" y="282" textAnchor="middle" fill="rgba(249,115,22,0.6)" fontSize="7" fontFamily="monospace">COMMAND PROCESSOR</text>
-
-      {/* Cache label */}
-      <text x="261" y="216" textAnchor="middle" fill="rgba(168,85,247,0.5)" fontSize="6" fontFamily="monospace">L3 CACHE</text>
-
-      {/* Memory label */}
-      <rect x="232" y="210" width="58" height="48" rx="2"
-        fill="rgba(168,85,247,0.08)"
-        stroke="rgba(168,85,247,0.25)"
-        strokeWidth="0.5"
-      />
-      <text x="261" y="238" textAnchor="middle" fill="rgba(168,85,247,0.5)" fontSize="5.5" fontFamily="monospace">HBM4</text>
-      <text x="261" y="248" textAnchor="middle" fill="rgba(168,85,247,0.4)" fontSize="5" fontFamily="monospace">96 GB</text>
-
-      {/* PCIe connector at bottom */}
-      {Array.from({ length: 18 }).map((_, i) => (
-        <rect
-          key={`pcie-${i}`}
-          x={30 + i * 13}
-          y={302}
-          width={8}
-          height={6}
-          fill="rgba(34,211,238,0.3)"
-          stroke="rgba(34,211,238,0.5)"
-          strokeWidth="0.3"
-        />
-      ))}
-      <text x="160" y="315" textAnchor="middle" fill="rgba(34,211,238,0.3)" fontSize="5" fontFamily="monospace">PCIe Gen 6 x16</text>
-
-      {/* Animated data flow lines */}
-      <line x1="30" y1="160" x2="225" y2="160" stroke="rgba(34,211,238,0.08)" strokeWidth="0.5" strokeDasharray="4 4" />
-      <line x1="160" y1="30" x2="160" y2="255" stroke="rgba(34,211,238,0.08)" strokeWidth="0.5" strokeDasharray="4 4" />
+        {/* Row 5: DRAM (horizontal) */}
+        <rect x="28" y="240" width="264" height="44" rx="6" fill="rgba(74,222,128,0.05)" stroke="rgba(74,222,128,0.24)" strokeWidth="0.9" />
+        <text x="160" y="258" textAnchor="middle" fill="rgba(74,222,128,0.62)" fontSize="9" fontFamily="monospace">
+          DRAM (GLOBAL MEMORY)
+        </text>
+        {Array.from({ length: 12 }).map((_, i) => (
+          <rect
+            key={`dram-${i}`}
+            x={32 + i * 21.6}
+            y="264"
+            width="17.5"
+            height="14"
+            rx="3"
+            fill="rgba(74,222,128,0.03)"
+            stroke="rgba(74,222,128,0.10)"
+            strokeWidth="0.55"
+          />
+        ))}
+      </g>
 
       {/* Corner accent marks */}
       <path d="M10 30 L10 10 L30 10" stroke="var(--cyan)" strokeWidth="1.5" fill="none" />
@@ -193,28 +201,6 @@ function GpuDieArt() {
       <path d="M10 290 L10 310 L30 310" stroke="var(--cyan)" strokeWidth="1.5" fill="none" />
       <path d="M290 310 L310 310 L310 290" stroke="var(--cyan)" strokeWidth="1.5" fill="none" />
     </svg>
-  );
-}
-
-function MetricBar({ label, value, bar, color, delay }: {
-  label: string; value: string; bar: number; color: string; delay: number;
-}) {
-  const [filled, setFilled] = useState(false);
-
-  useEffect(() => {
-    const t = setTimeout(() => setFilled(true), 4200 + delay);
-    return () => clearTimeout(t);
-  }, [delay]);
-
-  return (
-    <div className="flex flex-col gap-1.5">
-      <div className="flex justify-between items-center" style={{ fontSize: "1rem" }}>
-        <span style={{ color: "var(--muted-bright)", letterSpacing: "0.08em" }}>{label}</span>
-        <span style={{ color, fontWeight: 700 }}>{value}</span>
-      </div>
-      <div className="gpu-progress-bar">
-      </div>
-    </div>
   );
 }
 
@@ -246,13 +232,25 @@ export default function HeroSection() {
 
       {/* Circuit trace overlays */}
       <div
-        className="absolute inset-0 pointer-events-none"
+        className="absolute inset-0 pointer-events-none grid-fade"
         style={{
           backgroundImage: `
             linear-gradient(rgba(34,211,238,0.03) 1px, transparent 1px),
             linear-gradient(90deg, rgba(34,211,238,0.03) 1px, transparent 1px)
           `,
           backgroundSize: "60px 60px",
+        }}
+      />
+      <div
+        className="absolute inset-0 pointer-events-none grid-fade animate-pulse infinite"
+        style={{
+          animationDelay: "1.6s",
+          backgroundImage: `
+            linear-gradient(rgba(168,85,247,0.15) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(168,85,247,0.15) 1px, transparent 1px)
+          `,
+          backgroundSize: "180px 180px",
+          mixBlendMode: "screen",
         }}
       />
 
@@ -309,71 +307,10 @@ export default function HeroSection() {
             transition={{ duration: 0.8 }}
             className="relative z-10 flex flex-col min-h-screen"
           >
-            {/* Top bar */}
-            <div
-              className="flex items-center justify-between px-8 py-4 border-b"
-              style={{ borderColor: "var(--border)" }}
-            >
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.2 }}
-                className="flex items-center gap-3"
-              >
-                <span className="led led-cyan" />
-                <span
-                  style={{
-                    fontSize: "0.7rem",
-                    letterSpacing: "0.3em",
-                    color: "var(--muted)",
-                    fontFamily: "var(--font-geist-mono)",
-                  }}
-                >
-                  SV.GPU // ARCHITECTURE v2026
-                </span>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.2 }}
-                className="flex items-center gap-4"
-              >
-                {["RESUME", "GITHUB", "LINKEDIN"].map((label) => (
-                  <a
-                    key={label}
-                    href={
-                      label === "RESUME"
-                        ? "#contact"
-                        : label === "GITHUB"
-                        ? "https://github.com/satvejendla"
-                        : "https://linkedin.com/in/satvikvejendla"
-                    }
-                    target={label !== "RESUME" ? "_blank" : undefined}
-                    rel="noopener noreferrer"
-                    style={{
-                      fontSize: "0.6rem",
-                      letterSpacing: "0.2em",
-                      color: "var(--muted-bright)",
-                      textDecoration: "none",
-                      transition: "color 0.2s",
-                      fontFamily: "var(--font-geist-mono)",
-                    }}
-                    onMouseEnter={(e) =>
-                      ((e.target as HTMLElement).style.color = "var(--cyan)")
-                    }
-                    onMouseLeave={(e) =>
-                      ((e.target as HTMLElement).style.color = "var(--muted-bright)")
-                    }
-                  >
-                    [{label}]
-                  </a>
-                ))}
-              </motion.div>
-            </div>
 
             {/* Main content */}
             <div className="flex-1 flex flex-col">
-            <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-0 w-[90%] mx-auto">
+            <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-0 p-8 w-[90%] mx-auto">
               {/* Left: Identity */}
               <div className="flex flex-col justify-center px-8 md:px-16 py-12">
                 <motion.div
@@ -443,7 +380,7 @@ export default function HeroSection() {
                   </div>
                   <div
                     style={{
-                      fontSize: "1.2rem",
+                      fontSize: "1.4rem",
                       color: "var(--muted)",
                       letterSpacing: "0.08em",
                       fontFamily: "var(--font-geist-mono)",
@@ -492,7 +429,7 @@ export default function HeroSection() {
 
               </div>
 
-              {/* Right: GPU Spec Card + Die Art */}
+              {/* Right: GPU Die Art */}
               <div className="flex flex-col items-center justify-center px-8 py-12 gap-24">
                 {/* GPU Die art */}
                 <motion.div
@@ -516,76 +453,9 @@ export default function HeroSection() {
                     }}
                   />
                 </motion.div>
-
-                {/* Spec metrics panel */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.9 }}
-                  className="gpu-panel gpu-panel-cyan corner-marks w-full max-w-lg"
-                >
-                  <div
-                    className="flex items-center justify-between mb-3 pb-3 bg-cyan-500/30 px-5 pt-4"
-                    style={{ borderBottom: "3px solid var(--border)" }}
-                  >
-                    <span
-                      style={{
-                        fontSize: "1.2rem",
-                        letterSpacing: "0.1em",
-                        color: "var(--cyan)",
-                        fontFamily: "var(--font-geist-mono)",
-                      }}
-                    >
-                      PERFORMANCE METRICS
-                    </span>
-                    <span
-                      style={{
-                        fontSize: "1.2rem",
-                        color: "var(--green)",
-                        letterSpacing: "0.1em",
-                      }}
-                    >
-                      ● READY
-                    </span>
-                  </div>
-                  <div className="flex flex-col gap-3 px-6 pb-4 pt-1">
-                    {SPEC_METRICS.map((m, i) => (
-                      <MetricBar key={m.label} {...m} delay={i * 150} />
-                    ))}
-                  </div>
-                </motion.div>
               </div>
             </div>
-            <div className="flex flex-col items-center justify-center">
-              
-                {/* Scroll cue */}
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 1.4 }}
-                  className="mb-4 -translate-y-20 flex flex-col gap-2 justify-center items-center"
-                >
-                  <div
-                    style={{
-                      fontSize: "1.2rem",
-                      letterSpacing: "0.3em",
-                      color: "var(--muted)",
-                      fontFamily: "var(--font-geist-mono)",
-                    }}
-                  >
-                    SCROLL TO INITIALIZE
-                  </div>
-                  <motion.div
-                    animate={{ y: [0, 6, 0] }}
-                    transition={{ duration: 1.5, repeat: Infinity }}
-                    style={{ color: "var(--muted)", fontSize: "1.6rem" }}
-                  >
-                    ↓
-                  </motion.div>
-                </motion.div>
             </div>
-            </div>
-
           </motion.div>
         )}
       </AnimatePresence>

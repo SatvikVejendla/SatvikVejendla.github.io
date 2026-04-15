@@ -4,12 +4,12 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const NAV_ITEMS = [
-  { id: "hero", label: "COMMAND PROCESSOR", short: "CMD" },
-  { id: "about", label: "SHADER ARRAY", short: "SHD" },
-  { id: "experience", label: "PCIe BUS", short: "PCIe" },
-  { id: "projects", label: "VRAM BANKS", short: "VRAM" },
-  { id: "skills", label: "COMPUTE UNITS", short: "CU" },
-  { id: "contact", label: "DISPLAY OUT", short: "DSP" },
+  { id: "hero", label: "HOME", short: "Home" },
+  { id: "about", label: "ABOUT", short: "About" },
+  { id: "experience", label: "EXPERIENCE", short: "Experience" },
+  { id: "projects", label: "PROJECTS", short: "Projects" },
+  { id: "skills", label: "SKILLS", short: "Skills" },
+  { id: "contact", label: "CONTACT", short: "Contact" },
 ];
 
 export default function GpuNavigation() {
@@ -57,16 +57,10 @@ export default function GpuNavigation() {
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: 20 }}
           transition={{ duration: 0.6 }}
-          className="fixed right-6 top-1/2 -translate-y-1/2 z-[1000] flex flex-col gap-4 items-end"
+          className="fixed right-6 top-1/2 -translate-y-1/2 z-[1000] flex flex-col gap-0 items-end"
           aria-label="GPU Section Navigation"
-        >
-          {/* Architecture label */}
-          <div
-            className="section-label mb-2 rotate-0"
-            style={{ fontSize: "0.55rem", letterSpacing: "0.4em", color: "var(--muted)" }}
-          >
-            GPU/ARCH
-          </div>
+        >          
+          <div style={{ marginBottom: "16px", borderBottom: "1px solid var(--muted)" }} className="w-6"></div>
 
           {NAV_ITEMS.map(({ id, label, short }) => {
             const isActive = activeSection === id;
@@ -75,59 +69,44 @@ export default function GpuNavigation() {
             return (
               <div
                 key={id}
-                className="flex items-center gap-3 cursor-pointer"
-                onMouseEnter={() => setHoveredItem(id)}
-                onMouseLeave={() => setHoveredItem(null)}
+                className="flex items-center gap-3 cursor-pointer py-4"
+                onMouseEnter={() => (isActive ? undefined : setHoveredItem(id))}
+                onMouseLeave={() => (isActive ? undefined : setHoveredItem(null))}
                 onClick={() => handleClick(id)}
               >
-                {/* Label */}
-                <AnimatePresence>
-                  {isHovered && (
-                    <motion.div
-                      initial={{ opacity: 0, x: 10, width: 0 }}
-                      animate={{ opacity: 1, x: 0, width: "auto" }}
-                      exit={{ opacity: 0, x: 10, width: 0 }}
-                      transition={{ duration: 0.2 }}
-                      className="overflow-hidden"
-                    >
-                      <span
-                        style={{
-                          fontSize: "0.6rem",
-                          letterSpacing: "0.2em",
-                          color: isActive ? "var(--cyan)" : "var(--muted-bright)",
-                          whiteSpace: "nowrap",
-                          fontFamily: "var(--font-geist-mono)",
-                          display: "block",
-                          paddingRight: "8px",
-                        }}
-                      >
-                        {label}
-                      </span>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-
-                {/* Short label - always visible on active */}
-                {!isHovered && (
-                  <span
+                {/* Label area (always rendered to prevent flicker) */}
+                <div
+                  style={{
+                    width: "16ch",
+                    pointerEvents: "none",
+                    textAlign: "right",
+                    overflow: "visible",
+                  }}
+                >
+                  <motion.span
+                    animate={{
+                      opacity: isHovered || isActive ? 1 : 0,
+                      x: isHovered ? 0 : 6,
+                      color: isActive ? "var(--cyan)" : "var(--muted-bright)",
+                    }}
+                    transition={{ duration: 0.15 }}
                     style={{
-                      fontSize: "0.5rem",
-                      letterSpacing: "0.15em",
-                      color: isActive ? "var(--cyan)" : "transparent",
+                      display: "inline-block",
+                      fontSize: "1.1rem",
+                      letterSpacing: "0.18em",
+                      whiteSpace: "nowrap",
                       fontFamily: "var(--font-geist-mono)",
-                      transition: "color 0.3s",
-                      minWidth: "24px",
-                      textAlign: "right",
+                      paddingRight: "8px",
                     }}
                   >
-                    {short}
-                  </span>
-                )}
+                    {label}
+                  </motion.span>
+                </div>
 
                 {/* LED Dot */}
                 <motion.div
                   animate={{
-                    scale: isActive ? 1.3 : 1,
+                    scale: isActive ? 1.1 : 1,
                     boxShadow: isActive
                       ? "0 0 8px var(--cyan), 0 0 16px rgba(34,211,238,0.5)"
                       : isHovered
@@ -136,9 +115,9 @@ export default function GpuNavigation() {
                   }}
                   transition={{ duration: 0.2 }}
                   style={{
-                    width: isActive ? "10px" : "6px",
-                    height: isActive ? "10px" : "6px",
-                    borderRadius: "50%",
+                    width: isActive ? "8px" : "8px",
+                    height: isActive ? "16px" : "16px",
+                    borderRadius: "2px",
                     background: isActive
                       ? "var(--cyan)"
                       : isHovered
@@ -151,18 +130,7 @@ export default function GpuNavigation() {
               </div>
             );
           })}
-
-          {/* Bottom status */}
-          <div
-            className="mt-2 flex flex-col items-end gap-1"
-            style={{ fontSize: "0.5rem", color: "var(--muted)", letterSpacing: "0.1em" }}
-          >
-            <div className="flex items-center gap-1.5">
-              <span className="led led-cyan" style={{ width: "4px", height: "4px" }} />
-              <span>ACTIVE</span>
-            </div>
-            <span style={{ color: "var(--muted)", opacity: 0.6 }}>SV.GPU v1.0</span>
-          </div>
+          <div style={{ marginTop: "16px", borderTop: "1px solid var(--muted)" }} className="w-6"></div>
         </motion.nav>
       )}
     </AnimatePresence>
