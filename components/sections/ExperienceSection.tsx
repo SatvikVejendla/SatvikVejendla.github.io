@@ -2,94 +2,109 @@
 
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
+import GpuBackground from "@/components/ui/GpuBackground";
+
+/** Vertical scroll budget: one step between adjacent cards; padding covers sticky header/footer. */
+const EXPERIENCE_SCROLL_VH_PER_STEP = 72;
+const EXPERIENCE_SECTION_PAD_VH = 108;
 
 const EXPERIENCES = [
   {
     company: "TeachShare",
     role: "Software Engineer Intern",
     period: "Jun 2025 – Present",
-    type: "EdTech Startup",
-    funding: "Reach Capital · Pear VC",
-    scale: "100K+ weekly users · $500K+ ARR",
+    type: "SWE",
+    team: "Backed by Reach Capital · Pear VC",
     color: "#22d3ee",
     colorDim: "rgba(34,211,238,0.15)",
     bullets: [
       "Orchestrated a unified multimodal grading pipeline with rubric-aware prompting and structured feedback generation",
-      "Engineered HTML parsing, chunking, and summarization to reduce LLM token usage by 70% on large Polotno JSON inputs",
+      "Engineered HTML parsing and chunking to reduce LLM token usage on large Polotno JSON inputs",
+      "Developed backend services and evaluation workflows using Solid.js, Vertex AI, and Zod schema validation",
       "Implemented chained multi-step tool-calling for an LLM-powered chat system supporting dynamic task execution",
     ],
-    metrics: [
-      { label: "Token Reduction", value: "70%", color: "#22d3ee" },
-      { label: "Weekly Users", value: "100K+", color: "#4ade80" },
-      { label: "ARR", value: "$500K+", color: "#f97316" },
-    ],
-    lane: "LANE 0",
+    stack: ["Solid.js", "Vertex AI", "Typescript", "Zod", "Vercel AI SDK"],
+    lane: "THREAD 0",
   },
   {
     company: "J.P. Morgan Chase",
     role: "Software Engineer Intern",
     period: "Jun 2025 – Aug 2025",
-    type: "Asset & Wealth Mgmt AI",
-    funding: "Global Investment Bank",
-    scale: "Firm-wide LLM deployment",
+    type: "ML SWE",
+    team: "Asset & Wealth Management AI Team",
     color: "#a855f7",
     colorDim: "rgba(168,85,247,0.15)",
     bullets: [
-      "Designed and deployed an LLM evaluation and regression framework reducing evaluation setup time from hours to minutes",
-      "Integrated Phoenix and LangSmith for async modular pipeline with trace-level observability and drift detection",
-      "Engineered document automation pipeline for high-volume Q&A workflows (RFPs, compliance) cutting turnaround by 70%",
+      "Developed and deployed an LLM Evaluation & Regression Testing framework for internal teams with support for Phoenix and Langsmith",
+      "Provided an asynchronous modular pipeline with trace-level observability and LLM-as-judge evaluation for firm-wide LLM workflow benchmarking",
+      "Built a generalized document Q&A pipeline for high-volume workflows (RFPs, compliance) via procedural chunking and retrieval-augmented generation",
     ],
-    metrics: [
-      { label: "Eval Setup", value: "hrs→min", color: "#a855f7" },
-      { label: "Turnaround", value: "−70%", color: "#f472b6" },
-      { label: "Scope", value: "Firm-Wide", color: "#22d3ee" },
-    ],
-    lane: "LANE 1",
+    stack: ["Phoenix", "LangSmith", "Python", "FastAPI", "Typescript", "Next.js", "Pydantic", "Langchain"],
+    lane: "THREAD 1",
   },
   {
     company: "Hone Health",
     role: "Software Engineer Intern",
     period: "Jan 2025 – May 2025",
-    type: "HealthTech",
-    funding: "Series B",
-    scale: "10K+ historical tickets analyzed",
+    type: "Data Engineer",
+    team: "Data & Machine Learning Team",
     color: "#4ade80",
     colorDim: "rgba(74,222,128,0.15)",
     bullets: [
-      "Engineered Azure DevOps extension analyzing 10K+ historical tickets via semantic embedding models with real-time similarity surfacing",
-      "Built incremental load ETL pipeline for webhook ingestion achieving 9x faster data load and 99.8% storage reduction (2TB → 4GB)",
-      "Architected SQL migration automation system to version-control production data for complex bulk queries",
+      "Developed a custom content-injection Azure DevOps extension for processing ticket similarity with vector embedding search to display similar work items",
+      "Engineered Azure ETL pipelines to ingest Customer.Io webhook data to Azure Blob Storage into KQL eventhouse",
+      "Architected a migration pipeline for bulk SQL scripts to transfer staging data to a production history database",
     ],
-    metrics: [
-      { label: "ETL Speedup", value: "9×", color: "#4ade80" },
-      { label: "Storage Cut", value: "99.8%", color: "#22d3ee" },
-      { label: "Tickets", value: "10K+", color: "#f97316" },
-    ],
-    lane: "LANE 2",
+    stack: ["C#/.NET", "Azure DevOps", "SQL", "Python", "Microsoft Fabric"],
+    lane: "THREAD 2",
   },
+  {
+    company: "Depton LLC",
+    role: "Software Engineer Intern",
+    period: "May 2024 - Aug 2024",
+    type: "SWE",
+    team: "Internal Software Team",
+    color: "#f97316",
+    colorDim: "rgba(249,115,22,0.15)",
+    bullets: [
+      "Engineered a distributed web scraping framework for real-time stock ticker aggregation, processing 2k data points daily.",
+      "Led the end-to-end development of the company’s main internal web platform using Next.js, including authentication, API integration, component design, and deployment",
+    ],
+    stack: ["Next.js", "TypeScript", "PostgreSQL", "Puppeteer"],
+    lane: "THREAD 3",
+  },
+  {
+    company: "Rutgers University",
+    role: "Undergraduate Research Assistant",
+    period: "Sep 2023 - May 2024",
+    type: "Research Assistant",
+    team: "Engineering Lab Assistant",
+    color: "#f91616",
+    colorDim: "rgba(249,115,22,0.15)",
+    bullets: [
+      "Assisted with the development of a pose estimation robotic arm control system",
+      "Managed puppeteer scripts for automatic inventory document management",
+    ],
+    stack: ["Puppeteer", "Python"],
+    lane: "THREAD 4",
+  },
+  {
+    company: "VEX 750B Robotics Team",
+    role: "Captain & Lead Programmer",
+    period: "Sep 2020 - Aug 2023",
+    type: "Captain & Lead Programmer",
+    team: "VEX 750B Robotics Team",
+    color: "#f9d316",
+    colorDim: "rgba(249,115,22,0.15)",
+    bullets: [
+      "Designed a modular robot control framework with PID motion tuning, Odometry, and Pure Pursuit path tracking.",
+      "Programmed a completely autonomous skills routine which got 1st place in the NJ State competition of 50+ teams, qualifying for the VEX Worlds Competition for the first time in 4 years",
+      "Developed a React Native scouting app with optimized heuristics to predict match performance from live telemetry data",
+    ],
+    stack: ["PROS", "C++", "React Native", "Typescript", "Python"],
+    lane: "THREAD 5",
+  }
 ];
-
-function DataPacket({ delay, color }: { delay: number; color: string }) {
-  return (
-    <motion.div
-      className="absolute top-1/2 -translate-y-1/2 pointer-events-none"
-      style={{
-        width: "6px",
-        height: "3px",
-        background: color,
-        boxShadow: `0 0 6px ${color}, 0 0 12px ${color}`,
-        left: 0,
-      }}
-      animate={{ left: ["0%", "100%"] }}
-      transition={{
-        duration: 3,
-        delay,
-        repeat: Infinity,
-        ease: "linear",
-      }}
-    />
-  );
-}
 
 function ExperienceCard({ exp, index }: { exp: typeof EXPERIENCES[0]; index: number }) {
   return (
@@ -115,53 +130,47 @@ function ExperienceCard({ exp, index }: { exp: typeof EXPERIENCES[0]; index: num
           opacity: 0.7,
         }}
       >
-        {exp.lane} // PCIe × 16
+        {exp.lane} // {exp.type}
       </div>
 
       {/* Card */}
       <div
-        className="flex-1 gpu-panel corner-marks flex flex-col overflow-hidden"
+        className="flex-1 gpu-panel flex flex-col overflow-hidden"
         style={{
           borderColor: `color-mix(in srgb, ${exp.color} 35%, var(--border))`,
-          background: `linear-gradient(135deg, ${exp.colorDim} 0%, var(--surface) 40%)`,
+          background: `linear-gradient(135deg, ${exp.colorDim} 0%, var(--surface) 55%)`,
         }}
       >
         {/* Top stripe */}
         <div
           style={{
             height: "3px",
-            background: `linear-gradient(90deg, ${exp.color}, transparent)`,
-            boxShadow: `0 0 12px ${exp.color}`,
+            background: `linear-gradient(90deg, color-mix(in srgb, ${exp.color} 75%, transparent), ${exp.colorDim} 65%, transparent)`,
+            boxShadow: `0 0 10px color-mix(in srgb, ${exp.color} 50%, transparent)`,
           }}
         />
 
-        {/* Bus animation bar */}
-        <div className="relative h-[1px] overflow-hidden mx-6 mt-4" style={{ background: "var(--border)" }}>
-          {[0, 1.2, 2.4].map((d) => (
-            <DataPacket key={d} delay={d} color={exp.color} />
-          ))}
-        </div>
-
-        <div className="flex-1 p-6 flex flex-col gap-4">
+        <div className="flex-1 px-6 py-8 flex flex-col gap-3">
           {/* Header */}
           <div>
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <h3
-                  style={{
-                    fontSize: "1.3rem",
-                    fontWeight: 800,
-                    color: "var(--text)",
-                    fontFamily: "var(--font-geist-sans)",
-                    letterSpacing: "-0.01em",
-                    lineHeight: 1.1,
-                  }}
-                >
-                  {exp.company}
-                </h3>
+            <div className="flex flex-col">
+              <h3
+                style={{
+                  fontSize: "1.8rem",
+                  letterSpacing: "0.05em",
+                  fontWeight: 800,
+                  color: "var(--text)",
+                  fontFamily: "var(--font-geist-sans)",
+                  lineHeight: 1.1,
+                }}
+              >
+                {exp.company}
+              </h3>
+
+              <div className="flex items-baseline justify-between gap-4">
                 <div
                   style={{
-                    fontSize: "0.75rem",
+                    fontSize: "1rem",
                     color: exp.color,
                     fontFamily: "var(--font-geist-mono)",
                     marginTop: "2px",
@@ -169,37 +178,29 @@ function ExperienceCard({ exp, index }: { exp: typeof EXPERIENCES[0]; index: num
                 >
                   {exp.role}
                 </div>
-              </div>
-              <div style={{ textAlign: "right", flexShrink: 0 }}>
+
                 <div
                   style={{
-                    fontSize: "0.6rem",
+                    fontSize: "1rem",
                     color: "var(--muted-bright)",
                     fontFamily: "var(--font-geist-mono)",
                     letterSpacing: "0.05em",
+                    lineHeight: 1.2,
+                    flexShrink: 0,
+                    textAlign: "right",
                   }}
                 >
                   {exp.period}
-                </div>
-                <div
-                  style={{
-                    fontSize: "0.55rem",
-                    color: "var(--muted)",
-                    fontFamily: "var(--font-geist-mono)",
-                    marginTop: "2px",
-                  }}
-                >
-                  {exp.type}
                 </div>
               </div>
             </div>
 
             <div className="flex flex-wrap gap-2 mt-3">
-              {[exp.funding, exp.scale].map((tag) => (
+              {[exp.team].map((tag) => (
                 <span
                   key={tag}
                   style={{
-                    fontSize: "0.58rem",
+                    fontSize: "0.9rem",
                     padding: "2px 8px",
                     border: `1px solid color-mix(in srgb, ${exp.color} 30%, var(--border))`,
                     color: "var(--muted-bright)",
@@ -223,7 +224,7 @@ function ExperienceCard({ exp, index }: { exp: typeof EXPERIENCES[0]; index: num
                 key={i}
                 className="flex gap-3"
                 style={{
-                  fontSize: "0.72rem",
+                  fontSize: "1rem",
                   color: "var(--muted-bright)",
                   fontFamily: "var(--font-geist-mono)",
                   lineHeight: "1.6",
@@ -235,37 +236,40 @@ function ExperienceCard({ exp, index }: { exp: typeof EXPERIENCES[0]; index: num
             ))}
           </ul>
 
-          {/* Metrics */}
-          <div
-            className="grid grid-cols-3 gap-3 pt-4"
-            style={{ borderTop: "1px solid var(--border)" }}
-          >
-            {exp.metrics.map((m) => (
-              <div key={m.label} className="flex flex-col gap-1">
-                <div
+          {/* Divider */}
+          <div style={{ height: "1px", background: "var(--border)" }} />
+
+          {/* Tech stack (pinned to bottom) */}
+          <div className="flex flex-col gap-2">
+            <div
+              style={{
+                fontSize: "0.65rem",
+                letterSpacing: "0.25em",
+                color: "var(--muted)",
+                fontFamily: "var(--font-geist-mono)",
+                textTransform: "uppercase",
+              }}
+            >
+              Tech Stack
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {exp.stack.map((t) => (
+                <span
+                  key={t}
                   style={{
-                    fontSize: "1rem",
-                    fontWeight: 700,
-                    color: m.color,
+                    fontSize: "0.75rem",
+                    padding: "2px 8px",
+                    border: `1px solid color-mix(in srgb, ${exp.color} 22%, var(--border))`,
+                    color: "var(--muted-bright)",
+                    letterSpacing: "0.04em",
                     fontFamily: "var(--font-geist-mono)",
-                    textShadow: `0 0 10px ${m.color}`,
+                    background: "color-mix(in srgb, var(--surface) 85%, transparent)",
                   }}
                 >
-                  {m.value}
-                </div>
-                <div
-                  style={{
-                    fontSize: "0.55rem",
-                    color: "var(--muted)",
-                    letterSpacing: "0.1em",
-                    textTransform: "uppercase",
-                    fontFamily: "var(--font-geist-mono)",
-                  }}
-                >
-                  {m.label}
-                </div>
-              </div>
-            ))}
+                  {t}
+                </span>
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -281,14 +285,17 @@ export default function ExperienceSection() {
     offset: ["start start", "end end"],
   });
 
+  // One horizontal "step" per card gap (card width ≈ 38vw + gap-6); 40vw keeps end aligned without extra pan
+  const xEndVw = (EXPERIENCES.length - 1) * 25;
+
   // Translate the track horizontally as user scrolls
   const x = useTransform(
     scrollYProgress,
     [0, 1],
-    ["2vw", `calc(-${(EXPERIENCES.length - 1) * 42}vw)`]
+    ["2vw", `calc(-${xEndVw}vw)`]
   );
 
-  const sectionOpacity = useTransform(scrollYProgress, [0, 0.05, 0.95, 1], [0, 1, 1, 0]);
+  const sectionOpacity = useTransform(scrollYProgress, [0, 0.05, 0.97, 1], [0, 1, 1, 0]);
   const progressWidth = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
 
   return (
@@ -296,7 +303,10 @@ export default function ExperienceSection() {
     <div
       id="experience"
       ref={containerRef}
-      style={{ height: `${EXPERIENCES.length * 100 + 20}vh`, position: "relative" }}
+      style={{
+        height: `${Math.max(1, EXPERIENCES.length - 1) * EXPERIENCE_SCROLL_VH_PER_STEP + EXPERIENCE_SECTION_PAD_VH}vh`,
+        position: "relative",
+      }}
     >
       {/* Sticky viewport */}
       <motion.div
@@ -304,14 +314,16 @@ export default function ExperienceSection() {
         className="sticky top-0 h-screen overflow-hidden"
       >
         <div
-          className="h-full"
+          className="h-full relative"
           style={{ background: "var(--bg)" }}
         >
+          <GpuBackground />
+
           {/* Header */}
           <div className="px-8 md:px-16 pt-12 pb-6 flex items-end justify-between">
             <div>
               <div className="section-label mb-3">
-                PCIe BUS // TRANSFER LOG
+                Warp Threads // Memory Interfaces
               </div>
               <h2
                 style={{
@@ -324,15 +336,6 @@ export default function ExperienceSection() {
                 }}
               >
                 EXPERIENCE
-                <br />
-                <span
-                  style={{
-                    color: "var(--orange)",
-                    textShadow: "0 0 30px rgba(249,115,22,0.4)",
-                  }}
-                >
-                  PIPELINE
-                </span>
               </h2>
             </div>
             <div
@@ -345,64 +348,20 @@ export default function ExperienceSection() {
               }}
             >
               <div>← SCROLL VERTICALLY TO TRAVERSE →</div>
-              <div style={{ color: "var(--orange)" }}>3 ACTIVE LANES</div>
+              <div style={{ color: "var(--orange)" }}>{EXPERIENCES.length} ACTIVE WARPS</div>
             </div>
           </div>
 
-          {/* PCIe bus visual track */}
-          <div
-            className="mx-8 md:mx-16 mb-4 relative overflow-hidden"
-            style={{ height: "2px", background: "var(--border)" }}
-          >
-            <motion.div
-              animate={{ x: ["-100%", "100%"] }}
-              transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-              className="absolute top-0 h-full w-32"
-              style={{
-                background: "linear-gradient(90deg, transparent, var(--orange), transparent)",
-                boxShadow: "0 0 8px var(--orange)",
-              }}
-            />
-          </div>
-
           {/* Horizontal card track */}
-          <div className="relative overflow-hidden" style={{ height: "calc(100vh - 200px)" }}>
+          <div className="relative overflow-hidden" style={{ height: "calc(100vh - 180px)" }}>
             <motion.div
               style={{ x }}
-              className="absolute top-0 bottom-0 flex gap-6 pl-8 md:pl-16 pr-16 items-stretch"
+              className="absolute top-0 bottom-8 flex gap-6 pl-8 md:pl-16 pr-16 items-stretch"
             >
               {EXPERIENCES.map((exp, i) => (
-                <ExperienceCard key={exp.company} exp={exp} index={i} />
+                <ExperienceCard key={exp.company+exp.role} exp={exp} index={i} />
               ))}
 
-              {/* End marker */}
-              <div
-                className="flex-shrink-0 flex flex-col justify-center items-center"
-                style={{ width: "160px" }}
-              >
-                <div
-                  style={{
-                    fontSize: "0.6rem",
-                    letterSpacing: "0.3em",
-                    color: "var(--muted)",
-                    fontFamily: "var(--font-geist-mono)",
-                    writingMode: "vertical-lr",
-                    textOrientation: "mixed",
-                  }}
-                >
-                  MORE COMING SOON
-                </div>
-                <motion.div
-                  animate={{ opacity: [0.3, 1, 0.3] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                  style={{
-                    marginTop: "16px",
-                    width: "1px",
-                    height: "60px",
-                    background: "linear-gradient(to bottom, var(--muted), transparent)",
-                  }}
-                />
-              </div>
             </motion.div>
           </div>
 
@@ -428,9 +387,8 @@ export default function ExperienceSection() {
                 fontFamily: "var(--font-geist-mono)",
               }}
             >
-              <span>PCIe SLOT 0</span>
               <span>DATA TRANSFER IN PROGRESS</span>
-              <span>SLOT {EXPERIENCES.length - 1}</span>
+              <span>DRAM</span>
             </div>
           </div>
         </div>

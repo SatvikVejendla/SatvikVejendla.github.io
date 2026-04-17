@@ -361,3 +361,12 @@
 .grid-fade {
   animation: grid-fade-pulse 7.5s ease-in-out infinite;
 }
+
+/* ─── GPU particle float (compositor-only: transform + opacity) ── */
+@keyframes gpu-particle {
+  0%   { transform: translate(0, 0);                   opacity: 0.2; }
+  25%  { transform: translate(var(--tx), var(--ty));   opacity: 0.8; }
+  50%  { transform: translate(calc(var(--tx) * -0.5), calc(var(--ty) * 0.6)); opacity: 0.4; }
+  75%  { transform: translate(calc(var(--tx) * 0.3), calc(var(--ty) * -0.8)); opacity: 0.9; }
+  100% { transform: translate(0, 0);                   opacity: 0.2; }
+}

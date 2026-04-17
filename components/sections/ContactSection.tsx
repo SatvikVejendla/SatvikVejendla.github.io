@@ -4,10 +4,10 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
 const TERMINAL_LINES = [
-  { text: "> DISPLAY ENGINE INITIALIZED", color: "var(--green)", delay: 0 },
-  { text: "> RENDERING OUTPUT FRAME...", color: "var(--muted-bright)", delay: 400 },
-  { text: "> SIGNAL QUALITY: OPTIMAL", color: "var(--green)", delay: 800 },
-  { text: "> READY TO ESTABLISH CONNECTION", color: "var(--cyan)", delay: 1200 },
+  { text: "> KERNEL LAUNCHED", color: "var(--green)", delay: 0 },
+  { text: "> DEVICE MEMORY ALLOCATED", color: "var(--muted-bright)", delay: 400 },
+  { text: "> WARP USAGE: OPTIMAL", color: "var(--green)", delay: 800 },
+  { text: "> BANDWIDTH UTILIZATION: 90%", color: "var(--cyan)", delay: 1200 },
 ];
 
 const LINKS = [
@@ -18,14 +18,7 @@ const LINKS = [
     color: "var(--cyan)",
     icon: "◈",
     description: "Primary channel",
-  },
-  {
-    label: "LINKEDIN",
-    value: "linkedin.com/in/satvikvejendla",
-    href: "https://linkedin.com/in/satvikvejendla",
-    color: "var(--purple)",
-    icon: "◈",
-    description: "Professional network",
+    copyable: true,
   },
   {
     label: "PHONE",
@@ -34,14 +27,25 @@ const LINKS = [
     color: "var(--green)",
     icon: "◈",
     description: "Direct line",
+    copyable: true,
   },
   {
-    label: "WEBSITE",
-    value: "satvikvejendla.com",
-    href: "https://satvikvejendla.com",
+    label: "LINKEDIN",
+    value: "linkedin.com/in/satvikvejendla",
+    href: "https://linkedin.com/in/satvikvejendla",
+    color: "var(--purple)",
+    icon: "◈",
+    description: "Professional network",
+    copyable: false,
+  },
+  {
+    label: "GITHUB",
+    value: "github.com/satvikvejendla",
+    href: "https://github.com/satvikvejendla",
     color: "var(--orange)",
     icon: "◈",
-    description: "Personal domain",
+    description: "Open source",
+    copyable: false,
   },
 ];
 
@@ -279,75 +283,61 @@ export default function ContactSection() {
                       onMouseEnter={() => setHoveredLink(link.label)}
                       onMouseLeave={() => setHoveredLink(null)}
                     >
-                      <a
-                        href={link.href}
-                        target={link.href.startsWith("http") ? "_blank" : undefined}
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-5 p-5 group"
-                        style={{
-                          border: "1px solid",
-                          borderColor: hoveredLink === link.label
-                            ? `color-mix(in srgb, ${link.color} 60%, var(--border))`
-                            : "var(--border)",
-                          background: hoveredLink === link.label
-                            ? `color-mix(in srgb, ${link.color} 6%, var(--surface))`
-                            : "var(--surface)",
-                          textDecoration: "none",
-                          transition: "border-color 0.2s, background 0.2s",
-                          display: "flex",
-                          alignItems: "center",
-                        }}
-                      >
-                        {/* Icon */}
-                        <motion.span
-                          animate={{
-                            color: hoveredLink === link.label ? link.color : "var(--muted)",
-                            textShadow: hoveredLink === link.label ? `0 0 8px ${link.color}` : "none",
+                      {link.copyable ? (
+                        /* Copyable row — entire area triggers copy, no navigation */
+                        <div
+                          className="flex items-center gap-5 p-5"
+                          onClick={() => handleCopy(link.value, link.label)}
+                          style={{
+                            border: "1px solid",
+                            borderColor: hoveredLink === link.label
+                              ? `color-mix(in srgb, ${link.color} 60%, var(--border))`
+                              : "var(--border)",
+                            background: hoveredLink === link.label
+                              ? `color-mix(in srgb, ${link.color} 6%, var(--surface))`
+                              : "var(--surface)",
+                            cursor: "pointer",
+                            transition: "border-color 0.2s, background 0.2s",
                           }}
-                          style={{ fontSize: "1.3rem", flexShrink: 0 }}
                         >
-                          {link.icon}
-                        </motion.span>
-
-                        {/* Text */}
-                        <div className="flex-1 min-w-0">
-                          <div
-                            style={{
-                              fontSize: "0.7rem",
-                              letterSpacing: "0.2em",
-                              color: link.color,
-                              fontFamily: "var(--font-geist-mono)",
-                              opacity: 0.7,
-                              marginBottom: "3px",
+                          <motion.span
+                            animate={{
+                              color: hoveredLink === link.label ? link.color : "var(--muted)",
+                              textShadow: hoveredLink === link.label ? `0 0 8px ${link.color}` : "none",
                             }}
+                            style={{ fontSize: "1.3rem", flexShrink: 0 }}
                           >
-                            {link.label} // {link.description}
+                            {link.icon}
+                          </motion.span>
+                          <div className="flex-1 min-w-0">
+                            <div
+                              style={{
+                                fontSize: "0.7rem",
+                                letterSpacing: "0.2em",
+                                color: link.color,
+                                fontFamily: "var(--font-geist-mono)",
+                                opacity: 0.7,
+                                marginBottom: "3px",
+                              }}
+                            >
+                              {link.label} // {link.description}
+                            </div>
+                            <div
+                              style={{
+                                fontSize: "1rem",
+                                color: hoveredLink === link.label ? link.color : "var(--text)",
+                                fontFamily: "var(--font-geist-mono)",
+                                transition: "color 0.2s",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                whiteSpace: "nowrap",
+                              }}
+                            >
+                              {link.value}
+                            </div>
                           </div>
-                          <div
-                            style={{
-                              fontSize: "1rem",
-                              color: hoveredLink === link.label ? link.color : "var(--text)",
-                              fontFamily: "var(--font-geist-mono)",
-                              transition: "color 0.2s",
-                              overflow: "hidden",
-                              textOverflow: "ellipsis",
-                              whiteSpace: "nowrap",
-                            }}
-                          >
-                            {link.value}
-                          </div>
-                        </div>
-
-                        {/* Copy button */}
-                        {hoveredLink === link.label && (
-                          <motion.button
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            onClick={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              handleCopy(link.value, link.label);
-                            }}
+                          <motion.span
+                            animate={{ opacity: hoveredLink === link.label ? 1 : 0 }}
                             style={{
                               fontSize: "0.7rem",
                               color: copied === link.label ? "var(--green)" : link.color,
@@ -355,26 +345,80 @@ export default function ContactSection() {
                               letterSpacing: "0.1em",
                               border: `1px solid ${copied === link.label ? "var(--green)" : link.color}`,
                               padding: "2px 8px",
-                              background: "transparent",
-                              cursor: "pointer",
                               flexShrink: 0,
                             }}
                           >
                             {copied === link.label ? "COPIED" : "COPY"}
-                          </motion.button>
-                        )}
-
-                        {/* Arrow */}
-                        <motion.span
-                          animate={{
-                            x: hoveredLink === link.label ? 4 : 0,
-                            color: hoveredLink === link.label ? link.color : "var(--muted)",
+                          </motion.span>
+                        </div>
+                      ) : (
+                        /* Link row — navigates to href */
+                        <a
+                          href={link.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-5 p-5"
+                          style={{
+                            border: "1px solid",
+                            borderColor: hoveredLink === link.label
+                              ? `color-mix(in srgb, ${link.color} 60%, var(--border))`
+                              : "var(--border)",
+                            background: hoveredLink === link.label
+                              ? `color-mix(in srgb, ${link.color} 6%, var(--surface))`
+                              : "var(--surface)",
+                            textDecoration: "none",
+                            transition: "border-color 0.2s, background 0.2s",
+                            display: "flex",
+                            alignItems: "center",
                           }}
-                          style={{ fontSize: "1.1rem", flexShrink: 0 }}
                         >
-                          →
-                        </motion.span>
-                      </a>
+                          <motion.span
+                            animate={{
+                              color: hoveredLink === link.label ? link.color : "var(--muted)",
+                              textShadow: hoveredLink === link.label ? `0 0 8px ${link.color}` : "none",
+                            }}
+                            style={{ fontSize: "1.3rem", flexShrink: 0 }}
+                          >
+                            {link.icon}
+                          </motion.span>
+                          <div className="flex-1 min-w-0">
+                            <div
+                              style={{
+                                fontSize: "0.7rem",
+                                letterSpacing: "0.2em",
+                                color: link.color,
+                                fontFamily: "var(--font-geist-mono)",
+                                opacity: 0.7,
+                                marginBottom: "3px",
+                              }}
+                            >
+                              {link.label} // {link.description}
+                            </div>
+                            <div
+                              style={{
+                                fontSize: "1rem",
+                                color: hoveredLink === link.label ? link.color : "var(--text)",
+                                fontFamily: "var(--font-geist-mono)",
+                                transition: "color 0.2s",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                whiteSpace: "nowrap",
+                              }}
+                            >
+                              {link.value}
+                            </div>
+                          </div>
+                          <motion.span
+                            animate={{
+                              x: hoveredLink === link.label ? 4 : 0,
+                              color: hoveredLink === link.label ? link.color : "var(--muted)",
+                            }}
+                            style={{ fontSize: "1.1rem", flexShrink: 0 }}
+                          >
+                            →
+                          </motion.span>
+                        </a>
+                      )}
                     </motion.div>
                   ))}
                 </div>
@@ -409,29 +453,6 @@ export default function ContactSection() {
           </motion.div>
         </div>
 
-        {/* Footer */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          className="px-8 md:px-16 py-6 flex items-center justify-between flex-wrap gap-4"
-          style={{ borderTop: "1px solid var(--border)" }}
-        >
-          <div
-            style={{
-              fontSize: "0.6rem",
-              color: "var(--muted)",
-              fontFamily: "var(--font-geist-mono)",
-              letterSpacing: "0.1em",
-            }}
-          >
-            Built with Next.js 16 · React 19 · Tailwind CSS v4 · Framer Motion
-          </div>
-          <div className="flex items-center gap-2" style={{ fontSize: "0.6rem", color: "var(--muted)", fontFamily: "var(--font-geist-mono)" }}>
-            <span className="led led-cyan" style={{ width: "4px", height: "4px" }} />
-            <span style={{ letterSpacing: "0.2em" }}>SV.GPU // ALL SYSTEMS OPERATIONAL</span>
-          </div>
-        </motion.div>
       </div>
     </section>
   );

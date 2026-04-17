@@ -23,26 +23,24 @@ export default function GpuNavigation() {
   }, []);
 
   useEffect(() => {
-    const observers: IntersectionObserver[] = [];
+    const handleScroll = () => {
+      // Use the midpoint of the viewport as the probe point
+      const probe = window.scrollY + window.innerHeight / 2;
 
-    NAV_ITEMS.forEach(({ id }) => {
-      const el = document.getElementById(id);
-      if (!el) return;
+      let current = NAV_ITEMS[0].id;
+      for (const { id } of NAV_ITEMS) {
+        const el = document.getElementById(id);
+        if (!el) continue;
+        if (el.offsetTop <= probe) {
+          current = id;
+        }
+      }
+      setActiveSection(current);
+    };
 
-      const obs = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) setActiveSection(id);
-          });
-        },
-        { threshold: 0.4 }
-      );
-
-      obs.observe(el);
-      observers.push(obs);
-    });
-
-    return () => observers.forEach((o) => o.disconnect());
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll(); // set correct state on mount
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const handleClick = (id: string) => {

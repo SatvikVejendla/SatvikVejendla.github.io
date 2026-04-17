@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import GpuBackground from "@/components/ui/GpuBackground";
 
 const SKILL_CLUSTERS = [
   {
@@ -261,6 +262,8 @@ export default function SkillsSection() {
       className="relative py-24 overflow-hidden"
       style={{ background: "var(--bg)" }}
     >
+      <GpuBackground />
+
       {/* Large die background art */}
       <div
         className="absolute inset-0 pointer-events-none opacity-[0.04]"
@@ -309,9 +312,8 @@ export default function SkillsSection() {
                 letterSpacing: "0.1em",
               }}
             >
-              <div>HOVER CORES FOR SKILL NAME</div>
               <div style={{ color: "var(--green)", marginTop: "4px" }}>
-                HOVER CLUSTER TO INSPECT
+                HOVER CLUSTER FOR DETAILS
               </div>
             </div>
           </div>
@@ -360,7 +362,7 @@ export default function SkillsSection() {
                   textAlign: "center",
                 }}
               >
-                SV-GPU DIE SHOT // ARCHITECTURE 2026 // 5nm EUV
+                SATVIK VEJENDLA // ARCHITECTURE 2026
               </div>
 
               {/* Cluster grid - 4 cols × 3 rows */}
@@ -416,7 +418,7 @@ export default function SkillsSection() {
                   marginTop: "4px",
                 }}
               >
-                PCIe Gen 6 × 16 // 128 GB/s
+                NVIDIA 16GB RTX 5080 GPU
               </div>
             </motion.div>
           </div>

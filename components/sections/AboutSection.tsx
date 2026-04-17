@@ -2,57 +2,78 @@
 
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
+import Image from "next/image";
+
 
 const EDUCATION = [
   {
     school: "Northwestern University",
     degree: "M.S. Computer Science",
     focus: "Concentration: AI / Machine Learning",
-    period: "Expected Dec 2027",
+    period: "Sep 2026 – May 2027 (Expected)",
     location: "Evanston, IL",
-    color: "var(--purple)",
-    icon: "▣",
+    color: "#3a1d57",
+    icon: "/northwestern.png",
   },
   {
     school: "Rutgers University – Honors College",
-    degree: "B.S. Computer Science",
+    degree: "B.S. Computer Science · Minor in Data Science",
     focus: "Dean's List · Honors College Scholar with Distinction",
     period: "Sep 2023 – May 2026",
     location: "New Brunswick, NJ",
-    color: "var(--cyan)",
-    icon: "▣",
+    color: "#570116",
+    icon: "/rutgers.png",
   },
 ];
 
 const COURSES = [
   "Data Structures",
+  "Multivariable Calculus",
   "Computer Architecture",
-  "Algorithms",
-  "Artificial Intelligence",
+  "Computer Algorithms",
   "Statistical Inference",
   "Data Science",
-  "Computational Robotics",
-  "Brain-Inspired Computing",
-  "Reinforcement Learning",
-  "Discrete Math",
+  "Artificial Intelligence (Grad)",
+  "Computer Graphics (Grad)",
+  "Computational Robotics (Grad)",
+  "Brain-Inspired Computing (Grad)",
+  "Reinforcement Learning (Grad)",
 ];
 
+function SchoolLogo({ school, icon }: { school: string; icon: string }) {
+  return (
+    <div
+      aria-hidden="true"
+      style={{
+        width: 34,
+        height: 34,
+      }}
+    >
+      <Image
+        src={icon}
+        alt={`${school} logo`}
+        width={34}
+        height={34}
+        style={{ borderRadius: 8, display: "block" }}
+      />
+    </div>
+  );
+}
+
 const PERFORMANCE_METRICS = [
-  { label: "Languages & Frameworks", value: "30+", bar: 92, color: "var(--purple)" },
-  { label: "Internship Experience", value: "14 months", bar: 75, color: "var(--green)" },
-  { label: "Projects", value: "20+", bar: 95, color: "var(--cyan)" },
-  { label: "Years of Coding", value: "7 years", bar: 80, color: "var(--orange)" },
+  { label: "Languages & Frameworks", value: "20+", color: "var(--purple)" },
+  { label: "Projects", value: "30+", color: "var(--cyan)" },
+  { label: "Internships", value: "14 months", color: "var(--green)" },
+  { label: "Years of Coding", value: "7 years", color: "var(--orange)" },
 ];
 
 function MetricBar({
   label,
   value,
-  bar,
   color,
 }: {
   label: string;
   value: string;
-  bar: number;
   color: string;
 }) {
   return (
@@ -61,19 +82,11 @@ function MetricBar({
         <span style={{ color: "var(--muted-bright)", letterSpacing: "0.08em", fontFamily: "var(--font-geist-mono)" }}>
           {label}
         </span>
-        <span style={{ color, fontWeight: 800, fontFamily: "var(--font-geist-mono)", textShadow: `0 0 10px ${color}` }}>
+        <span style={{ color, fontWeight: 800, fontFamily: "var(--font-geist-mono)", textShadow: `0 0 0px ${color}` }}>
           {value}
         </span>
       </div>
       <div className="gpu-progress-bar">
-        <div
-          className="gpu-progress-fill"
-          style={{
-            width: `${bar}%`,
-            background: `linear-gradient(90deg, ${color}44, ${color})`,
-            boxShadow: `0 0 6px ${color}`,
-          }}
-        />
       </div>
     </div>
   );
@@ -87,10 +100,10 @@ export default function AboutSection() {
     offset: ["start end", "end start"],
   });
 
-  // Zoom in from small
-  const scale = useTransform(scrollYProgress, [0, 0.35, 0.65], [0.75, 1, 1]);
-  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
-  const y = useTransform(scrollYProgress, [0, 0.35], [60, 0]);
+  // Overall section entrance
+  const scale = useTransform(scrollYProgress, [0, 0.25, 0.6], [0.9, 1, 1]);
+  const opacity = useTransform(scrollYProgress, [0, 0.12, 0.9, 1], [0, 1, 1, 0]);
+  const y = useTransform(scrollYProgress, [0, 0.25], [50, 0]);
 
   // Background die zooms in opposite
   const bgScale = useTransform(scrollYProgress, [0, 0.5], [1.4, 1]);
@@ -100,7 +113,7 @@ export default function AboutSection() {
     <section
       id="about"
       ref={containerRef}
-      className="relative py-32 overflow-hidden"
+      className="relative py-24 overflow-hidden"
       style={{ background: "var(--surface)" }}
     >
       {/* Giant die background */}
@@ -138,64 +151,32 @@ export default function AboutSection() {
       {/* Content */}
       <motion.div
         style={{ scale, opacity, y }}
-        className="relative z-10 max-w-6xl mx-auto px-6 md:px-16"
+        className="relative z-10 max-w-7xl mx-auto px-6 md:px-16"
       >
         {/* Header */}
-        <div className="mb-16">
+        <div className="mb-12">
           <div className="section-label mb-4">
-            SHADER ARRAY // UNIT PROFILE
+            DEVICE SPECS // UNIT PROFILE
           </div>
-          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
-            <h2
-              style={{
-                fontSize: "clamp(2.5rem, 5vw, 4.5rem)",
-                fontWeight: 900,
-                letterSpacing: "-0.02em",
-                color: "var(--text)",
-                fontFamily: "var(--font-geist-sans)",
-                lineHeight: 1,
-              }}
-            >
-              ARCHITECTURE
-              <br />
-              <span style={{ color: "var(--purple)", textShadow: "0 0 40px rgba(168,85,247,0.4)" }}>
-                OVERVIEW
-              </span>
-            </h2>
-
-            {/* Performance metrics (moved from Hero) */}
-            <div
-              className="gpu-panel gpu-panel-purple corner-marks p-6 w-full max-w-xl"
-              style={{ alignSelf: "stretch" }}
-            >
-              <div
-                className="flex items-center justify-between mb-4 pb-3"
-                style={{ borderBottom: "1px solid var(--border)" }}
-              >
-                <span
-                  style={{
-                    fontSize: "0.7rem",
-                    letterSpacing: "0.25em",
-                    color: "var(--purple)",
-                    fontFamily: "var(--font-geist-mono)",
-                  }}
-                >
-                  PERFORMANCE METRICS // ARCH OVERVIEW
-                </span>
-                <span className="led led-cyan" />
-              </div>
-              <div className="flex flex-col gap-4">
-                {PERFORMANCE_METRICS.map((m) => (
-                  <MetricBar key={m.label} {...m} />
-                ))}
-              </div>
-            </div>
-          </div>
+          <h2
+            style={{
+              fontSize: "clamp(2.5rem, 5vw, 4.5rem)",
+              fontWeight: 900,
+              letterSpacing: "-0.02em",
+              color: "var(--text)",
+              fontFamily: "var(--font-geist-sans)",
+              lineHeight: 1,
+            }}
+          >
+            <span style={{ color: "var(--purple)", textShadow: "0 0 40px rgba(168,85,247,0.4)" }}>
+              OVERVIEW
+            </span>
+          </h2>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-8 gap-12">
           {/* Left: Bio terminal */}
-          <div className="lg:col-span-3 flex flex-col gap-8">
+          <div className="lg:col-span-4 flex flex-col gap-8">
             <motion.div
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -232,19 +213,22 @@ export default function AboutSection() {
                   <span style={{ color: "var(--green)" }}>whoami</span>
                 </p>
                 <p className="mt-2" style={{ color: "var(--text)" }}>
-                  I&apos;m a software engineer who thinks at the intersection of
-                  AI systems, distributed infrastructure, and raw compute.
+                  I'm pursuing my Master's in Computer Science at Northwestern University,
+                  focused on GPU systems and machine learning.
+                  I've received my B.S. in Computer Science from Rutgers University Honors College.
                 </p>
                 <p className="mt-3" style={{ color: "var(--text)" }}>
-                  From architecting LLM pipelines that cut evaluation time from
-                  hours to minutes at J.P. Morgan, to building CUDA kernels that
-                  saturate Blackwell-era memory bandwidth — I work at every
-                  layer of the stack.
+                  I have experience working on production software systems in industry settings,
+                  including machine learning pipelines, LLM evaluation frameworks, backend APIs,
+                  and data infrastructure.
+
                 </p>
                 <p className="mt-3" style={{ color: "var(--text)" }}>
-                  Currently pursuing M.S. CS (AI/ML) at Northwestern while
-                  shipping production code at{" "}
-                  <span style={{ color: "var(--cyan)" }}>TeachShare</span>.
+                  My passions sit at the intersection of systems and machine learning,
+                  which I hope to explore further at Northwestern University. I'm
+                  especially interested in working on optimizing GPU performance of ML models by bypassing high-level abstractions
+                  to engage directly with performance and hardware efficiency.
+
                 </p>
                 <p className="mt-4">
                   <span style={{ color: "var(--cyan)" }}>$&gt;</span>{" "}
@@ -253,10 +237,10 @@ export default function AboutSection() {
                 <p className="mt-2">
                   {[
                     "LLM Systems",
-                    "CUDA / Parallel Computing",
-                    "RAG Architectures",
+                    "Parallel Computing",
+                    "GPU Optimization",
                     "RL / Robotics",
-                    "Edge AI",
+                    "Reinforcement Learning",
                   ].map((tag) => (
                     <span
                       key={tag}
@@ -278,70 +262,43 @@ export default function AboutSection() {
               </div>
             </motion.div>
 
-            {/* Coursework */}
+            {/* Performance metrics (moved under Bio) */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="gpu-panel gpu-panel-cyan p-6"
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="gpu-panel gpu-panel-purple corner-marks p-6 w-full"
             >
               <div
-                className="flex items-center gap-3 mb-4"
-                style={{
-                  fontSize: "0.6rem",
-                  letterSpacing: "0.3em",
-                  color: "var(--cyan)",
-                  fontFamily: "var(--font-geist-mono)",
-                }}
+                className="flex items-center justify-between mb-4 pb-3"
+                style={{ borderBottom: "1px solid var(--border)" }}
               >
-                <span>LOADED MODULES</span>
-                <div
+                <span
                   style={{
-                    flex: 1,
-                    height: "1px",
-                    background: "var(--border)",
-                    marginLeft: "8px",
+                    fontSize: "0.7rem",
+                    letterSpacing: "0.25em",
+                    color: "var(--purple)",
+                    fontFamily: "var(--font-geist-mono)",
                   }}
-                />
+                >
+                  PERFORMANCE METRICS
+                </span>
               </div>
-              <div className="flex flex-wrap gap-2">
-                {COURSES.map((course, i) => (
-                  <motion.span
-                    key={course}
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.3 + i * 0.05 }}
-                    whileHover={{ scale: 1.05, color: "var(--cyan)" }}
-                    style={{
-                      padding: "3px 10px",
-                      border: "1px solid var(--border)",
-                      fontSize: "0.65rem",
-                      letterSpacing: "0.08em",
-                      color: "var(--muted-bright)",
-                      cursor: "default",
-                      fontFamily: "var(--font-geist-mono)",
-                      transition: "color 0.2s, border-color 0.2s",
-                    }}
-                    onMouseEnter={(e) => {
-                      (e.currentTarget as HTMLElement).style.borderColor = "rgba(34,211,238,0.4)";
-                      (e.currentTarget as HTMLElement).style.color = "var(--cyan)";
-                    }}
-                    onMouseLeave={(e) => {
-                      (e.currentTarget as HTMLElement).style.borderColor = "var(--border)";
-                      (e.currentTarget as HTMLElement).style.color = "var(--muted-bright)";
-                    }}
-                  >
-                    {course}
-                  </motion.span>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                {PERFORMANCE_METRICS.map((m) => (
+                  <MetricBar key={m.label} {...m} />
                 ))}
               </div>
             </motion.div>
+
           </div>
 
-          {/* Right: Education cards */}
-          <div className="lg:col-span-2 flex flex-col gap-6">
+          {/* Right: Education + Coursework + Passions */}
+          <div className="lg:col-span-4 flex flex-col gap-6">
+            <div className="section-label" style={{ marginBottom: "-6px" }}>
+              EDUCATION
+            </div>
             {EDUCATION.map((edu, i) => (
               <motion.div
                 key={edu.school}
@@ -355,52 +312,62 @@ export default function AboutSection() {
                   boxShadow: `inset 0 0 20px color-mix(in srgb, ${edu.color} 5%, transparent)`,
                 }}
               >
-                <div className="flex items-start justify-between mb-3">
-                  <span
-                    style={{
-                      fontSize: "1.5rem",
-                      color: edu.color,
-                      opacity: 0.6,
-                    }}
-                  >
-                    {edu.icon}
-                  </span>
-                  <span
-                    style={{
-                      fontSize: "0.6rem",
-                      color: "var(--muted)",
-                      letterSpacing: "0.1em",
-                      fontFamily: "var(--font-geist-mono)",
-                    }}
-                  >
-                    {edu.period}
-                  </span>
+                <div
+                  className="mb-3"
+                  style={{
+                    padding: "12px",
+                    border: "1px solid var(--border)",
+                    background: `${edu.color}`,
+                  }}
+                >
+                  <div className="flex items-center gap-3">
+                    <SchoolLogo school={edu.school} icon={edu.icon} />
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div className="flex items-baseline justify-between gap-3">
+                        <h3
+                          style={{
+                            fontSize: "0.95rem",
+                            fontWeight: 800,
+                            color: "var(--text)",
+                            letterSpacing: "0.04em",
+                            fontFamily: "var(--font-geist-mono)",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          {edu.school}
+                        </h3>
+                      </div>
+                      <div
+                        style={{
+                          fontSize: "0.85rem",
+                          color: "var(--text)",
+                          fontFamily: "var(--font-geist-mono)",
+                          marginTop: "4px",
+                        }}
+                      >
+                        {edu.degree}
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <h3
+
+                {/* Period moved below, outside the shared header background */}
+                <div
                   style={{
                     fontSize: "0.85rem",
-                    fontWeight: 700,
-                    color: "var(--text)",
-                    letterSpacing: "0.05em",
+                    color: "var(--muted-bright)",
+                    letterSpacing: "0.08em",
                     fontFamily: "var(--font-geist-mono)",
-                    marginBottom: "4px",
+                    marginBottom: "10px",
                   }}
                 >
-                  {edu.school}
-                </h3>
-                <div
-                  style={{
-                    fontSize: "0.75rem",
-                    color: edu.color,
-                    fontFamily: "var(--font-geist-mono)",
-                    marginBottom: "4px",
-                  }}
-                >
-                  {edu.degree}
+                  {edu.period}
                 </div>
                 <div
                   style={{
-                    fontSize: "0.65rem",
+                    fontSize: "0.85rem",
                     color: "var(--muted-bright)",
                     fontFamily: "var(--font-geist-mono)",
                     marginBottom: "8px",
@@ -408,20 +375,45 @@ export default function AboutSection() {
                 >
                   {edu.focus}
                 </div>
-                <div
-                  style={{
-                    fontSize: "0.6rem",
-                    color: "var(--muted)",
-                    letterSpacing: "0.1em",
-                    fontFamily: "var(--font-geist-mono)",
-                  }}
-                >
-                  ◎ {edu.location}
-                </div>
+
+                {/* Coursework (embedded into Rutgers card) */}
+                {edu.school.includes("Rutgers") && (
+                  <div className="mt-4" style={{ borderTop: "1px solid var(--border)", paddingTop: "10px" }}>
+                    <div
+                      style={{
+                        fontSize: "0.55rem",
+                        letterSpacing: "0.25em",
+                        color: "var(--cyan)",
+                        fontFamily: "var(--font-geist-mono)",
+                        marginBottom: "8px",
+                      }}
+                    >
+                      COURSEWORK
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {COURSES.map((course) => (
+                        <span
+                          key={course}
+                          style={{
+                            padding: "3px 8px",
+                            border: "1px solid var(--border)",
+                            fontSize: "0.62rem",
+                            letterSpacing: "0.06em",
+                            color: "var(--muted-bright)",
+                            fontFamily: "var(--font-geist-mono)",
+                          }}
+                        >
+                          {course}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {/* location moved to header right */}
               </motion.div>
             ))}
 
-            {/* Fun stat card */}
+            {/* Passions (renamed from Chip Characteristics) */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -433,14 +425,16 @@ export default function AboutSection() {
                 className="section-label mb-3"
                 style={{ fontSize: "0.55rem" }}
               >
-                CHIP CHARACTERISTICS
+                FAVORITES
               </div>
               <div className="grid grid-cols-2 gap-3">
                 {[
-                  { label: "Process", value: "AI/ML" },
-                  { label: "TDP", value: "∞ Coffee" },
-                  { label: "Interface", value: "Full-Stack" },
-                  { label: "Clock", value: "24/7" },
+                  { label: "Movie", value: "Dune: Part Two" },
+                  { label: "Artist", value: "Kid Cudi" },
+                  { label: "Game", value: "Hollow Knight: Silksong" },
+                  { label: "Show", value: "Arcane" },
+                  { label: ""}
+
                 ].map(({ label, value }) => (
                   <div key={label}>
                     <div

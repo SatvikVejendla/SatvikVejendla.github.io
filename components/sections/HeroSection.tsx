@@ -217,6 +217,15 @@ export default function HeroSection() {
     if (bootDone) setTimeout(() => setShowContent(true), 300);
   }, [bootDone]);
 
+  useEffect(() => {
+    if (!bootDone) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => { document.body.style.overflow = ""; };
+  }, [bootDone]);
+
   return (
     <section
       id="hero"
@@ -310,7 +319,7 @@ export default function HeroSection() {
 
             {/* Main content */}
             <div className="flex-1 flex flex-col">
-            <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-0 p-8 w-[90%] mx-auto">
+            <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-0 p-16 w-[100%] mx-auto">
               {/* Left: Identity */}
               <div className="flex flex-col justify-center px-8 md:px-16 py-12">
                 <motion.div
@@ -333,7 +342,7 @@ export default function HeroSection() {
                     className="glitch"
                     data-text="SATVIK"
                     style={{
-                      fontSize: "clamp(4.5rem, 10vw, 9.5rem)",
+                      fontSize: "clamp(3.25rem, 6vw, 9.5rem)",
                       fontWeight: 900,
                       letterSpacing: "-0.03em",
                       lineHeight: 0.88,
@@ -347,7 +356,7 @@ export default function HeroSection() {
                     className="glitch"
                     data-text="VEJENDLA"
                     style={{
-                      fontSize: "clamp(4.5rem, 10vw, 9.5rem)",
+                      fontSize: "clamp(3.25rem, 6vw, 9.5rem)",
                       fontWeight: 900,
                       letterSpacing: "-0.03em",
                       lineHeight: 0.88,
@@ -370,9 +379,10 @@ export default function HeroSection() {
                 >
                   <div
                     style={{
-                      fontSize: "1.5rem",
+                      fontSize: "clamp(1.05rem, 1.2vw, 1.5rem)",
                       color: "var(--muted-bright)",
-                      letterSpacing: "0.12em",
+                      letterSpacing: "clamp(0.05em, 0.1vw, 0.2em)",
+                      wordSpacing: "clamp(-0.4em, -0.3vw, 0em)",
                       fontFamily: "var(--font-geist-mono)",
                     }}
                   >
@@ -380,9 +390,10 @@ export default function HeroSection() {
                   </div>
                   <div
                     style={{
-                      fontSize: "1.4rem",
+                      fontSize: "clamp(1.0rem, 1.2vw, 1.4rem)",
                       color: "var(--muted)",
-                      letterSpacing: "0.08em",
+                      letterSpacing: "clamp(0.05em, 0.1vw, 0.2em)",
+                      wordSpacing: "clamp(-0.4em, -0.3vw, 0em)",
                       fontFamily: "var(--font-geist-mono)",
                     }}
                   >
@@ -400,16 +411,18 @@ export default function HeroSection() {
                   {[
                     { text: "SWE @ TeachShare", color: "var(--cyan)" },
                     { text: "Prev @ J.P. Morgan", color: "var(--purple)" },
-                    { text: "CUDA Engineer", color: "var(--orange)" },
+                    { text: "GPU Systems Engineer", color: "var(--orange)" },
+                    { text: "ML Engineer", color: "var(--green)" },
                   ].map(({ text, color }) => (
                     <span
                       key={text}
                       className="gpu-tag"
                       style={{
                         borderColor: color,
+                        borderRadius: "2px",
                         color,
-                        fontSize: "1.3rem",
-                        letterSpacing: "0.2em",
+                        fontSize: "clamp(0.95rem, 1.2vw, 1.3rem)",
+                        letterSpacing: "clamp(0.05em, 0.1vw, 0.2em)",
                         wordSpacing: "-0.4em",
                         padding: "4px 12px",
                       }}
@@ -434,10 +447,11 @@ export default function HeroSection() {
                 {/* GPU Die art */}
                 <motion.div
                   initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 2 }}
+                  animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.6, duration: 0.8, type: "spring" }}
-                  className="relative w-56 h-56 md:w-80 md:h-80"
+                  className="relative aspect-square max-w-full"
                   style={{
+                    width: "clamp(15.5rem, min(64vmin, 96vw), 36rem)",
                     filter: "drop-shadow(0 0 20px rgba(34,211,238,0.3))",
                   }}
                 >
@@ -446,8 +460,9 @@ export default function HeroSection() {
                   <motion.div
                     animate={{ rotate: 360 }}
                     transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                    className="absolute inset-[-8px] rounded-lg"
+                    className="absolute rounded-full"
                     style={{
+                      inset: "clamp(-18px, -5vmin, -28px)",
                       background:
                         "conic-gradient(from 0deg, transparent 70%, rgba(34,211,238,0.3) 85%, transparent 100%)",
                     }}
