@@ -319,9 +319,9 @@ export default function HeroSection() {
 
             {/* Main content */}
             <div className="flex-1 flex flex-col">
-            <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-0 p-16 w-[100%] mx-auto">
+            <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-0 px-5 py-4 lg:p-16 w-[100%] mx-auto">
               {/* Left: Identity */}
-              <div className="flex flex-col justify-center px-8 md:px-16 py-12">
+              <div className="flex flex-col justify-center px-2 md:px-8 lg:px-16 py-12">
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -406,7 +406,7 @@ export default function HeroSection() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 1.0 }}
-                  className="mt-8 flex flex-wrap gap-6"
+                  className="mt-8 flex flex-wrap gap-3 md:gap-4 lg:gap-6"
                 >
                   {[
                     { text: "SWE @ TeachShare", color: "var(--cyan)" },
@@ -416,7 +416,7 @@ export default function HeroSection() {
                   ].map(({ text, color }) => (
                     <span
                       key={text}
-                      className="gpu-tag"
+                      className="gpu-tag py-2 md:!py-4 lg:!py-2 px-4 md:!px-4 lg:!px-6"
                       style={{
                         borderColor: color,
                         borderRadius: "2px",
@@ -424,13 +424,11 @@ export default function HeroSection() {
                         fontSize: "clamp(0.95rem, 1.2vw, 1.3rem)",
                         letterSpacing: "clamp(0.05em, 0.1vw, 0.2em)",
                         wordSpacing: "-0.4em",
-                        padding: "4px 12px",
                       }}
                     >
                       <span
                         style={{
                           display: "inline-block",
-                          borderRadius: "50%",
                           background: color,
                           boxShadow: `0 0 4px ${color}`,
                         }}

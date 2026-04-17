@@ -152,7 +152,8 @@ function ClusterBlock({ cluster, isActive, onHover }: {
     <motion.div
       className="gpu-panel relative overflow-hidden"
       onMouseEnter={() => onHover(cluster.id)}
-      onMouseLeave={() => onHover(null)}
+      onPointerLeave={(e) => { if (e.pointerType === "mouse") onHover(null); }}
+      onClick={() => onHover(cluster.id)}
       animate={{
         borderColor: isActive
           ? `color-mix(in srgb, ${cluster.color} 60%, var(--border))`
@@ -162,13 +163,13 @@ function ClusterBlock({ cluster, isActive, onHover }: {
           : "none",
       }}
       style={{
-        cursor: "default",
+        cursor: "pointer",
         background: isActive
           ? `linear-gradient(135deg, color-mix(in srgb, ${cluster.color} 8%, var(--surface)), var(--surface))`
           : "var(--surface)",
         transition: "background 0.3s",
         height: "100%",
-        minHeight: "140px",
+        minHeight: "110px",
       }}
     >
       {/* Color stripe */}
@@ -224,7 +225,7 @@ function ClusterBlock({ cluster, isActive, onHover }: {
         </div>
 
         {/* Core grid visualization */}
-        <div className="flex flex-wrap gap-[3px] flex-1">
+        <div className="flex flex-wrap gap-[3px] flex-1" style={{ alignContent: "flex-start" }}>
           {cluster.skills.map((skill, i) => (
             <SkillCore
               key={skill}
@@ -312,26 +313,30 @@ export default function SkillsSection() {
                 letterSpacing: "0.1em",
               }}
             >
-              <div style={{ color: "var(--green)", marginTop: "4px" }}>
-                HOVER CLUSTER FOR DETAILS
+              <div style={{ color: "var(--green)", marginTop: "4px" }} className="hidden md:block">
+                
+              </div>
+              <div style={{ color: "var(--green)", marginTop: "4px" }} className="md:hidden">
+                TAP CLUSTER FOR DETAILS
               </div>
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="flex flex-col lg:flex-row gap-3">
           {/* GPU Die grid */}
-          <div className="lg:col-span-2">
+          <div className="flex-shrink-0 w-full lg:w-auto">
             {/* Die container */}
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="relative p-4"
+              className="relative p-3"
               style={{
                 border: "1px solid var(--border-bright)",
                 background: "var(--surface)",
+                maxWidth: "540px",
               }}
             >
               {/* Corner marks */}
@@ -367,7 +372,7 @@ export default function SkillsSection() {
 
               {/* Cluster grid - 4 cols × 3 rows */}
               <div
-                className="grid gap-3"
+                className="grid gap-2"
                 style={{
                   gridTemplateColumns: "repeat(4, 1fr)",
                   gridTemplateRows: "repeat(3, auto)",
@@ -423,17 +428,44 @@ export default function SkillsSection() {
             </motion.div>
           </div>
 
-          {/* Right panel: Active cluster details OR architecture summary */}
-          <div className="flex flex-col gap-4">
+          {/* Right panel: Active cluster details */}
+          <div className="flex flex-col gap-4 flex-1 min-w-0">
+            {/* Fixed-height slot so the legend never jumps */}
+            <div className="lg:min-h-[300px]">
             <AnimatePresence mode="wait">
-              {active ? (
+              {!active && (
+                <motion.div
+                  key="idle"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="gpu-panel p-5 h-full flex items-center justify-center lg:min-h-[300px]"
+                >
+                  <div
+                    style={{
+                      fontSize: "0.6rem",
+                      color: "var(--muted)",
+                      fontFamily: "var(--font-geist-mono)",
+                      letterSpacing: "0.15em",
+                      textAlign: "center",
+                      lineHeight: 2,
+                    }}
+                  >
+                    <div className="hidden md:block" style={{ color: "var(--cyan)" }}>← HOVER A CLUSTER</div>
+                    <div className="md:hidden" style={{ color: "var(--cyan)" }}>TAP A CLUSTER</div>
+                    <div>FOR DETAILED TECH STACK</div>
+                  </div>
+                </motion.div>
+              )}
+              {active && (
                 <motion.div
                   key={active.id}
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -20 }}
                   transition={{ duration: 0.3 }}
-                  className="gpu-panel p-5 flex-1"
+                  className="gpu-panel p-5 lg:min-h-[300px]"
                   style={{
                     borderColor: `color-mix(in srgb, ${active.color} 40%, var(--border))`,
                     boxShadow: `0 0 20px ${active.color}15`,
@@ -490,44 +522,9 @@ export default function SkillsSection() {
                     {active.skills.length} compute units active · Cluster {active.id.toUpperCase()}
                   </div>
                 </motion.div>
-              ) : (
-                <motion.div
-                  key="default"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="gpu-panel gpu-panel-cyan p-5 flex-1"
-                >
-                  <div className="section-label mb-4" style={{ fontSize: "0.55rem" }}>
-                    ARCHITECTURE SUMMARY
-                  </div>
-                  <div className="flex flex-col gap-4">
-                    {[
-                      { label: "Total Skills", value: `${SKILL_CLUSTERS.reduce((a, c) => a + c.skills.length, 0)}+`, color: "var(--cyan)" },
-                      { label: "Clusters", value: `${SKILL_CLUSTERS.length}`, color: "var(--purple)" },
-                      { label: "YoE", value: "3+", color: "var(--green)" },
-                      { label: "Active Projects", value: `${4}`, color: "var(--orange)" },
-                    ].map(({ label, value, color }) => (
-                      <div key={label} className="flex justify-between items-center">
-                        <span style={{ fontSize: "0.65rem", color: "var(--muted-bright)", fontFamily: "var(--font-geist-mono)", letterSpacing: "0.08em" }}>
-                          {label}
-                        </span>
-                        <span style={{ fontSize: "1.1rem", fontWeight: 700, color, fontFamily: "var(--font-geist-mono)", textShadow: `0 0 8px ${color}` }}>
-                          {value}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                  <div
-                    className="mt-6"
-                    style={{ fontSize: "0.6rem", color: "var(--muted)", fontFamily: "var(--font-geist-mono)", lineHeight: 1.8, letterSpacing: "0.05em" }}
-                  >
-                    <div>← HOVER A CLUSTER IN THE</div>
-                    <div style={{ color: "var(--cyan)" }}>   DIE SHOT TO INSPECT</div>
-                  </div>
-                </motion.div>
               )}
             </AnimatePresence>
+            </div>
 
             {/* Cluster legend */}
             <motion.div
@@ -535,7 +532,7 @@ export default function SkillsSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.3 }}
-              className="gpu-panel p-4"
+              className="gpu-panel p-4 lg:mt-auto"
             >
               <div className="section-label mb-3" style={{ fontSize: "0.5rem" }}>
                 CLUSTER MAP
@@ -546,8 +543,9 @@ export default function SkillsSection() {
                     key={c.id}
                     className="flex items-center gap-2"
                     onMouseEnter={() => setActiveCluster(c.id)}
-                    onMouseLeave={() => setActiveCluster(null)}
-                    style={{ cursor: "default" }}
+                    onPointerLeave={(e) => { if (e.pointerType === "mouse") setActiveCluster(null); }}
+                    onClick={() => setActiveCluster(c.id)}
+                    style={{ cursor: "pointer" }}
                   >
                     <div
                       style={{

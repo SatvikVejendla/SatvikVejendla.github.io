@@ -233,7 +233,7 @@ export default function ContactSection() {
                   >
                     <h2
                       style={{
-                        fontSize: "clamp(2.8rem, 5vw, 5rem)",
+                        fontSize: "clamp(1.8rem, 4vw, 3.5rem)",
                         fontWeight: 900,
                         letterSpacing: "-0.02em",
                         color: "var(--text)",
@@ -255,7 +255,7 @@ export default function ContactSection() {
                     </h2>
                     <p
                       style={{
-                        fontSize: "1rem",
+                        fontSize: "0.75rem",
                         color: "var(--muted-bright)",
                         fontFamily: "var(--font-geist-mono)",
                         lineHeight: 1.8,
@@ -324,7 +324,7 @@ export default function ContactSection() {
                             </div>
                             <div
                               style={{
-                                fontSize: "1rem",
+                                fontSize: "0.85rem",
                                 color: hoveredLink === link.label ? link.color : "var(--text)",
                                 fontFamily: "var(--font-geist-mono)",
                                 transition: "color 0.2s",
@@ -396,7 +396,7 @@ export default function ContactSection() {
                             </div>
                             <div
                               style={{
-                                fontSize: "1rem",
+                                fontSize: "0.85rem",
                                 color: hoveredLink === link.label ? link.color : "var(--text)",
                                 fontFamily: "var(--font-geist-mono)",
                                 transition: "color 0.2s",

@@ -27,6 +27,7 @@ const PROJECTS = [
     name: "CUDA GPT",
     tagline: "GPT-style Transformer built in raw C++/CUDA",
     tech: ["CUDA", "C++", "Nsight Compute", "Transformers", "RTX 5080"],
+    date: "Apr 2026",
     color: COLORS.orange.color,
     colorDim: COLORS.orange.colorDim,
     category: "COMPUTE",
@@ -48,6 +49,7 @@ const PROJECTS = [
     name: "GPU-Accelerated SQL Query Engine",
     tagline: "GPU-accelerated SQL query engine for large-scale data processing",
     tech: ["CUDA", "C++", "SQL", "Nsight Compute", "Transformers", "RTX 5080"],
+    date: "Apr 2026",
     color: COLORS.orange.color,
     colorDim: COLORS.orange.colorDim,
     category: "COMPUTE",
@@ -67,6 +69,7 @@ const PROJECTS = [
     name: "DebugERR",
     tagline: "Fine-tuned LLM for automatically detecting errors and providing actionable fixes",
     tech: ["Python", "LangChain", "LoRA", "Gemma 4", "Testing"],
+    date: "Apr 2026",
     color: COLORS.pink.color,
     colorDim: COLORS.pink.colorDim,
     category: "LLM",
@@ -85,6 +88,7 @@ const PROJECTS = [
     name: "MeLM",
     tagline: "Fine-tuned LLM replicating personal style",
     tech: ["Python", "LangChain", "LoRA", "Llama 3.1 8B", "RTX A4500"],
+    date: "Jan 2025",
     color: COLORS.pink.color,
     colorDim: COLORS.pink.colorDim,
     category: "LLM",
@@ -103,6 +107,7 @@ const PROJECTS = [
     name: "VEX 750B",
     tagline: "Competition robot with autonomous path tracking",
     tech: ["C++", "PROS", "PID", "React Native"],
+    date: "Apr 2023",
     color: COLORS.cyan.color,
     colorDim: COLORS.cyan.colorDim,
     category: "ROBOTICS",
@@ -122,6 +127,7 @@ const PROJECTS = [
     name: "SNN Quadruped Locomotion",
     tagline: "Diffusion-generated quadruped locomotion with SNN temporal extractors",
     tech: ["Python", "Gymnasium", "Torch", "Mujoco", "PPO", "SNN"],
+    date: "Nov 2025",
     color: COLORS.orange.color,
     colorDim: COLORS.orange.colorDim,
     category: "ROBOTICS",
@@ -141,6 +147,7 @@ const PROJECTS = [
     name: "Reflevapp.com",
     tagline: "AI journaling with mood intelligence",
     tech: ["Next.js", "TypeScript", "PostgreSQL", "Llama 3.2", "Zustand"],
+    date: "Dec 2025",
     color: COLORS.purple.color,
     colorDim: COLORS.purple.colorDim,
     category: "FULLSTACK",
@@ -161,6 +168,7 @@ const PROJECTS = [
     name: "Kanzure.com",
     tagline: "Modern productivity suite for integrated task management",
     tech: ["Next.js", "TypeScript", "PostgreSQL", "Tailwind CSS", "Supabase", "Vercel", "Google OAuth"],
+    date: "Oct 2025",
     color: COLORS.purple.color,
     colorDim: COLORS.purple.colorDim,
     category: "FULLSTACK",
@@ -180,6 +188,7 @@ const PROJECTS = [
     name: "Kernel Configuration Search",
     tagline: "Automated CUDA kernel performance exploration",
     tech: ["CUDA", "C++", "Nsight Compute", "Transformers", "RTX 5080"],
+    date: "Mar 2026",
     color: COLORS.orange.color,
     colorDim: COLORS.orange.colorDim,
     category: "COMPUTE",
@@ -198,6 +207,7 @@ const PROJECTS = [
     name: "Mentalth",
     tagline: "AI-powered Discord moderation bot for mental health",
     tech: ["Node.js", "Python", "Keras", "TensorFlow.js", "Word2Vec", "LSTM", "NLP", "Discord.js"],
+    date: "Feb 2021",
     color: COLORS.pink.color,
     colorDim: COLORS.pink.colorDim,
     category: "NLP",
@@ -218,6 +228,7 @@ const PROJECTS = [
     name: "Neat.js",
     tagline: "NeuroEvolution of Augmenting Topologies from Scratch in JavaScript",
     tech: ["JavaScript", "Node.js"],
+    date: "Mar 2021",
     color: COLORS.cyan.color,
     colorDim: COLORS.cyan.colorDim,
     category: "AI",
@@ -350,29 +361,57 @@ function ProjectModal({ project, onClose }: { project: Project; onClose: () => v
                 />
                 {project.status.replace("_", " ")}
               </span>
-              <div>
-                <div
-                  style={{
-                    fontSize: "1.4rem",
-                    fontWeight: 700,
-                    color: project.color,
-                    fontFamily: "var(--font-geist-mono)",
-                    lineHeight: 1,
-                    textAlign: "right",
-                  }}
-                >
-                  {project.capacity}
+              <div className="flex flex-col items-end gap-2">
+                <div>
+                  <div
+                    style={{
+                      fontSize: "1.4rem",
+                      fontWeight: 700,
+                      color: project.color,
+                      fontFamily: "var(--font-geist-mono)",
+                      lineHeight: 1,
+                      textAlign: "right",
+                    }}
+                  >
+                    {project.capacity}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "0.5rem",
+                      color: "var(--muted)",
+                      letterSpacing: "0.2em",
+                      fontFamily: "var(--font-geist-mono)",
+                      textAlign: "right",
+                    }}
+                  >
+                    VRAM ALLOC
+                  </div>
                 </div>
-                <div
-                  style={{
-                    fontSize: "0.5rem",
-                    color: "var(--muted)",
-                    letterSpacing: "0.2em",
-                    fontFamily: "var(--font-geist-mono)",
-                    textAlign: "right",
-                  }}
-                >
-                  VRAM ALLOC
+                <div>
+                  <div
+                    style={{
+                      fontSize: "1.4rem",
+                      fontWeight: 700,
+                      color: project.color,
+                      fontFamily: "var(--font-geist-mono)",
+                      lineHeight: 1,
+                      textAlign: "right",
+                      opacity: 0.85,
+                    }}
+                  >
+                    {project.date}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "0.5rem",
+                      color: "var(--muted)",
+                      letterSpacing: "0.2em",
+                      fontFamily: "var(--font-geist-mono)",
+                      textAlign: "right",
+                    }}
+                  >
+                    TIMESTAMP
+                  </div>
                 </div>
               </div>
             </div>
@@ -618,30 +657,55 @@ function ProjectCard({
           </p>
         </div>
 
-        {/* Capacity stat */}
-        <div className="mt-1">
-          <div
-            style={{
-              fontSize: capacitySize,
-              fontWeight: 700,
-              color: project.color,
-              fontFamily: "var(--font-geist-mono)",
-              textShadow: `0 0 0px ${project.color}`,
-              lineHeight: 1,
-            }}
-          >
-            {project.capacity}
+        {/* Capacity + date stats */}
+        <div className="flex items-end justify-between mt-1">
+          <div>
+            <div
+              style={{
+                fontSize: capacitySize,
+                fontWeight: 700,
+                color: project.color,
+                fontFamily: "var(--font-geist-mono)",
+                lineHeight: 1,
+              }}
+            >
+              {project.capacity}
+            </div>
+            <div
+              style={{
+                fontSize: "0.48rem",
+                color: "var(--muted)",
+                letterSpacing: "0.2em",
+                fontFamily: "var(--font-geist-mono)",
+                marginTop: "2px",
+              }}
+            >
+              VRAM ALLOC
+            </div>
           </div>
-          <div
-            style={{
-              fontSize: "0.48rem",
-              color: "var(--muted)",
-              letterSpacing: "0.2em",
-              fontFamily: "var(--font-geist-mono)",
-              marginTop: "2px",
-            }}
-          >
-            VRAM ALLOC
+          <div className="text-right">
+            <div
+              style={{
+                fontSize: capacitySize,
+                fontWeight: 700,
+                color: project.color,
+                fontFamily: "var(--font-geist-mono)",
+                lineHeight: 1,
+              }}
+            >
+              {project.date}
+            </div>
+            <div
+              style={{
+                fontSize: "0.48rem",
+                color: "var(--muted)",
+                letterSpacing: "0.2em",
+                fontFamily: "var(--font-geist-mono)",
+                marginTop: "2px",
+              }}
+            >
+              TIMESTAMP
+            </div>
           </div>
         </div>
 
@@ -712,16 +776,16 @@ export default function ProjectsSection() {
     offset: ["start end", "center center"],
   });
 
-  const scale = useTransform(scrollYProgress, [0, 0.7], [0.7, 1]);
-  const opacity = useTransform(scrollYProgress, [0, 0.4], [0, 1]);
-  const blurPx = useTransform(scrollYProgress, [0, 0.5], [8, 0]);
+  const scale = useTransform(scrollYProgress, [0, 0.2], [0.7, 1]);
+  const opacity = useTransform(scrollYProgress, [0, 0.15], [0, 1]);
+  const blurPx = useTransform(scrollYProgress, [0, 0.2], [8, 0]);
   const filter = useMotionTemplate`blur(${blurPx}px)`;
 
   return (
     <section
       id="projects"
       ref={containerRef}
-      className="relative py-24 overflow-hidden"
+      className="relative pt-5 pb-24 md:py-24 overflow-hidden"
       style={{ background: "var(--surface-2)" }}
     >
       {/* Background memory pattern */}
@@ -775,7 +839,7 @@ export default function ProjectsSection() {
             >
               <div>CLICK A CARD TO LOAD FULL SPECS</div>
               <div style={{ color: "var(--purple)", marginTop: "4px" }}>
-                {PROJECTS.length} BANKS ACTIVE · MORE LOADING...
+                {PROJECTS.length} BANKS ACTIVE · MORE IN PROGRESS...
               </div>
             </div>
           </div>

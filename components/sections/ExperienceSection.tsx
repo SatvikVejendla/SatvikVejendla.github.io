@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import GpuBackground from "@/components/ui/GpuBackground";
 
@@ -156,7 +156,7 @@ function ExperienceCard({ exp, index }: { exp: typeof EXPERIENCES[0]; index: num
             <div className="flex flex-col">
               <h3
                 style={{
-                  fontSize: "1.8rem",
+                  fontSize: "clamp(1.1rem, 3.5vw, 1.8rem)",
                   letterSpacing: "0.05em",
                   fontWeight: 800,
                   color: "var(--text)",
@@ -170,7 +170,7 @@ function ExperienceCard({ exp, index }: { exp: typeof EXPERIENCES[0]; index: num
               <div className="flex items-baseline justify-between gap-4">
                 <div
                   style={{
-                    fontSize: "1rem",
+                    fontSize: "clamp(0.7rem, 2vw, 1rem)",
                     color: exp.color,
                     fontFamily: "var(--font-geist-mono)",
                     marginTop: "2px",
@@ -181,7 +181,7 @@ function ExperienceCard({ exp, index }: { exp: typeof EXPERIENCES[0]; index: num
 
                 <div
                   style={{
-                    fontSize: "1rem",
+                    fontSize: "clamp(0.7rem, 2vw, 1rem)",
                     color: "var(--muted-bright)",
                     fontFamily: "var(--font-geist-mono)",
                     letterSpacing: "0.05em",
@@ -200,7 +200,7 @@ function ExperienceCard({ exp, index }: { exp: typeof EXPERIENCES[0]; index: num
                 <span
                   key={tag}
                   style={{
-                    fontSize: "0.9rem",
+                    fontSize: "clamp(0.65rem, 1.8vw, 0.9rem)",
                     padding: "2px 8px",
                     border: `1px solid color-mix(in srgb, ${exp.color} 30%, var(--border))`,
                     color: "var(--muted-bright)",
@@ -224,7 +224,7 @@ function ExperienceCard({ exp, index }: { exp: typeof EXPERIENCES[0]; index: num
                 key={i}
                 className="flex gap-3"
                 style={{
-                  fontSize: "1rem",
+                  fontSize: "clamp(0.7rem, 2vw, 1rem)",
                   color: "var(--muted-bright)",
                   fontFamily: "var(--font-geist-mono)",
                   lineHeight: "1.6",
@@ -285,8 +285,27 @@ export default function ExperienceSection() {
     offset: ["start start", "end end"],
   });
 
-  // One horizontal "step" per card gap (card width ≈ 38vw + gap-6); 40vw keeps end aligned without extra pan
-  const xEndVw = (EXPERIENCES.length - 1) * 25;
+  // Dynamically compute the horizontal travel distance based on actual card widths
+  const [xEndVw, setXEndVw] = useState((EXPERIENCES.length - 1) * 25);
+
+  useEffect(() => {
+    const compute = () => {
+      const vw = window.innerWidth;
+      const cardMinW = 320;
+      const cardMaxW = 520;
+      const cardVwFrac = 0.38;
+      const gapPx = 24; // gap-6
+      const plPx = vw >= 768 ? 64 : 32; // pl-8 / md:pl-16
+      const prPx = 64; // pr-16
+      const cardW = Math.min(Math.max(cardMinW, vw * cardVwFrac), cardMaxW);
+      const totalTrackW = plPx + EXPERIENCES.length * cardW + (EXPERIENCES.length - 1) * gapPx + prPx;
+      const travel = Math.max(0, totalTrackW - vw);
+      setXEndVw(travel / vw * 100);
+    };
+    compute();
+    window.addEventListener("resize", compute);
+    return () => window.removeEventListener("resize", compute);
+  }, []);
 
   // Translate the track horizontally as user scrolls
   const x = useTransform(
